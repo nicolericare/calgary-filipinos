@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calgary Filipinos — Community Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _supabase = window.supabase.createClient(
+    'https://rqcixqbkywoqleomfioo.supabase.co',
+    'sb_publishable_az7Auho3dByilucTtOXMMQ_kCC68YRj'
+  );
+</script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="showSection('home'); setNavActiveByName('Home')">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="3.5" fill="#F7B731"/>
+          <line x1="12" y1="2" x2="12" y2="6.5" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="17.5" x2="12" y2="22" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="2" y1="12" x2="6.5" y2="12" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="17.5" y1="12" x2="22" y2="12" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="4.9" y1="4.9" x2="8" y2="8" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="16" x2="19.1" y2="19.1" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="19.1" y1="4.9" x2="16" y2="8" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="16" x2="4.9" y2="19.1" stroke="#F7B731" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">Calgary <span>Filipinos</span></span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showSection('home'); setNavActive(this)">Home</button>
+      <button class="nav-link" onclick="showSection('events'); setNavActive(this)">Events</button>
+      <button class="nav-link" onclick="showSection('eatshop'); setNavActive(this)">Eat &amp; Shop</button>
+      <button class="nav-link" onclick="showSection('directory'); setNavActive(this)">Directory</button>
+      <button class="nav-link" onclick="showSection('marketplace'); setNavActive(this)">Marketplace <span class="notif-dot"></span></button>
+      <button class="nav-link" onclick="showSection('hometown'); setNavActive(this)">Hometown Match</button>
+    </div>
+    <div class="nav-right">
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9AA5B4" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search...">
+      </div>
+      <button class="btn-primary" onclick="openModal('joinModal')">Join Community</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div id="home" class="section active">
+
+  <div class="hero">
+    <div class="hero-decor-ring"></div>
+  <div class="hero-inner">
+      <div class="hero-badge">🇵🇭 Calgary's Filipino Community Hub</div>
+      <h1><span class="white-text">Your Home Away<br>From </span><em>Home</em></h1>
+      <p>Connecting Filipinos across Calgary — find events, businesses, services, and fellow kababayan. Mabuhay!</p>
+      <div class="hero-actions">
+        <button class="btn-gold" onclick="showSection('events'); setNavActiveByName('Events')">Browse Events</button>
+        <button class="btn-outline-white" onclick="openModal('joinModal')">Join the Community</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-number">4,200+</span><span class="stat-label">Community Members</span></div>
+        <div class="stat"><span class="stat-number">85+</span><span class="stat-label">Local Businesses</span></div>
+        <div class="stat"><span class="stat-number">30+</span><span class="stat-label">Upcoming Events</span></div>
+        <div class="stat"><span class="stat-number">120+</span><span class="stat-label">Marketplace Listings</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-access">
+    <div class="qa-card" onclick="showSection('events'); setNavActiveByName('Events')"><div class="qa-icon">🎉</div><div class="qa-label">Events</div></div>
+    <div class="qa-card" onclick="showSection('eatshop'); setNavActiveByName('Eat &amp; Shop')"><div class="qa-icon">🍜</div><div class="qa-label">Restaurants</div></div>
+    <div class="qa-card" onclick="showSection('eatshop'); setNavActiveByName('Eat &amp; Shop'); setTimeout(()=>document.querySelectorAll('#eatshop .tab-btn')[1].click(),120)"><div class="qa-icon">🛒</div><div class="qa-label">Grocery Stores</div></div>
+    <div class="qa-card" onclick="showSection('directory'); setNavActiveByName('Directory')"><div class="qa-icon">📋</div><div class="qa-label">Directory</div></div>
+    <div class="qa-card" onclick="showSection('marketplace'); setNavActiveByName('Marketplace')"><div class="qa-icon">🛍️</div><div class="qa-label">Marketplace</div></div>
+    <div class="qa-card" onclick="showSection('hometown'); setNavActiveByName('Hometown Match')"><div class="qa-icon">🏡</div><div class="qa-label">Hometown Match</div></div>
+  </div>
+
+  <div class="section-container" style="padding-top:64px">
+
+    <!-- Featured Events -->
+    <div class="section-header">
+      <div><div class="section-title">Upcoming Events</div><div class="section-subtitle">Don't miss what's happening in the community</div></div>
+      <button class="btn-sm" onclick="showSection('events'); setNavActiveByName('Events')">See all events →</button>
+    </div>
+    <div class="cards-grid" style="margin-bottom:52px">
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B18,#F7B73118)">🎊
+          <span class="event-date-chip">Apr 19</span><span class="event-cat-chip">Cultural</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Filipino Cultural Night 2026</div>
+          <div class="event-meta-item">📍 BMO Centre, Calgary</div>
+          <div class="event-meta-item">🕕 6:00 PM – 11:00 PM · $15/person</div>
+        </div>
+        <div class="event-footer"><span class="event-rsvp">👥 248 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#CE112618,#F7B73118)">🏀
+          <span class="event-date-chip">Apr 26</span><span class="event-cat-chip">Sports</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Pinoy Basketball Invitational</div>
+          <div class="event-meta-item">📍 Southland Leisure Centre</div>
+          <div class="event-meta-item">🕗 7:00 AM – 6:00 PM · Free</div>
+        </div>
+        <div class="event-footer"><span class="event-rsvp">👥 120 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#2D5BA818,#F7B73118)">🍱
+          <span class="event-date-chip">May 3</span><span class="event-cat-chip">Food</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Fiesta Filipino Food Festival</div>
+          <div class="event-meta-item">📍 Prince's Island Park</div>
+          <div class="event-meta-item">🕛 12:00 PM – 8:00 PM · Free entry</div>
+        </div>
+        <div class="event-footer"><span class="event-rsvp">👥 410 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+    </div>
+
+    <!-- Featured Marketplace -->
+    <div class="section-header">
+      <div><div class="section-title">Marketplace Picks</div><div class="section-subtitle">Fresh food, goods &amp; Balikbayan connections from your community</div></div>
+      <button class="btn-sm" onclick="showSection('marketplace'); setNavActiveByName('Marketplace')">See all →</button>
+    </div>
+    <div class="cards-grid-4" style="margin-bottom:52px">
+      <div class="market-card"><div class="market-img">🍡</div><div class="market-body"><div class="market-title">Homemade Halo-Halo Kit</div><div class="market-seller">Ate Maria · NW Calgary · ⭐ 4.9</div></div><div class="market-footer"><span class="market-price">$18</span><button class="btn-sm">Order</button></div></div>
+      <div class="market-card"><div class="market-img">🥩</div><div class="market-body"><div class="market-title">Whole Lechon de Leche</div><div class="market-seller">Kuya Pete · SE Calgary · ⭐ 5.0</div></div><div class="market-footer"><span class="market-price">$280</span><button class="btn-sm">Order</button></div></div>
+      <div class="market-card"><div class="market-img">🥟</div><div class="market-body"><div class="market-title">Frozen Lumpia (50 pcs)</div><div class="market-seller">Ate Rose · NW Calgary · ⭐ 4.9</div></div><div class="market-footer"><span class="market-price">$35</span><button class="btn-sm">Order</button></div></div>
+      <div class="market-card"><div class="market-img">✈️</div><div class="market-body"><div class="market-title">Balikbayan Space — Manila</div><div class="market-seller">Jessa R. · Departing May 10 · 10kg</div></div><div class="market-footer"><span class="market-price" style="font-size:14px">$5/kg</span><button class="btn-sm">Request</button></div></div>
+    </div>
+
+    <!-- Community Spotlight -->
+    <div class="section-header">
+      <div><div class="section-title">Community Spotlight</div><div class="section-subtitle">Filipino professionals and community leaders in Calgary</div></div>
+      <button class="btn-sm" onclick="showSection('directory'); setNavActiveByName('Directory')">View directory →</button>
+    </div>
+    <div class="cards-grid" style="margin-bottom:32px">
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:#EBF0FB">⚖️</div>
+        <div style="flex:1"><div class="dir-name">Atty. Maria Santos</div><div class="dir-role">Immigration &amp; Family Lawyer</div><div class="dir-desc">Specializing in Canadian immigration, sponsorship, and citizenship. Tagalog-speaking office.</div></div>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:#F5F3FF;font-size:28px">👩</div>
+        <div style="flex:1"><div class="dir-name">Nicole Reyes</div><div class="dir-role">Lifestyle &amp; Food Creator · 28K Followers</div><div class="dir-desc">Calgary-based Filipina sharing life in Canada, Filipino recipes, and immigration tips on TikTok &amp; YouTube.</div></div>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:#FEF2F2">🏀</div>
+        <div style="flex:1"><div class="dir-name">Calgary Pinoy Ballers</div><div class="dir-role">Basketball Group · 200+ Members</div><div class="dir-desc">Weekly Sunday runs at Southland and Canyon Meadows. All skill levels welcome!</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ EVENTS ═══════════════ -->
+<div id="events" class="section">
+  <div class="section-container">
+    <div class="section-header">
+      <div><div class="section-title">🎉 Events</div><div class="section-subtitle">Filipino events happening in and around Calgary</div></div>
+      <button class="btn-primary" onclick="openModal('addEventModal')">+ Submit Event</button>
+    </div>
+    <div class="filter-chips">
+      <div class="chip active" onclick="filterChip(this,'events-grid','all')">All Events</div>
+      <div class="chip" onclick="filterChip(this,'events-grid','Cultural')">🎊 Cultural</div>
+      <div class="chip" onclick="filterChip(this,'events-grid','Sports')">🏀 Sports</div>
+      <div class="chip" onclick="filterChip(this,'events-grid','Food')">🍜 Food &amp; Dining</div>
+      <div class="chip" onclick="filterChip(this,'events-grid','Community')">🤝 Community</div>
+      <div class="chip" onclick="filterChip(this,'events-grid','Professional')">💼 Professional</div>
+      <div class="chip" onclick="filterChip(this,'events-grid','Religious')">✝️ Religious</div>
+    </div>
+    <div id="events-grid" class="cards-grid">
+
+      <div class="event-card" data-cat="Cultural">
+        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B14,#F7B73120)">🎊<span class="event-date-chip">Apr 19</span><span class="event-cat-chip">Cultural</span></div>
+        <div class="event-body"><div class="event-title">Filipino Cultural Night 2026</div><div class="event-meta-item">📍 BMO Centre, Calgary</div><div class="event-meta-item">🕕 6:00 PM – 11:00 PM</div><div class="event-meta-item">🎟 $15 / person</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 248 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Sports">
+        <div class="event-img" style="background:linear-gradient(135deg,#CE112614,#F7B73120)">🏀<span class="event-date-chip">Apr 26</span><span class="event-cat-chip">Sports</span></div>
+        <div class="event-body"><div class="event-title">Pinoy Basketball Invitational</div><div class="event-meta-item">📍 Southland Leisure Centre</div><div class="event-meta-item">🕗 7:00 AM – 6:00 PM</div><div class="event-meta-item">🎟 Free</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 120 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Food">
+        <div class="event-img" style="background:linear-gradient(135deg,#2D5BA814,#F7B73120)">🍱<span class="event-date-chip">May 3</span><span class="event-cat-chip">Food</span></div>
+        <div class="event-body"><div class="event-title">Fiesta Filipino Food Festival</div><div class="event-meta-item">📍 Prince's Island Park</div><div class="event-meta-item">🕛 12:00 PM – 8:00 PM</div><div class="event-meta-item">🎟 Free entry</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 410 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Community">
+        <div class="event-img" style="background:linear-gradient(135deg,#F7B73114,#1B3A6B14)">🤝<span class="event-date-chip">May 10</span><span class="event-cat-chip">Community</span></div>
+        <div class="event-body"><div class="event-title">Newcomers Welcome Night</div><div class="event-meta-item">📍 Filipino Canadian Society Hall</div><div class="event-meta-item">🕕 5:30 PM – 8:30 PM</div><div class="event-meta-item">🎟 Free</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 65 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Religious">
+        <div class="event-img" style="background:linear-gradient(135deg,#F7B73114,#FFFFFF)">✝️<span class="event-date-chip">May 15</span><span class="event-cat-chip">Religious</span></div>
+        <div class="event-body"><div class="event-title">Simbahan Community Mass &amp; Lunch</div><div class="event-meta-item">📍 St. Anthony Church, NW</div><div class="event-meta-item">🕙 10:00 AM – 1:00 PM</div><div class="event-meta-item">🎟 Free</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 155 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Professional">
+        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B14,#2D5BA814)">💼<span class="event-date-chip">May 22</span><span class="event-cat-chip">Professional</span></div>
+        <div class="event-body"><div class="event-title">Filipino Professionals Network Mixer</div><div class="event-meta-item">📍 WeWork Downtown Calgary</div><div class="event-meta-item">🕕 5:00 PM – 8:00 PM</div><div class="event-meta-item">🎟 $10</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 92 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Cultural">
+        <div class="event-img" style="background:linear-gradient(135deg,#CE112614,#F7B73120)">🇵🇭<span class="event-date-chip">Jun 12</span><span class="event-cat-chip">Cultural</span></div>
+        <div class="event-body"><div class="event-title">Philippine Independence Day Gala</div><div class="event-meta-item">📍 Marriott Calgary Downtown</div><div class="event-meta-item">🕕 6:00 PM – 12:00 AM</div><div class="event-meta-item">🎟 $65 / person</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 380 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Sports">
+        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B14,#CE112614)">🏐<span class="event-date-chip">Jun 7</span><span class="event-cat-chip">Sports</span></div>
+        <div class="event-body"><div class="event-title">Pinoy Volleyball Summer League</div><div class="event-meta-item">📍 Canyon Meadows Rec Centre</div><div class="event-meta-item">🕙 9:00 AM – 4:00 PM</div><div class="event-meta-item">🎟 $20 / team</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 88 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+      <div class="event-card" data-cat="Community">
+        <div class="event-img" style="background:linear-gradient(135deg,#F7B73114,#1B3A6B14)">👨‍👩‍👧<span class="event-date-chip">Jun 21</span><span class="event-cat-chip">Community</span></div>
+        <div class="event-body"><div class="event-title">Filipino Family Fun Day</div><div class="event-meta-item">📍 Nose Hill Park</div><div class="event-meta-item">🕛 11:00 AM – 5:00 PM</div><div class="event-meta-item">🎟 Free</div></div>
+        <div class="event-footer"><span class="event-rsvp">👥 290 going</span><button class="btn-sm">RSVP</button></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ EAT & SHOP ═══════════════ -->
+<div id="eatshop" class="section">
+  <div class="section-container">
+    <div class="section-header">
+      <div><div class="section-title">🍜 Eat &amp; Shop</div><div class="section-subtitle">Filipino restaurants, bakeries, and grocery stores in Calgary</div></div>
+      <button class="btn-primary" onclick="openModal('addBusinessModal')">+ Add Business</button>
+    </div>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchSubTab(this,'tab-restaurants')">🍽 Restaurants &amp; Eateries</button>
+      <button class="tab-btn" onclick="switchSubTab(this,'tab-groceries')">🛒 Grocery &amp; Filipino Stores</button>
+      <button class="tab-btn" onclick="switchSubTab(this,'tab-bakeries')">🥐 Bakeries &amp; Desserts</button>
+    </div>
+
+    <div id="tab-restaurants" class="tab-content active">
+      <div class="filter-chips">
+        <div class="chip active">All Calgary</div>
+        <div class="chip">NW</div><div class="chip">NE</div><div class="chip">SW</div><div class="chip">SE</div><div class="chip">Downtown</div>
+      </div>
+      <div class="cards-grid-4">
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FEF9EC,#FFF3CD)">🍖</div><div class="place-body"><div class="place-name">Lutong Pinoy Kitchen</div><div class="place-type">Filipino · Casual Dining</div><div class="stars">★★★★★</div><div class="place-address">📍 3210 17th Ave SW</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#EBF0FB,#F0F4FF)">🥘</div><div class="place-body"><div class="place-name">Manila House Restaurant</div><div class="place-type">Filipino · Family Restaurant</div><div class="stars">★★★★½</div><div class="place-address">📍 1420 Centre St NE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FDECEA,#FFF0ED)">🍜</div><div class="place-body"><div class="place-name">Kuya's Grill &amp; Bar</div><div class="place-type">Filipino · Grill &amp; Beer</div><div class="stars">★★★★☆</div><div class="place-address">📍 720 11th Ave SW</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#F0FFF4,#E6FFFA)">🍲</div><div class="place-body"><div class="place-name">Nanay's Home Cooking</div><div class="place-type">Filipino · Home Style</div><div class="stars">★★★★★</div><div class="place-address">📍 5612 Falsbridge Dr NE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FEF9EC,#FFFBF0)">🥗</div><div class="place-body"><div class="place-name">Isla Filipino Fusion</div><div class="place-type">Filipino Fusion · Modern</div><div class="stars">★★★★½</div><div class="place-address">📍 1088 Olympic Way SE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#EBF0FB,#F5F8FF)">🍛</div><div class="place-body"><div class="place-name">Pinoy Cravings Catering</div><div class="place-type">Filipino · Catering &amp; Delivery</div><div class="stars">★★★★☆</div><div class="place-address">📍 NW Calgary · Delivery</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FDECEA,#FFF0EE)">🍢</div><div class="place-body"><div class="place-name">Ihaw Ihaw BBQ House</div><div class="place-type">Filipino · BBQ &amp; Skewers</div><div class="stars">★★★★☆</div><div class="place-address">📍 8228 Macleod Trail SE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#F5F5FF,#EAEAFF)">🍝</div><div class="place-body"><div class="place-name">Ate's Pancit Station</div><div class="place-type">Filipino · Noodles &amp; Merienda</div><div class="stars">★★★★★</div><div class="place-address">📍 2318 52nd St NE</div></div></div>
+      </div>
+    </div>
+
+    <div id="tab-groceries" class="tab-content">
+      <div class="info-banner">🛒 These stores carry Filipino grocery items, imported goods, and fresh produce you won't find at regular supermarkets.</div>
+      <div class="cards-grid-4">
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#EBF0FB,#F5F8FF)">🏪</div><div class="place-body"><div class="place-name">Manila Supermarket</div><div class="place-type">Full Filipino Grocery</div><div class="stars">★★★★★</div><div class="place-address">📍 3515 17th Ave SW</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#F0FFF4,#ECFDF5)">🥦</div><div class="place-body"><div class="place-name">Fil-Asian Superstore</div><div class="place-type">Asian &amp; Filipino Imports</div><div class="stars">★★★★½</div><div class="place-address">📍 1210 Kensington Rd NW</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FFFBEB,#FEF9EC)">🌾</div><div class="place-body"><div class="place-name">Philippine Pantry</div><div class="place-type">Specialty Filipino Goods</div><div class="stars">★★★★☆</div><div class="place-address">📍 2410 32nd Ave NE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FEF2F2,#FFF5F5)">🥩</div><div class="place-body"><div class="place-name">Pinoy Meat Shop</div><div class="place-type">Butcher &amp; Dried Goods</div><div class="stars">★★★★☆</div><div class="place-address">📍 5618 Falsbridge Dr NE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#F3E8FF,#F8F0FF)">🧴</div><div class="place-body"><div class="place-name">Kabayan General Store</div><div class="place-type">Filipino Snacks &amp; Personal Care</div><div class="stars">★★★★½</div><div class="place-address">📍 Downtown, 7 Ave SW</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#E0F7FA,#F0FDFF)">🐟</div><div class="place-body"><div class="place-name">Island Seafood &amp; Grocery</div><div class="place-type">Fresh Seafood &amp; Filipino Staples</div><div class="stars">★★★★☆</div><div class="place-address">📍 9412 Macleod Trail S</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#EBF0FB,#F0F4FF)">🥫</div><div class="place-body"><div class="place-name">Pinoy Express Market</div><div class="place-type">Canned Goods &amp; Quick Imports</div><div class="stars">★★★★☆</div><div class="place-address">📍 4820 Skyline Dr NE</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#F0FFF4,#F5FFFA)">🫙</div><div class="place-body"><div class="place-name">Kakanin &amp; Kondimentong Pinoy</div><div class="place-type">Condiments &amp; Specialty Items</div><div class="stars">★★★★★</div><div class="place-address">📍 Online Orders · Citywide</div></div></div>
+      </div>
+    </div>
+
+    <div id="tab-bakeries" class="tab-content">
+      <div class="cards-grid-4">
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FEF9EC,#FFFAF0)">🍞</div><div class="place-body"><div class="place-name">Pan de Sal Bakery</div><div class="place-type">Filipino Breads &amp; Pastries</div><div class="stars">★★★★★</div><div class="place-address">📍 3140 17th Ave SW</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FFF0F6,#FFF5FA)">🎂</div><div class="place-body"><div class="place-name">Kuchen Filipino Cakes</div><div class="place-type">Custom Cakes &amp; Kakanin</div><div class="stars">★★★★★</div><div class="place-address">📍 Home-based · NE Calgary</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#FFFBEB,#FEF9EC)">🍮</div><div class="place-body"><div class="place-name">Leche Flan House</div><div class="place-type">Desserts &amp; Sweet Delicacies</div><div class="stars">★★★★½</div><div class="place-address">📍 Online · Citywide Delivery</div></div></div>
+        <div class="place-card"><div class="place-img" style="background:linear-gradient(135deg,#F0FFF4,#ECFDF5)">🍵</div><div class="place-body"><div class="place-name">Merienda Corner</div><div class="place-type">Snacks, Rice Cakes &amp; Drinks</div><div class="stars">★★★★☆</div><div class="place-address">📍 1820 37th St SW</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ DIRECTORY ═══════════════ -->
+<div id="directory" class="section">
+  <div class="section-container">
+    <div class="section-header">
+      <div><div class="section-title">📋 Community Directory</div><div class="section-subtitle">Filipino professionals, service providers, groups, and community leaders in Calgary</div></div>
+      <button class="btn-primary" onclick="openModal('addListingModal')">+ Add Listing</button>
+    </div>
+
+    <div class="filter-chips">
+      <div class="chip active" onclick="filterChip(this,'dir-grid','all')">All</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Legal')">⚖️ Legal</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Healthcare')">🏥 Healthcare</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Realty')">🏠 Real Estate</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Sports')">🏀 Sports Groups</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Newcomers')">✈️ Newcomer Support</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Influencer')">⭐ Influencers</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Finance')">💰 Finance</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Community')">🤝 Community Orgs</div>
+    </div>
+
+    <div id="dir-grid" class="list-grid">
+
+      <div class="dir-card" data-cat="Legal">
+        <div class="dir-avatar" style="background:#EBF0FB">⚖️</div>
+        <div style="flex:1"><div class="dir-name">Atty. Maria Santos</div><div class="dir-role">Immigration &amp; Family Lawyer</div><div class="dir-desc">Specializing in Canadian immigration, family sponsorship, and citizenship applications. Filipino-speaking office — consultations available in Tagalog.</div><div class="dir-tags"><span class="tag">Immigration</span><span class="tag">Family Law</span><span class="tag">Tagalog</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      </div>
+
+      <div class="dir-card" data-cat="Legal">
+        <div class="dir-avatar" style="background:#EBF0FB">⚖️</div>
+        <div style="flex:1"><div class="dir-name">Atty. Roberto Cruz</div><div class="dir-role">Real Estate &amp; Corporate Lawyer</div><div class="dir-desc">Helping Filipinos navigate property purchases, business formation, and corporate legal matters in Alberta. Free 30-min initial consultation.</div><div class="dir-tags"><span class="tag">Real Estate Law</span><span class="tag">Corporate</span><span class="tag">Free Consult</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      </div>
+
+      <div class="dir-card" data-cat="Healthcare">
+        <div class="dir-avatar" style="background:#F0FFF4">🏥</div>
+        <div style="flex:1"><div class="dir-name">Dr. Liza Reyes</div><div class="dir-role">Family Physician · Currently Accepting Patients</div><div class="dir-desc">Family doctor with a patient-centered approach. Fluent in Tagalog and Ilocano. Clinic in NW Calgary — evening &amp; weekend appointments available.</div><div class="dir-tags"><span class="tag">Family Medicine</span><span class="tag">Tagalog</span><span class="tag">Ilocano</span><span class="tag">NW Calgary</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Book</button>
+      </div>
+
+      <div class="dir-card" data-cat="Healthcare">
+        <div class="dir-avatar" style="background:#F0FFF4">🦷</div>
+        <div style="flex:1"><div class="dir-name">Dr. Edwin Dela Cruz</div><div class="dir-role">Dentist · Family &amp; Cosmetic Dentistry</div><div class="dir-desc">Gentle, affordable dental care. Accepts most Alberta Blue Cross plans. Teeth whitening and Invisalign available. SW Calgary location.</div><div class="dir-tags"><span class="tag">Dentistry</span><span class="tag">Cosmetic</span><span class="tag">SW Calgary</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Book</button>
+      </div>
+
+      <div class="dir-card" data-cat="Realty">
+        <div class="dir-avatar" style="background:#FFFBEB">🏠</div>
+        <div style="flex:1"><div class="dir-name">Angelo Bautista</div><div class="dir-role">REALTOR® · RE/MAX Calgary</div><div class="dir-desc">Helping Filipino families buy their first home in Calgary. Expert in NE &amp; NW communities. First-time buyer specialist — speaks Tagalog &amp; Bisaya.</div><div class="dir-tags"><span class="tag">First-Time Buyers</span><span class="tag">NE Calgary</span><span class="tag">Tagalog</span><span class="tag">Bisaya</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      </div>
+
+      <div class="dir-card" data-cat="Realty">
+        <div class="dir-avatar" style="background:#FFFBEB">🏢</div>
+        <div style="flex:1"><div class="dir-name">Janelle Aquino</div><div class="dir-role">REALTOR® · Century 21</div><div class="dir-desc">Residential and investment property specialist. Has helped 80+ Filipino families settle in Calgary. Pre-construction and resale condos a specialty.</div><div class="dir-tags"><span class="tag">Investment Properties</span><span class="tag">Pre-Construction</span><span class="tag">Century 21</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      </div>
+
+      <div class="dir-card" data-cat="Sports">
+        <div class="dir-avatar" style="background:#FEF2F2">🏀</div>
+        <div style="flex:1"><div class="dir-name">Calgary Pinoy Ballers</div><div class="dir-role">Basketball Group · Open to All Skill Levels</div><div class="dir-desc">Weekly Sunday basketball runs at Southland and Canyon Meadows. All skill levels welcome — from casual to competitive. 200+ active members.</div><div class="dir-tags"><span class="tag">Basketball</span><span class="tag">Sunday Runs</span><span class="tag">200+ Members</span><span class="tag">All Levels</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Join</button>
+      </div>
+
+      <div class="dir-card" data-cat="Sports">
+        <div class="dir-avatar" style="background:#FEF2F2">🏐</div>
+        <div style="flex:1"><div class="dir-name">Pilipino Volleyball Calgary (PVC)</div><div class="dir-role">Volleyball · Co-ed League</div><div class="dir-desc">Co-ed volleyball every Friday evening at Calgary YMCA. Summer league with competitive and recreational divisions. Registration opens April 30.</div><div class="dir-tags"><span class="tag">Volleyball</span><span class="tag">Co-ed</span><span class="tag">Friday Nights</span><span class="tag">YMCA</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Join</button>
+      </div>
+
+      <div class="dir-card" data-cat="Newcomers">
+        <div class="dir-avatar" style="background:#EBF0FB">✈️</div>
+        <div style="flex:1"><div class="dir-name">Filipino Canadian Society of Calgary</div><div class="dir-role">Newcomer Settlement &amp; Support Organization</div><div class="dir-desc">Helping newly arrived Filipinos settle in Calgary. Assistance with housing, SIN numbers, driver's license, school enrollment, and more. Free service.</div><div class="dir-tags"><span class="tag">Settlement</span><span class="tag">Mentorship</span><span class="tag">Non-profit</span><span class="tag">Free</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Newcomers">
+        <div class="dir-avatar" style="background:#EBF0FB">🎓</div>
+        <div style="flex:1"><div class="dir-name">Kabayan Settlement Program</div><div class="dir-role">Employment &amp; Language Support</div><div class="dir-desc">Free programs for Filipino newcomers: English language training, resume workshops, job placement assistance, and financial literacy bootcamp.</div><div class="dir-tags"><span class="tag">Employment</span><span class="tag">Language Training</span><span class="tag">Resume Help</span><span class="tag">Free</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Influencer">
+        <div class="dir-avatar" style="background:#F5F3FF;font-size:26px">👩</div>
+        <div style="flex:1"><div class="dir-name">Nicole Reyes</div><div class="dir-role">Lifestyle &amp; Food Content Creator · 28K Followers</div><div class="dir-desc">Calgary-based Filipina content creator sharing life in Canada, Filipino food recipes, and immigration tips. Active on YouTube and TikTok.</div><div class="dir-tags"><span class="tag">Food</span><span class="tag">Lifestyle</span><span class="tag">TikTok</span><span class="tag">YouTube</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Follow</button>
+      </div>
+
+      <div class="dir-card" data-cat="Influencer">
+        <div class="dir-avatar" style="background:#F5F3FF;font-size:26px">👨</div>
+        <div style="flex:1"><div class="dir-name">Mark Villanueva</div><div class="dir-role">Filipino in Calgary · Immigration Advocate · 15K Followers</div><div class="dir-desc">Shares the real experience of immigrating to Calgary. Posts about the PR process, job market, and building community life in Alberta.</div><div class="dir-tags"><span class="tag">Immigration</span><span class="tag">Community</span><span class="tag">Instagram</span><span class="tag">Facebook</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Follow</button>
+      </div>
+
+      <div class="dir-card" data-cat="Finance">
+        <div class="dir-avatar" style="background:#FFFBEB">💰</div>
+        <div style="flex:1"><div class="dir-name">Carlo Mendoza, CFP</div><div class="dir-role">Certified Financial Planner · Sun Life Financial</div><div class="dir-desc">Helping Filipino families with investments, life insurance, RRSP, RESP, and retirement planning. Speaks Tagalog — consultations in-person or virtual.</div><div class="dir-tags"><span class="tag">Financial Planning</span><span class="tag">RRSP / RESP</span><span class="tag">Insurance</span><span class="tag">Tagalog</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      </div>
+
+      <div class="dir-card" data-cat="Community">
+        <div class="dir-avatar" style="background:#EBF0FB">🤝</div>
+        <div style="flex:1"><div class="dir-name">FILCAN Alberta Association</div><div class="dir-role">Filipino-Canadian Advocacy &amp; Community Organization</div><div class="dir-desc">Advocating for Filipino rights and representation in Alberta. Offers cultural programs, annual scholarships, and community events year-round.</div><div class="dir-tags"><span class="tag">Advocacy</span><span class="tag">Scholarships</span><span class="tag">Cultural Programs</span><span class="tag">Non-profit</span></div></div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Join</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MARKETPLACE ═══════════════ -->
+<div id="marketplace" class="section">
+  <div class="section-container">
+    <div class="section-header">
+      <div><div class="section-title">🛍️ Marketplace</div><div class="section-subtitle">Homemade Filipino food, goods, and Balikbayan connections</div></div>
+      <button class="btn-primary" onclick="openModal('addListingModal')">+ Post Listing</button>
+    </div>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchSubTab(this,'tab-food-market')">🍱 Food &amp; Homemade Goods</button>
+      <button class="tab-btn" onclick="switchSubTab(this,'tab-balikbayan')">✈️ Balikbayan Box</button>
+    </div>
+
+    <div id="tab-food-market" class="tab-content active">
+      <div class="info-banner">🍳 Homemade food and goods from verified community members. Connect directly with sellers to place orders.</div>
+      <div class="filter-chips">
+        <div class="chip active">All</div>
+        <div class="chip">Viands 🥘</div>
+        <div class="chip">Kakanin 🍡</div>
+        <div class="chip">Desserts 🍮</div>
+        <div class="chip">BBQ &amp; Lechon 🥩</div>
+        <div class="chip">Frozen Goods 🧊</div>
+        <div class="chip">Condiments 🫙</div>
+      </div>
+      <div class="cards-grid-4">
+        <div class="market-card"><div class="market-img">🍡</div><div class="market-body"><div class="market-title">Homemade Halo-Halo Kit</div><div class="market-seller">🧑 Ate Maria · NW Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.9 · 32 orders</div></div><div class="market-footer"><span class="market-price">$18</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🥩</div><div class="market-body"><div class="market-title">Whole Lechon de Leche</div><div class="market-seller">🧑 Kuya Pete · SE Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 5.0 · 18 orders</div></div><div class="market-footer"><span class="market-price">$280</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🍰</div><div class="market-body"><div class="market-title">Bibingka (Dozen)</div><div class="market-seller">🧑 Nanay Cora · SW Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 5.0 · 55 orders</div></div><div class="market-footer"><span class="market-price">$24</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🍖</div><div class="market-body"><div class="market-title">Crispy Lechon Belly (1kg)</div><div class="market-seller">🧑 Ate Grace · NE Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.8 · 29 orders</div></div><div class="market-footer"><span class="market-price">$42</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🍮</div><div class="market-body"><div class="market-title">Leche Flan (Set of 6)</div><div class="market-seller">🧑 Tita Cynthia · SW Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 5.0 · 78 orders</div></div><div class="market-footer"><span class="market-price">$30</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🦐</div><div class="market-body"><div class="market-title">Homemade Bagoong (500ml)</div><div class="market-seller">🧑 Manong Ben · NE Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.7 · 41 orders</div></div><div class="market-footer"><span class="market-price">$12</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🥟</div><div class="market-body"><div class="market-title">Frozen Lumpia Shanghai (50 pcs)</div><div class="market-seller">🧑 Ate Rose · NW Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.9 · 92 orders</div></div><div class="market-footer"><span class="market-price">$35</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🍢</div><div class="market-body"><div class="market-title">Pork BBQ Skewers (24 pcs)</div><div class="market-seller">🧑 Kuya Jun · SE Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.8 · 38 orders</div></div><div class="market-footer"><span class="market-price">$28</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🍜</div><div class="market-body"><div class="market-title">Pancit Bihon (large tray)</div><div class="market-seller">🧑 Ate Myrna · NE Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.9 · 61 orders</div></div><div class="market-footer"><span class="market-price">$40</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🍙</div><div class="market-body"><div class="market-title">Puto &amp; Kutsinta Combo</div><div class="market-seller">🧑 Nanay Linda · SW Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 5.0 · 44 orders</div></div><div class="market-footer"><span class="market-price">$20</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🥗</div><div class="market-body"><div class="market-title">Kare-Kare (family size)</div><div class="market-seller">🧑 Tita Bev · NW Calgary</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 4.8 · 22 orders</div></div><div class="market-footer"><span class="market-price">$55</span><button class="btn-sm">Order</button></div></div>
+        <div class="market-card"><div class="market-img">🧁</div><div class="market-body"><div class="market-title">Ube Cheese Pandesal (dozen)</div><div class="market-seller">🧑 Ate Jay · Downtown</div><div style="font-size:12px;color:#9AA5B4;margin-top:2px">⭐ 5.0 · 110 orders</div></div><div class="market-footer"><span class="market-price">$16</span><button class="btn-sm">Order</button></div></div>
+      </div>
+    </div>
+
+    <div id="tab-balikbayan" class="tab-content">
+      <div class="info-banner">✈️ Connect with community members traveling to the Philippines who have space in their Balikbayan box, or who are heading back to Calgary with room for pasalubong. Always arrange safely in person.</div>
+      <div style="display:flex;gap:10px;margin-bottom:24px">
+        <div class="chip active">✈️ Offering Space</div>
+        <div class="chip">📦 Requesting Space</div>
+        <div class="chip">🇵🇭 Returning to Calgary</div>
+      </div>
+      <div class="list-grid">
+        <div class="balik-card">
+          <div class="balik-avatar">👩</div>
+          <div class="balik-info">
+            <div class="balik-name">Jessa Ramos</div>
+            <div class="balik-route">✈️ Calgary → Manila (NAIA Terminal 1)</div>
+            <div class="balik-details">10kg space available. Can bring clothes, medicine, vitamins, dry goods. Happy to help! Dropoff NW Calgary or pickup at YYC airport.</div>
+            <div class="dir-tags" style="margin-top:8px"><span class="tag">10kg Available</span><span class="tag">Clothes ✓</span><span class="tag">Medicine ✓</span><span class="tag">NW Pickup</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+            <span class="balik-date">May 10, 2026</span>
+            <button class="btn-sm">Message</button>
+          </div>
+        </div>
+        <div class="balik-card">
+          <div class="balik-avatar">👨</div>
+          <div class="balik-info">
+            <div class="balik-name">Renz Dela Torre</div>
+            <div class="balik-route">✈️ Calgary → Cebu (Mactan Airport)</div>
+            <div class="balik-details">Full Balikbayan box — about 5kg extra space. Heading to Cebu-Visayas area. Can coordinate local delivery in Cebu City. $5/kg.</div>
+            <div class="dir-tags" style="margin-top:8px"><span class="tag">5kg Available</span><span class="tag">Cebu</span><span class="tag">$5/kg</span><span class="tag">Local Delivery</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+            <span class="balik-date">May 22, 2026</span>
+            <button class="btn-sm">Message</button>
+          </div>
+        </div>
+        <div class="balik-card">
+          <div class="balik-avatar">👩</div>
+          <div class="balik-info">
+            <div class="balik-name">Maricel Santos</div>
+            <div class="balik-route">✈️ Calgary → Iloilo (Mandurriao Airport)</div>
+            <div class="balik-details">Can bring up to 15kg total. Heading home to Iloilo for two weeks. Willing to coordinate pickup in SW Calgary or ship to me before departure.</div>
+            <div class="dir-tags" style="margin-top:8px"><span class="tag">15kg Available</span><span class="tag">Iloilo</span><span class="tag">Free</span><span class="tag">SW Pickup</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+            <span class="balik-date">Jun 5, 2026</span>
+            <button class="btn-sm">Message</button>
+          </div>
+        </div>
+        <div class="balik-card">
+          <div class="balik-avatar">👨</div>
+          <div class="balik-info">
+            <div class="balik-name">Buddy Gonzales</div>
+            <div class="balik-route">🇵🇭 Manila → Calgary (Returning Soon!)</div>
+            <div class="balik-details">Coming back from Manila! Can bring Filipino goods, pasalubong, specialty items, medicine, or anything you need from home. DM early to secure space!</div>
+            <div class="dir-tags" style="margin-top:8px"><span class="tag">Returning</span><span class="tag">Pasalubong</span><span class="tag">Manila</span><span class="tag">Limited Space</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+            <span class="balik-date">Apr 29, 2026</span>
+            <button class="btn-sm">Message</button>
+          </div>
+        </div>
+        <div class="balik-card">
+          <div class="balik-avatar">👩</div>
+          <div class="balik-info">
+            <div class="balik-name">Lourdes Tan</div>
+            <div class="balik-route">✈️ Calgary → Davao (Francisco Bangoy)</div>
+            <div class="balik-details">About 8kg of space in my Balikbayan box. Mindanao area. Coordination for pickup in SE Calgary. Can hand-deliver within Davao City.</div>
+            <div class="dir-tags" style="margin-top:8px"><span class="tag">8kg Available</span><span class="tag">Davao</span><span class="tag">SE Pickup</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+            <span class="balik-date">Jun 18, 2026</span>
+            <button class="btn-sm">Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ HOMETOWN MATCH ═══════════════ -->
+<div id="hometown" class="section">
+  <div class="section-container">
+    <div class="section-header">
+      <div><div class="section-title">🏡 Hometown Match</div><div class="section-subtitle">Find Filipinos from your province or city who are living in Calgary</div></div>
+      <button class="btn-primary" onclick="openModal('addHometownModal')">+ Add My Hometown</button>
+    </div>
+
+    <div class="hometown-hero">
+      <div style="font-size:52px;margin-bottom:14px">🇵🇭</div>
+      <h2>Find your kababayan from home</h2>
+      <p>Select your province or region below to connect with people who grew up near you</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <select class="form-control" id="province-select" style="width:230px;border-radius:24px;text-align:center" onchange="showMatchResults(this.value)">
+          <option value="">— Select Your Province —</option>
+          <option value="Metro Manila">Metro Manila (NCR)</option>
+          <option value="Cebu">Cebu</option>
+          <option value="Iloilo">Iloilo</option>
+          <option value="Davao del Sur">Davao del Sur</option>
+          <option value="Laguna">Laguna</option>
+          <option value="Pampanga">Pampanga</option>
+          <option value="Batangas">Batangas</option>
+          <option value="Ilocos Norte">Ilocos Norte</option>
+          <option value="Pangasinan">Pangasinan</option>
+          <option value="Bukidnon">Bukidnon</option>
+          <option value="Leyte">Leyte</option>
+          <option value="Cavite">Cavite</option>
+          <option value="Bulacan">Bulacan</option>
+          <option value="Isabela">Isabela</option>
+        </select>
+        <button class="btn-gold" onclick="showMatchResults(document.getElementById('province-select').value)">Find My Kababayan</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:18px">
+      <div class="section-title" style="font-size:19px;margin-bottom:4px">Most Active Regions in Calgary</div>
+      <div class="section-subtitle">Click any province to see connected community members</div>
+    </div>
+
+    <div class="province-grid">
+      <div class="province-card" onclick="selectProvince(this,'Metro Manila')"><div class="province-flag">🏙️</div><div class="province-name">Metro Manila</div><div class="province-count">820 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Cebu')"><div class="province-flag">🏝️</div><div class="province-name">Cebu</div><div class="province-count">540 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Iloilo')"><div class="province-flag">🌾</div><div class="province-name">Iloilo</div><div class="province-count">310 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Davao del Sur')"><div class="province-flag">🦅</div><div class="province-name">Davao del Sur</div><div class="province-count">280 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Pampanga')"><div class="province-flag">🌺</div><div class="province-name">Pampanga</div><div class="province-count">260 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Laguna')"><div class="province-flag">🏞️</div><div class="province-name">Laguna</div><div class="province-count">195 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Ilocos Norte')"><div class="province-flag">🏔️</div><div class="province-name">Ilocos Norte</div><div class="province-count">185 members</div></div>
+      <div class="province-card" onclick="selectProvince(this,'Batangas')"><div class="province-flag">⛵</div><div class="province-name">Batangas</div><div class="province-count">170 members</div></div>
+    </div>
+
+    <div id="match-results" style="display:none;margin-top:32px">
+      <div class="match-result">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div class="section-title" id="match-title" style="font-size:19px">Members from Metro Manila in Calgary</div>
+          <button class="btn-sm">View all →</button>
+        </div>
+        <div class="section-subtitle" style="margin-bottom:20px">Connect and say hello to your kababayan 👋</div>
+        <div class="match-grid">
+          <div class="member-card"><div class="member-avatar">👩</div><div class="member-name">Anna C.</div><div class="member-info">In Calgary 3 yrs</div><div class="member-info" style="color:var(--blue);font-size:11px;margin-top:3px">Quezon City</div><button class="btn-sm" style="margin-top:10px;width:100%">Connect</button></div>
+          <div class="member-card"><div class="member-avatar">👨</div><div class="member-name">Jose R.</div><div class="member-info">In Calgary 5 yrs</div><div class="member-info" style="color:var(--blue);font-size:11px;margin-top:3px">Makati</div><button class="btn-sm" style="margin-top:10px;width:100%">Connect</button></div>
+          <div class="member-card"><div class="member-avatar">👩</div><div class="member-name">Mariz T.</div><div class="member-info">In Calgary 1 yr</div><div class="member-info" style="color:var(--blue);font-size:11px;margin-top:3px">Pasig City</div><button class="btn-sm" style="margin-top:10px;width:100%">Connect</button></div>
+          <div class="member-card"><div class="member-avatar">👨</div><div class="member-name">Rodel M.</div><div class="member-info">In Calgary 7 yrs</div><div class="member-info" style="color:var(--blue);font-size:11px;margin-top:3px">Mandaluyong</div><button class="btn-sm" style="margin-top:10px;width:100%">Connect</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-text">Calgary <span>Filipinos</span></div>
+        <div class="footer-desc">The online home for the Filipino community in Calgary, Alberta. Connecting kababayan through culture, commerce, and community. Mabuhay! 🇵🇭</div>
+      </div>
+      <div class="footer-col">
+        <h4>Discover</h4>
+        <a onclick="showSection('events');setNavActiveByName('Events')">Events</a>
+        <a onclick="showSection('eatshop');setNavActiveByName('Eat &amp; Shop')">Eat &amp; Shop</a>
+        <a onclick="showSection('directory');setNavActiveByName('Directory')">Directory</a>
+        <a onclick="showSection('marketplace');setNavActiveByName('Marketplace')">Marketplace</a>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <a onclick="showSection('hometown');setNavActiveByName('Hometown Match')">Hometown Match</a>
+        <a href="#">Filipino Groups</a>
+        <a href="#">Newcomer Guide</a>
+        <a href="#">Scholarships</a>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <a href="#">About Calgary Filipinos</a>
+        <a href="#">Submit a Business</a>
+        <a href="#">Post an Event</a>
+        <a href="#">Contact Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Calgary Filipinos · Built with 💛 for the community</span>
+      <span>Mabuhay ang mga Pilipino sa Calgary! 🇵🇭</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ MODALS ═══ -->
+
+<div class="modal-overlay" id="joinModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Join Calgary Filipinos 🇵🇭</div><button class="modal-close" onclick="closeModal('joinModal')">✕</button></div>
+    <div class="form-group"><label>Full Name</label><input type="text" class="form-control" placeholder="Juan dela Cruz"></div>
+    <div class="form-group"><label>Email Address</label><input type="email" class="form-control" placeholder="juan@email.com"></div>
+    <div class="form-group"><label>Where are you from in the Philippines?</label><input type="text" class="form-control" placeholder="e.g. Cebu City, Cebu"></div>
+    <div class="form-group"><label>Your neighbourhood in Calgary</label><input type="text" class="form-control" placeholder="e.g. NE Calgary, Beltline"></div>
+    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('joinModal')">Join the Community 🎉</button>
+    <p style="font-size:12px;color:var(--gray-400);text-align:center;margin-top:12px">Free to join. Your info is only shared with your permission.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addEventModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Submit an Event 🎉</div><button class="modal-close" onclick="closeModal('addEventModal')">✕</button></div>
+    <div class="form-group"><label>Event Name</label><input type="text" class="form-control" placeholder="e.g. Fiesta Night 2026"></div>
+    <div class="grid-2">
+      <div class="form-group"><label>Date</label><input type="date" class="form-control"></div>
+      <div class="form-group"><label>Time</label><input type="time" class="form-control"></div>
+    </div>
+    <div class="form-group"><label>Location / Venue</label><input type="text" class="form-control" placeholder="Venue name &amp; address"></div>
+    <div class="form-group"><label>Category</label><select class="form-control"><option>Cultural</option><option>Sports</option><option>Food &amp; Dining</option><option>Community</option><option>Professional</option><option>Religious</option></select></div>
+    <div class="form-group"><label>Ticket Price</label><input type="text" class="form-control" placeholder="e.g. Free, $15, $65"></div>
+    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('addEventModal')">Submit Event</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addBusinessModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Your Business 🏪</div><button class="modal-close" onclick="closeModal('addBusinessModal')">✕</button></div>
+    <div class="form-group"><label>Business Name</label><input type="text" class="form-control" placeholder="e.g. Lutong Pinoy Kitchen"></div>
+    <div class="form-group"><label>Category</label><select class="form-control"><option>Restaurant</option><option>Grocery Store</option><option>Bakery &amp; Desserts</option><option>Catering</option><option>Home-based Food</option></select></div>
+    <div class="form-group"><label>Address</label><input type="text" class="form-control" placeholder="Full address in Calgary"></div>
+    <div class="form-group"><label>Phone / Contact</label><input type="text" class="form-control" placeholder="(403) 000-0000"></div>
+    <div class="form-group"><label>Website or Social Media (optional)</label><input type="text" class="form-control" placeholder="instagram.com/yourbusiness"></div>
+    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('addBusinessModal')">Submit Business</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addListingModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Post a Listing 🛍️</div><button class="modal-close" onclick="closeModal('addListingModal')">✕</button></div>
+    <div class="form-group"><label>Listing Type</label><select class="form-control"><option>Food / Homemade Goods</option><option>Balikbayan — Offering Box Space</option><option>Balikbayan — Requesting Space</option><option>Returning to Calgary (Bringing Pasalubong)</option><option>Community Directory Listing</option></select></div>
+    <div class="form-group"><label>Title</label><input type="text" class="form-control" placeholder="e.g. Homemade Lechon · Flying to Manila May 10"></div>
+    <div class="form-group"><label>Description</label><textarea class="form-control" rows="3" placeholder="Details — what you're selling, weight available, pickup area, etc."></textarea></div>
+    <div class="form-group"><label>Price or Rate (if applicable)</label><input type="text" class="form-control" placeholder="e.g. $18 · Free · $5/kg"></div>
+    <div class="form-group"><label>Your Contact (shown to members only)</label><input type="text" class="form-control" placeholder="Email, phone, or FB/Instagram"></div>
+    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('addListingModal')">Post Listing</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addHometownModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Your Hometown 🏡</div><button class="modal-close" onclick="closeModal('addHometownModal')">✕</button></div>
+    <div class="form-group"><label>Province</label><select class="form-control"><option>Metro Manila</option><option>Cebu</option><option>Iloilo</option><option>Davao del Sur</option><option>Pampanga</option><option>Laguna</option><option>Batangas</option><option>Ilocos Norte</option><option>Pangasinan</option><option>Bukidnon</option><option>Leyte</option><option>Cavite</option><option>Bulacan</option><option>Other</option></select></div>
+    <div class="form-group"><label>City / Municipality</label><input type="text" class="form-control" placeholder="e.g. Quezon City, Cebu City, Iloilo City"></div>
+    <div class="form-group"><label>Your Display Name</label><input type="text" class="form-control" placeholder="First name + last initial (e.g. Maria S.)"></div>
+    <div class="form-group"><label>Years in Calgary</label><input type="text" class="form-control" placeholder="e.g. 3 years"></div>
+    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('addHometownModal')">Add My Hometown</button>
+    <p style="font-size:12px;color:var(--gray-400);text-align:center;margin-top:12px">Your city is shown only to verified community members.</p>
+  </div>
+</div>
+
+<!-- Link to external JavaScript — always at the bottom of body -->
+<script src="app.js"></script>
+</body>
+</html>
