@@ -339,7 +339,6 @@ async function loadBusinessReviews(bizId) {
     .from('reviews')
     .select('*')
     .eq('business_id', bizId)
-    .eq('approved', true)
     .order('created_at', { ascending: false });
 
   if (error || !data || data.length === 0) {
@@ -595,7 +594,6 @@ async function loadMySubmissions(userId) {
             <div style="font-weight:600;font-size:14px">${r.business_id}</div>
             <div style="font-size:13px;color:var(--gold)">${stars}</div>
             <div style="font-size:13px;color:var(--gray-600);margin-top:2px">${r.comment || ''}</div>
-            <div style="font-size:11px;margin-top:4px;color:${r.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${r.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
           </div>
           <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyReview('${r.id}','${userId}')">Delete</button>
         </div>`;
