@@ -783,6 +783,15 @@ async function loadDirectorySubmissions() {
     `;
     grid.appendChild(card);
   });
+
+  // Sort all cards (hardcoded + dynamic) alphabetically by name
+  const allCards = Array.from(grid.querySelectorAll('.dir-card'));
+  allCards.sort((a, b) => {
+    const nameA = (a.querySelector('.dir-name')?.textContent || '').toLowerCase();
+    const nameB = (b.querySelector('.dir-name')?.textContent || '').toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+  allCards.forEach(card => grid.appendChild(card));
 }
 
 // ── Sign Up / Log In ─────────────────────────────────────────────
