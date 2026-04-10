@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calgary Filipinos — Community Hub</title>
+  <script src="supabase.js"></script>
+  <script>
+    const _supabase = supabase.createClient(
+      'https://rqcixqbkywoqleomfioo.supabase.co',
+      'sb_publishable_az7Auho3dByilucTtOXMMQ_kCC68YRj'
+    );
+  </script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -630,11 +637,14 @@
 <div class="modal-overlay" id="joinModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Join Calgary Filipinos 🇵🇭</div><button class="modal-close" onclick="closeModal('joinModal')">✕</button></div>
-    <div class="form-group"><label>Full Name</label><input type="text" class="form-control" placeholder="Juan dela Cruz"></div>
-    <div class="form-group"><label>Email Address</label><input type="email" class="form-control" placeholder="juan@email.com"></div>
-    <div class="form-group"><label>Where are you from in the Philippines?</label><input type="text" class="form-control" placeholder="e.g. Cebu City, Cebu"></div>
-    <div class="form-group"><label>Your neighbourhood in Calgary</label><input type="text" class="form-control" placeholder="e.g. NE Calgary, Beltline"></div>
-    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('joinModal')">Join the Community 🎉</button>
+    <form onsubmit="handleSignUp(event)">
+      <div class="form-group"><label>Full Name</label><input id="signup-name" type="text" class="form-control" placeholder="Juan dela Cruz" required></div>
+      <div class="form-group"><label>Email Address</label><input id="signup-email" type="email" class="form-control" placeholder="juan@email.com" required></div>
+      <div class="form-group"><label>Password</label><input id="signup-password" type="password" class="form-control" placeholder="Min. 6 characters" required></div>
+      <div class="form-group"><label>Where are you from in the Philippines?</label><input id="signup-hometown" type="text" class="form-control" placeholder="e.g. Cebu City, Cebu"></div>
+      <div class="form-group"><label>Your neighbourhood in Calgary</label><input id="signup-neighbourhood" type="text" class="form-control" placeholder="e.g. NE Calgary, Beltline"></div>
+      <button type="submit" class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px">Join the Community 🎉</button>
+    </form>
     <p style="font-size:12px;color:var(--gray-400);text-align:center;margin-top:12px">Free to join. Your info is only shared with your permission.</p>
   </div>
 </div>
