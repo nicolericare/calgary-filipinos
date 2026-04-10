@@ -797,6 +797,45 @@ const DIR_CAT_MAP = {
   'Services':   { cat: 'Services',   emoji: '🚗',  bg: '#F0FFF4' },
 };
 
+function buildContactButtons(s) {
+  const btns = [];
+
+  if (s.website) {
+    btns.push(`<a href="${s.website}" target="_blank" class="btn-sm" style="text-decoration:none">🌐 Visit Site</a>`);
+  }
+
+  if (s.contact) {
+    const c = s.contact.trim();
+    // Phone
+    if (/^[\d\s\(\)\-\+\.]{7,}$/.test(c) || /\b\d{3}[\s\-\.]\d{3}[\s\-\.]\d{4}\b/.test(c)) {
+      const tel = c.replace(/[^\d\+]/g, '');
+      btns.push(`<a href="tel:${tel}" class="btn-sm" style="text-decoration:none">📞 Call</a>`);
+    }
+    // Email
+    else if (c.includes('@') && c.includes('.') && !c.includes('instagram') && !c.includes('facebook') && !c.includes('fb.com')) {
+      btns.push(`<a href="mailto:${c}" class="btn-sm" style="text-decoration:none">✉️ Email</a>`);
+    }
+    // Instagram
+    else if (c.includes('instagram.com') || c.includes('ig.me') || /^@[\w.]+$/.test(c)) {
+      const url = c.startsWith('@') ? `https://instagram.com/${c.slice(1)}` : c;
+      btns.push(`<a href="${url}" target="_blank" class="btn-sm" style="text-decoration:none">📸 Instagram</a>`);
+    }
+    // Facebook
+    else if (c.includes('facebook.com') || c.includes('fb.com') || c.toLowerCase().includes('facebook')) {
+      const url = c.includes('http') ? c : `https://facebook.com/${c}`;
+      btns.push(`<a href="${url}" target="_blank" class="btn-sm" style="text-decoration:none">📘 Facebook</a>`);
+    }
+    // Generic link or unknown — show as Contact
+    else if (c.includes('http')) {
+      btns.push(`<a href="${c}" target="_blank" class="btn-sm" style="text-decoration:none">📬 Contact</a>`);
+    } else {
+      btns.push(`<span class="btn-sm" style="cursor:default">📬 ${c}</span>`);
+    }
+  }
+
+  return btns.length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${btns.join('')}</div>` : '';
+}
+
 async function loadDirectorySubmissions() {
   const { data, error } = await _supabase
     .from('directory_submissions')
@@ -821,9 +860,8 @@ async function loadDirectorySubmissions() {
         <div class="dir-name">${s.name || ''}</div>
         <div class="dir-role">${s.category || ''} · ${s.location || ''}</div>
         ${s.description ? `<div class="dir-desc">${s.description}</div>` : ''}
-        ${s.contact ? `<div class="dir-tags"><span class="tag">${s.contact}</span></div>` : ''}
+        ${buildContactButtons(s)}
       </div>
-      ${s.website ? `<a href="${s.website}" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>` : ''}
     `;
     grid.appendChild(card);
   });
