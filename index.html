@@ -738,39 +738,148 @@
       <div class="form-group">
         <label>Icon / Emoji</label>
         <input type="hidden" id="dir-emoji" value="">
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="dir-emoji-picker">
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'⚖️')">⚖️</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🛂')">🛂</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🏥')">🏥</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'💊')">💊</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🦷')">🦷</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🏠')">🏠</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🏢')">🏢</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'💰')">💰</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'📊')">📊</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'✂️')">✂️</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'💆')">💆</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'💅')">💅</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🎓')">🎓</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'📚')">📚</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🎵')">🎵</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🤝')">🤝</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🇵🇭')">🇵🇭</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'⛪')">⛪</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'✝️')">✝️</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🏀')">🏀</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'⚽')">⚽</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🏋️')">🏋️</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'⭐')">⭐</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'📸')">📸</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🎥')">🎥</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'💵')">💵</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🚗')">🚗</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🔧')">🔧</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🚚')">🚚</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'💻')">💻</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🌺')">🌺</span>
-          <span class="emoji-opt" onclick="pickDirEmoji(this,'🦁')">🦁</span>
+        <div id="dir-emoji-picker" style="margin-top:6px;display:flex;flex-direction:column;gap:8px">
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Legal &amp; Immigration</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'⚖️')">⚖️</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🛂')">🛂</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📜')">📜</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🔏')">🔏</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📋')">📋</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Healthcare</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏥')">🏥</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💊')">💊</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🦷')">🦷</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🩺')">🩺</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🩹')">🩹</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💉')">💉</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Real Estate</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏠')">🏠</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏡')">🏡</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏢')">🏢</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🔑')">🔑</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏗️')">🏗️</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Finance</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💰')">💰</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📊')">📊</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💳')">💳</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏦')">🏦</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📈')">📈</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Local Business &amp; Services</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏪')">🏪</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'👔')">👔</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🚗')">🚗</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🔧')">🔧</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🚚')">🚚</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🧹')">🧹</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🔨')">🔨</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💻')">💻</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Beauty &amp; Wellness</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'✂️')">✂️</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💅')">💅</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💆')">💆</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🧖')">🧖</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💄')">💄</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🧴')">🧴</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Tutors &amp; Lessons</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎓')">🎓</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📚')">📚</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'✏️')">✏️</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎵')">🎵</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎹')">🎹</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎸')">🎸</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Influencers &amp; Content Creators</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'⭐')">⭐</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📸')">📸</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎥')">🎥</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📱')">📱</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎬')">🎬</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Cash Jobs &amp; Gigs</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💵')">💵</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'💼')">💼</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'👷')">👷</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🛠️')">🛠️</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Community &amp; Cultural</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🤝')">🤝</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🇵🇭')">🇵🇭</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🌺')">🌺</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎭')">🎭</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🦁')">🦁</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎊')">🎊</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Churches &amp; Seniors</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'⛪')">⛪</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'✝️')">✝️</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🙏')">🙏</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'📖')">📖</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'👴')">👴</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'👵')">👵</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Sports &amp; Students</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏀')">🏀</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'⚽')">⚽</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏋️')">🏋️</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🎾')">🎾</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏊')">🏊</span>
+              <span class="emoji-opt" onclick="pickDirEmoji(this,'🏒')">🏒</span>
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="form-group"><label>Name / Business Name</label><input type="text" class="form-control" id="dir-name" placeholder="e.g. Maria's Law Office"></div>
