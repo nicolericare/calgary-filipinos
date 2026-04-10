@@ -547,6 +547,76 @@ async function loadProfile(user) {
   document.getElementById('edit-neighbourhood').value = p.neighbourhood || '';
   document.getElementById('edit-bio').value = p.bio || '';
   document.getElementById('edit-occupation').value = p.occupation || '';
+
+  loadMySubmissions(user.id);
+}
+
+async function loadMySubmissions(userId) {
+  const el = document.getElementById('my-submissions-list');
+  if (!el) return;
+
+  const [eventsRes, reviewsRes] = await Promise.all([
+    _supabase.from('events').select('*').eq('submitted_by', userId).order('created_at', { ascending: false }),
+    _supabase.from('reviews').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+  ]);
+
+  const events = eventsRes.data || [];
+  const reviews = reviewsRes.data || [];
+
+  if (events.length === 0 && reviews.length === 0) {
+    el.innerHTML = '<div style="font-size:14px;color:var(--gray-400)">You have no submissions yet.</div>';
+    return;
+  }
+
+  let html = '';
+
+  if (events.length > 0) {
+    html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Events</div>';
+    events.forEach(e => {
+      html += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">${e.emoji || '🎉'} ${e.title}</div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${e.event_date || ''} · ${e.location || ''}</div>
+            <div style="font-size:11px;margin-top:4px;color:${e.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${e.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
+          </div>
+          <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyEvent('${e.id}','${userId}')">Delete</button>
+        </div>`;
+    });
+  }
+
+  if (reviews.length > 0) {
+    html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px">Reviews</div>';
+    reviews.forEach(r => {
+      const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      html += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">${r.business_id}</div>
+            <div style="font-size:13px;color:var(--gold)">${stars}</div>
+            <div style="font-size:13px;color:var(--gray-600);margin-top:2px">${r.comment || ''}</div>
+            <div style="font-size:11px;margin-top:4px;color:${r.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${r.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
+          </div>
+          <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyReview('${r.id}','${userId}')">Delete</button>
+        </div>`;
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+async function deleteMyEvent(id, userId) {
+  if (!confirm('Delete this event submission?')) return;
+  const { error } = await _supabase.from('events').delete().eq('id', id).eq('submitted_by', userId);
+  if (error) { alert('Error deleting: ' + error.message); return; }
+  loadMySubmissions(userId);
+}
+
+async function deleteMyReview(id, userId) {
+  if (!confirm('Delete this review?')) return;
+  const { error } = await _supabase.from('reviews').delete().eq('id', id).eq('user_id', userId);
+  if (error) { alert('Error deleting: ' + error.message); return; }
+  loadMySubmissions(userId);
 }
 
 function toggleProfileEdit() {
