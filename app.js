@@ -111,6 +111,8 @@ function openEditListing(idOrObj) {
   document.getElementById('dir-desc').value = s.description || '';
   document.getElementById('dir-location').value = s.location || '';
   document.getElementById('dir-website').value = s.website || '';
+  document.getElementById('dir-instagram').value = s.instagram || '';
+  document.getElementById('dir-facebook').value = s.facebook || '';
   document.getElementById('dir-contact').value = s.contact || '';
   document.getElementById('dir-modal-title').textContent = 'Edit Your Listing ✏️';
   document.getElementById('dir-submit-btn').textContent = 'Save Changes';
@@ -135,8 +137,10 @@ async function handleDirectorySubmit() {
     name,
     description: document.getElementById('dir-desc').value.trim(),
     location:    document.getElementById('dir-location').value.trim(),
-    website:     document.getElementById('dir-website').value.trim(),
-    contact:     document.getElementById('dir-contact').value.trim(),
+    website:     document.getElementById('dir-website').value.trim() || null,
+    instagram:   document.getElementById('dir-instagram').value.trim() || null,
+    facebook:    document.getElementById('dir-facebook').value.trim() || null,
+    contact:     document.getElementById('dir-contact').value.trim() || null,
     emoji:       document.getElementById('dir-emoji').value || null,
   };
 
@@ -175,6 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('dir-desc').value = '';
       document.getElementById('dir-location').value = '';
       document.getElementById('dir-website').value = '';
+      document.getElementById('dir-instagram').value = '';
+      document.getElementById('dir-facebook').value = '';
       document.getElementById('dir-contact').value = '';
       document.getElementById('dir-emoji').value = '';
       document.querySelectorAll('#dir-emoji-picker .emoji-opt').forEach(e => e.classList.remove('selected'));
@@ -858,33 +864,22 @@ function buildContactButtons(s) {
   const btns = [];
 
   if (s.website) {
-    btns.push(`<a href="${s.website}" target="_blank" class="btn-sm" style="text-decoration:none">🌐 Visit Site</a>`);
+    btns.push(`<a href="${s.website.startsWith('http') ? s.website : 'https://' + s.website}" target="_blank" class="btn-sm" style="text-decoration:none">🌐 Visit Site</a>`);
   }
-
+  if (s.instagram) {
+    const url = s.instagram.startsWith('http') ? s.instagram : s.instagram.startsWith('@') ? `https://instagram.com/${s.instagram.slice(1)}` : `https://instagram.com/${s.instagram}`;
+    btns.push(`<a href="${url}" target="_blank" class="btn-sm" style="text-decoration:none">📸 Instagram</a>`);
+  }
+  if (s.facebook) {
+    const url = s.facebook.startsWith('http') ? s.facebook : `https://facebook.com/${s.facebook}`;
+    btns.push(`<a href="${url}" target="_blank" class="btn-sm" style="text-decoration:none">📘 Facebook</a>`);
+  }
   if (s.contact) {
     const c = s.contact.trim();
-    // Phone
-    if (/^[\d\s\(\)\-\+\.]{7,}$/.test(c) || /\b\d{3}[\s\-\.]\d{3}[\s\-\.]\d{4}\b/.test(c)) {
-      const tel = c.replace(/[^\d\+]/g, '');
-      btns.push(`<a href="tel:${tel}" class="btn-sm" style="text-decoration:none">📞 Call</a>`);
-    }
-    // Email
-    else if (c.includes('@') && c.includes('.') && !c.includes('instagram') && !c.includes('facebook') && !c.includes('fb.com')) {
+    if (/\b\d{3}[\s\-\.]\d{3}[\s\-\.]\d{4}\b/.test(c) || /^[\d\s\(\)\-\+\.]{7,}$/.test(c)) {
+      btns.push(`<a href="tel:${c.replace(/[^\d\+]/g,'')}" class="btn-sm" style="text-decoration:none">📞 Call</a>`);
+    } else if (c.includes('@')) {
       btns.push(`<a href="mailto:${c}" class="btn-sm" style="text-decoration:none">✉️ Email</a>`);
-    }
-    // Instagram
-    else if (c.includes('instagram.com') || c.includes('ig.me') || /^@[\w.]+$/.test(c)) {
-      const url = c.startsWith('@') ? `https://instagram.com/${c.slice(1)}` : c;
-      btns.push(`<a href="${url}" target="_blank" class="btn-sm" style="text-decoration:none">📸 Instagram</a>`);
-    }
-    // Facebook
-    else if (c.includes('facebook.com') || c.includes('fb.com') || c.toLowerCase().includes('facebook')) {
-      const url = c.includes('http') ? c : `https://facebook.com/${c}`;
-      btns.push(`<a href="${url}" target="_blank" class="btn-sm" style="text-decoration:none">📘 Facebook</a>`);
-    }
-    // Generic link or unknown — show as Contact
-    else if (c.includes('http')) {
-      btns.push(`<a href="${c}" target="_blank" class="btn-sm" style="text-decoration:none">📬 Contact</a>`);
     } else {
       btns.push(`<span class="btn-sm" style="cursor:default">📬 ${c}</span>`);
     }
