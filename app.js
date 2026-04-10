@@ -609,23 +609,40 @@ async function loadMySubmissions(userId) {
   const el = document.getElementById('my-submissions-list');
   if (!el) return;
 
-  const [eventsRes, reviewsRes] = await Promise.all([
+  const [eventsRes, reviewsRes, listingsRes] = await Promise.all([
     _supabase.from('events').select('*').eq('submitted_by', userId).order('created_at', { ascending: false }),
-    _supabase.from('reviews').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+    _supabase.from('reviews').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+    _supabase.from('directory_submissions').select('*').eq('submitted_by', userId).order('created_at', { ascending: false })
   ]);
 
   const events = eventsRes.data || [];
   const reviews = reviewsRes.data || [];
+  const listings = listingsRes.data || [];
 
-  if (events.length === 0 && reviews.length === 0) {
+  if (events.length === 0 && reviews.length === 0 && listings.length === 0) {
     el.innerHTML = '<div style="font-size:14px;color:var(--gray-400)">You have no submissions yet.</div>';
     return;
   }
 
   let html = '';
 
+  if (listings.length > 0) {
+    html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Directory Listings</div>';
+    listings.forEach(s => {
+      html += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">${s.name || ''}</div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${s.category || ''} · ${s.location || ''}</div>
+            <div style="font-size:11px;margin-top:4px;color:${s.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${s.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
+          </div>
+          <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyListing('${s.id}','${userId}')">Delete</button>
+        </div>`;
+    });
+  }
+
   if (events.length > 0) {
-    html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Events</div>';
+    html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px">Events</div>';
     events.forEach(e => {
       html += `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
@@ -663,6 +680,14 @@ async function deleteMyEvent(id, userId) {
   const { error } = await _supabase.from('events').delete().eq('id', id).eq('submitted_by', userId);
   if (error) { alert('Error deleting: ' + error.message); return; }
   loadMySubmissions(userId);
+}
+
+async function deleteMyListing(id, userId) {
+  if (!confirm('Delete this listing?')) return;
+  const { error } = await _supabase.from('directory_submissions').delete().eq('id', id).eq('submitted_by', userId);
+  if (error) { alert('Error deleting: ' + error.message); return; }
+  loadMySubmissions(userId);
+  loadDirectorySubmissions();
 }
 
 async function deleteMyReview(id, userId) {
@@ -742,9 +767,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const DIR_CAT_MAP = {
+  // Long names from form dropdown
   'Legal, Finance & Professional Services': { cat: 'Legal',      emoji: '⚖️',  bg: '#EBF0FB' },
   'Healthcare & Medical':                   { cat: 'Healthcare', emoji: '🏥',  bg: '#ECFDF5' },
-  'Real Estate':                            { cat: 'Realty',     emoji: '🏠',  bg: '#FFF7ED' },
+  'Real Estate':                            { cat: 'Realty',     emoji: '🏠',  bg: '#FFFBEB' },
   'Local Business, Retail & Services':      { cat: 'Business',   emoji: '🏢',  bg: '#F0F9FF' },
   'Beauty & Wellness':                      { cat: 'Beauty',     emoji: '✂️',  bg: '#FDF4FF' },
   'Education & Tutoring':                   { cat: 'Tutors',     emoji: '🎓',  bg: '#FFFBEB' },
@@ -752,6 +778,23 @@ const DIR_CAT_MAP = {
   'Sports & Recreation':                    { cat: 'Sports',     emoji: '⚽',  bg: '#EFF6FF' },
   'Content Creator / Influencer':           { cat: 'Influencer', emoji: '⭐',  bg: '#FFFBEB' },
   'Cash Jobs & Gigs':                       { cat: 'Jobs',       emoji: '💵',  bg: '#F0FDF4' },
+  // Short keys for migrated entries
+  'Legal':      { cat: 'Legal',      emoji: '⚖️',  bg: '#EBF0FB' },
+  'Healthcare': { cat: 'Healthcare', emoji: '🏥',  bg: '#ECFDF5' },
+  'Realty':     { cat: 'Realty',     emoji: '🏠',  bg: '#FFFBEB' },
+  'Business':   { cat: 'Business',   emoji: '🏢',  bg: '#F0F9FF' },
+  'Beauty':     { cat: 'Beauty',     emoji: '✂️',  bg: '#FDF4FF' },
+  'Tutors':     { cat: 'Tutors',     emoji: '🎓',  bg: '#FFFBEB' },
+  'Community':  { cat: 'Community',  emoji: '🤝',  bg: '#F0FDF4' },
+  'Cultural':   { cat: 'Cultural',   emoji: '🌺',  bg: '#FEF9EC' },
+  'Seniors':    { cat: 'Seniors',    emoji: '👴',  bg: '#F0FFF4' },
+  'Students':   { cat: 'Students',   emoji: '🎓',  bg: '#EBF0FB' },
+  'Sports':     { cat: 'Sports',     emoji: '⚽',  bg: '#FEF2F2' },
+  'Influencer': { cat: 'Influencer', emoji: '⭐',  bg: '#FFFBEB' },
+  'Jobs':       { cat: 'Jobs',       emoji: '💵',  bg: '#F0FDF4' },
+  'Church':     { cat: 'Church',     emoji: '⛪',  bg: '#FFFBEB' },
+  'Finance':    { cat: 'Finance',    emoji: '💰',  bg: '#FFFBEB' },
+  'Services':   { cat: 'Services',   emoji: '🚗',  bg: '#F0FFF4' },
 };
 
 async function loadDirectorySubmissions() {
@@ -761,9 +804,10 @@ async function loadDirectorySubmissions() {
     .eq('approved', true)
     .order('name', { ascending: true });
 
-  if (error || !data || data.length === 0) return;
-
   const grid = document.getElementById('dir-grid');
+  const loading = document.getElementById('dir-loading');
+  if (loading) loading.remove();
+  if (error || !data || data.length === 0) return;
   if (!grid) return;
 
   data.forEach(s => {
