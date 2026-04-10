@@ -339,6 +339,7 @@ async function loadBusinessReviews(bizId) {
     .from('reviews')
     .select('*')
     .eq('business_id', bizId)
+    .eq('approved', true)
     .order('created_at', { ascending: false });
 
   if (error || !data || data.length === 0) {
@@ -426,6 +427,7 @@ async function loadEvents() {
   const { data, error } = await _supabase
     .from('events')
     .select('*')
+    .eq('approved', true)
     .order('event_date', { ascending: true });
 
   const grid = document.getElementById('events-grid');
