@@ -87,7 +87,9 @@ function showMatchResults(province) {
 
 // ── Dark Mode ────────────────────────────────────────────────────
 
-function openEditListing(s) {
+function openEditListing(idOrObj) {
+  const s = typeof idOrObj === 'string' ? _myListings[idOrObj] : idOrObj;
+  if (!s) return;
   const select = document.getElementById('dir-category-select');
   const knownOptions = Array.from(select.options).map(o => o.value);
 
@@ -495,6 +497,7 @@ const EVENT_GRADIENTS = {
 };
 
 let _allEvents = [];
+const _myListings = {};
 
 function renderEventCard(e) {
   const d = new Date(e.event_date + 'T00:00:00');
@@ -670,6 +673,7 @@ async function loadMySubmissions(userId) {
   if (listings.length > 0) {
     html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Directory Listings</div>';
     listings.forEach(s => {
+      _myListings[s.id] = s;
       html += `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
           <div>
@@ -678,7 +682,7 @@ async function loadMySubmissions(userId) {
             <div style="font-size:11px;margin-top:4px;color:${s.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${s.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <button class="btn-sm" onclick='openEditListing(${JSON.stringify(s)})'>Edit</button>
+            <button class="btn-sm" onclick="openEditListing('${s.id}')">Edit</button>
             <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="deleteMyListing('${s.id}','${userId}')">Delete</button>
           </div>
         </div>`;
