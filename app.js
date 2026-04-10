@@ -901,10 +901,11 @@ async function loadDirectorySubmissions() {
     .order('name', { ascending: true });
 
   const grid = document.getElementById('dir-grid');
+  if (!grid) return;
   const loading = document.getElementById('dir-loading');
   if (loading) loading.remove();
+  grid.querySelectorAll('.dir-card').forEach(c => c.remove());
   if (error || !data || data.length === 0) return;
-  if (!grid) return;
 
   data.forEach(s => {
     const map = DIR_CAT_MAP[s.category] || { cat: 'Other', emoji: '📋', bg: '#F9FAFB' };
