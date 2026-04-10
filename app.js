@@ -37,7 +37,7 @@ function filterLoc(el, gridId, loc) {
   el.closest('.filter-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   document.querySelectorAll('#' + gridId + ' .place-card').forEach(card => {
-    card.style.display = (loc === 'all' || card.dataset.loc === loc) ? '' : 'none';
+    card.style.display = (loc === 'all' || card.dataset.loc === loc || card.dataset.loc === 'multi') ? '' : 'none';
   });
 }
 
@@ -192,6 +192,76 @@ const BUSINESSES = {
     desc: 'A trusted Filipino grocery store in Calgary carrying a wide selection of Filipino pantry staples, snacks, and imported goods.',
     tags: ['Grocery', 'Filipino Goods'],
     search: "Bhe-Bhe's Filipino grocery Calgary"
+  },
+  'amihan-bakery': {
+    emoji: '🍢', name: 'Amihan Grill + Bakeshop', type: 'Filipino Grill, Bakeshop & Street Food',
+    address: '📍 3 Locations — SW, SE & NE Calgary',
+    desc: 'One of the most popular Filipino spots in Calgary with three locations! Known for their grilled dishes, street food favourites, and freshly baked Filipino breads and pastries.',
+    tags: ['Bakeshop', 'Grill', 'Street Food', 'SW', 'SE', 'NE'],
+    search: 'Amihan Grill Bakeshop Calgary'
+  },
+  'purple-yum': {
+    emoji: '🍰', name: 'Purple Yum Cakes & Pastries Ltd.', type: 'Custom Cakes & Filipino Pastries',
+    address: '📍 735 Ranchlands Blvd NW, Calgary',
+    desc: 'Beautiful custom cakes and authentic Filipino pastries. Known for their ube creations and stunning cake designs for birthdays, weddings, and special occasions.',
+    tags: ['Bakery', 'Custom Cakes', 'Ube', 'NW Calgary'],
+    search: 'Purple Yum Cakes Pastries Calgary Ranchlands'
+  },
+  'the-js': {
+    emoji: '🍞', name: "The J's Restaurant & Bakery", type: 'Filipino Restaurant & Bakery',
+    address: '📍 4909 17 Ave SE Suite 203, Calgary',
+    desc: 'A Filipino restaurant and bakery combo in SE Calgary. Enjoy freshly baked Filipino breads alongside homestyle Filipino meals — all under one roof.',
+    tags: ['Bakery', 'Restaurant', 'SE Calgary'],
+    search: "The J's Restaurant Bakery Calgary 17 Ave SE"
+  },
+  'red-box-gourmet': {
+    emoji: '🎁', name: 'The Red Box Gourmet', type: 'Filipino Gourmet & Baked Goods',
+    address: '📍 3220 5 Ave NE, Calgary',
+    desc: 'Gourmet Filipino baked goods and specialty treats. A hidden gem in NE Calgary offering unique and flavourful Filipino-inspired pastries and snacks.',
+    tags: ['Bakery', 'Gourmet', 'NE Calgary'],
+    search: 'Red Box Gourmet Calgary 5 Ave NE'
+  },
+  'loriz-pilipino': {
+    emoji: '🥐', name: 'Loriz Pilipino Bakery & Convenience', type: 'Filipino Bakery & Convenience Store',
+    address: '📍 Bridlecrest, SW Calgary',
+    desc: 'A Filipino bakery and convenience store serving the SW Calgary community. Carries freshly baked Filipino breads, kakanin, and everyday Filipino grocery items.',
+    tags: ['Bakery', 'Convenience', 'Kakanin', 'SW Calgary'],
+    search: 'Loriz Pilipino Bakery Calgary Bridlecrest'
+  },
+  'mang-pedros': {
+    emoji: '🎂', name: "Mang Pedro's Bakery", type: 'Filipino Bakery',
+    address: '📍 4068 Ogden Rd SE, Calgary',
+    desc: 'A well-loved Filipino bakery in SE Calgary. Famous for their classic pandesal, ensaymada, and a wide variety of Filipino baked treats made fresh daily.',
+    tags: ['Bakery', 'Pandesal', 'SE Calgary'],
+    search: "Mang Pedro's Bakery Calgary Ogden"
+  },
+  'aling-mellys': {
+    emoji: '🍞', name: "Aling Melly's", type: 'Filipino Bakery & Pastries',
+    address: '📍 NE Calgary',
+    desc: 'A beloved Filipino bakery known for freshly baked pandesal, kakanin, and classic Filipino pastries. Community favourite for merienda and pasalubong.',
+    tags: ['Bakery', 'Pandesal', 'Kakanin', 'NE Calgary'],
+    search: "Aling Melly's Filipino bakery Calgary"
+  },
+  'aling-rosing': {
+    emoji: '🎂', name: "Aling Rosing", type: 'Filipino Baked Goods',
+    address: '📍 NW Calgary',
+    desc: 'Homemade Filipino baked goods made with love. Known for their soft pandesal, ensaymada, and traditional Filipino breads and sweets.',
+    tags: ['Bakery', 'Ensaymada', 'NW Calgary'],
+    search: "Aling Rosing Filipino bakery Calgary"
+  },
+  'loriz-pilipino': {
+    emoji: '🥐', name: "Loriz Pilipino", type: 'Filipino Breads & Kakanin',
+    address: '📍 NE Calgary',
+    desc: 'Specializes in traditional Filipino breads and kakanin including puto, kutsinta, bibingka, and biko. A go-to for authentic Filipino rice cakes.',
+    tags: ['Bakery', 'Kakanin', 'Rice Cakes', 'NE Calgary'],
+    search: "Loriz Pilipino Filipino Calgary"
+  },
+  'markjoels-bbq': {
+    emoji: '🍢', name: "Markjoel's BBQ", type: 'Filipino BBQ & Street Food',
+    address: '📍 SE Calgary',
+    desc: 'Famous for Filipino-style BBQ skewers, isaw, and street food favourites. Perfect for parties and gatherings — order by the batch.',
+    tags: ['BBQ', 'Street Food', 'Catering', 'SE Calgary'],
+    search: "Markjoel's BBQ Filipino Calgary"
   },
   'nimbly-market': {
     emoji: '📦', name: 'Nimbly Market', type: 'Online Filipino Grocery · Delivery',
