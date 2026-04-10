@@ -211,7 +211,27 @@ async function handleSignOut() {
 
 document.addEventListener('DOMContentLoaded', initAuth);
 
-// ── Sign Up ──────────────────────────────────────────────────────
+// ── Sign Up / Log In ─────────────────────────────────────────────
+
+function switchAuthTab(tab) {
+  document.getElementById('auth-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('tab-btn-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('tab-btn-login').classList.toggle('active', tab === 'login');
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+  if (error) { alert(error.message); return; }
+
+  closeModal('joinModal');
+  showSection('profile');
+  setNavActiveByName('My Profile');
+}
 
 async function handleSignUp(event) {
   event.preventDefault();
