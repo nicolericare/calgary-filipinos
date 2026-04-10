@@ -272,25 +272,100 @@ const BUSINESSES = {
   }
 };
 
-function openBusiness(id) {
+let _currentBizId = null;
+let _selectedStar = 0;
+
+function pickStar(val) {
+  _selectedStar = val;
+  document.querySelectorAll('#star-picker span').forEach((s, i) => {
+    s.classList.toggle('active', i < val);
+  });
+}
+
+async function openBusiness(id) {
   const b = BUSINESSES[id];
   if (!b) return;
+
+  _currentBizId = id;
+  _selectedStar = 0;
+  document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
+  document.getElementById('review-comment').value = '';
 
   document.getElementById('biz-emoji').textContent = b.emoji;
   document.getElementById('biz-name').textContent = b.name;
   document.getElementById('biz-type').textContent = b.type;
   document.getElementById('biz-address').innerHTML = b.address;
   document.getElementById('biz-desc').textContent = b.desc;
-
-  const tagsEl = document.getElementById('biz-tags');
-  tagsEl.innerHTML = b.tags.map(t => `<span class="tag">${t}</span>`).join('');
+  document.getElementById('biz-tags').innerHTML = b.tags.map(t => `<span class="tag">${t}</span>`).join('');
 
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(b.search + ' reviews')}`;
   const mapsUrl   = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.name + ' Calgary')}`;
   document.getElementById('biz-google-link').href = googleUrl;
   document.getElementById('biz-maps-link').href   = mapsUrl;
 
+  // show/hide review form based on login
+  const { data: { session } } = await _supabase.auth.getSession();
+  document.getElementById('biz-review-form-wrap').style.display = session ? 'block' : 'none';
+  document.getElementById('biz-review-login-prompt').style.display = session ? 'none' : 'block';
+
   openModal('businessModal');
+  loadBusinessReviews(id);
+}
+
+async function loadBusinessReviews(bizId) {
+  const list = document.getElementById('biz-reviews-list');
+  list.innerHTML = '<div style="font-size:13px;color:var(--gray-400);text-align:center;padding:16px 0">Loading reviews...</div>';
+
+  const { data, error } = await _supabase
+    .from('reviews')
+    .select('*')
+    .eq('business_id', bizId)
+    .order('created_at', { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--gray-400);text-align:center;padding:16px 0">No reviews yet — be the first! 🌟</div>';
+    return;
+  }
+
+  list.innerHTML = data.map(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const date  = new Date(r.created_at).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+    return `
+      <div class="review-card">
+        <div class="review-card-header">
+          <span class="review-card-name">${r.reviewer_name || 'Community Member'}</span>
+          <span class="review-card-stars">${stars}</span>
+        </div>
+        <div class="review-card-date">${date}</div>
+        <div class="review-card-comment">${r.comment}</div>
+      </div>`;
+  }).join('');
+}
+
+async function submitReview(event) {
+  event.preventDefault();
+  if (!_selectedStar) { alert('Please pick a star rating!'); return; }
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) return;
+
+  const { data: profile } = await _supabase.from('profiles').select('full_name').eq('id', session.user.id).single();
+  const name = profile?.full_name || session.user.email;
+  const comment = document.getElementById('review-comment').value.trim();
+
+  const { error } = await _supabase.from('reviews').insert({
+    business_id:   _currentBizId,
+    user_id:       session.user.id,
+    reviewer_name: name,
+    rating:        _selectedStar,
+    comment
+  });
+
+  if (error) { alert('Error posting review: ' + error.message); return; }
+
+  document.getElementById('review-comment').value = '';
+  pickStar(0);
+  loadBusinessReviews(_currentBizId);
 }
 
 // ── Auth & Profile ───────────────────────────────────────────────

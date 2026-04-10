@@ -229,6 +229,20 @@ footer { background: var(--blue); color: white; padding: 52px 24px 32px; margin-
 .nav-profile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; overflow: hidden; flex-shrink: 0; }
 .nav-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
+/* STAR PICKER */
+.star-picker { display: flex; gap: 4px; }
+.star-picker span { font-size: 28px; color: var(--gray-200); cursor: pointer; transition: color 0.1s; line-height: 1; }
+.star-picker span.active { color: var(--gold); }
+.star-picker span:hover { color: var(--gold); }
+
+/* REVIEW CARD */
+.review-card { background: var(--gray-50); border-radius: var(--radius-sm); padding: 14px 16px; }
+.review-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.review-card-name { font-size: 13.5px; font-weight: 700; color: var(--gray-800); }
+.review-card-stars { color: var(--gold); font-size: 13px; }
+.review-card-date { font-size: 11.5px; color: var(--gray-400); margin-bottom: 6px; }
+.review-card-comment { font-size: 13.5px; color: var(--gray-600); line-height: 1.6; }
+
 /* Responsive */
 @media (max-width: 900px) {
   .quick-access { grid-template-columns: repeat(3, 1fr); }
