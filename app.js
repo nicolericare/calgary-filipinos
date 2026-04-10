@@ -77,6 +77,144 @@ function showMatchResults(province) {
   setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
 }
 
+// ── Business Directory Data ──────────────────────────────────────
+
+const BUSINESSES = {
+  'adobo-experience': {
+    emoji: '🍖', name: 'Adobo Experience', type: 'Filipino · Casual Dining',
+    address: '📍 Memorial Dr NE, Calgary, AB',
+    desc: 'Known for their authentic Filipino adobo dishes and homestyle meals. A community favourite for casual dining with familiar flavours from home.',
+    tags: ['Restaurant', 'Casual Dining', 'NE Calgary'],
+    search: 'Adobo Experience Calgary'
+  },
+  'barrio-fiesta': {
+    emoji: '🥘', name: 'Barrio Fiesta', type: 'Filipino · Family Restaurant',
+    address: '📍 Calgary, AB',
+    desc: 'Classic Filipino comfort food in a warm, family-friendly setting. Great for group dinners and special occasions with traditional dishes.',
+    tags: ['Restaurant', 'Family Style', 'Dine-In'],
+    search: 'Barrio Fiesta Calgary'
+  },
+  'lolas-kitchen': {
+    emoji: '🍜', name: "Lola's Filipino Kitchen", type: 'Filipino · Home Style Cooking',
+    address: '📍 Calgary, AB',
+    desc: 'Homemade meals that taste just like Lola made them. Their pork belly sinigang is a community favourite. Warm, cozy, and delicious.',
+    tags: ['Restaurant', 'Home Style', 'Sinigang'],
+    search: "Lola's Filipino Kitchen Calgary"
+  },
+  'maxs-restaurant': {
+    emoji: '🍗', name: "Max's Restaurant", type: 'Filipino Chain · Fried Chicken',
+    address: '📍 Calgary, AB',
+    desc: "The famous Filipino chain known for their crispy fried chicken. Max's has been a household name in the Philippines for decades — now in Calgary!",
+    tags: ['Restaurant', 'Chain', 'Fried Chicken'],
+    search: "Max's Restaurant Calgary"
+  },
+  '7-seas': {
+    emoji: '🦐', name: '7 Seas Seafood', type: 'Filipino · Seafood Restaurant',
+    address: '📍 Calgary, AB',
+    desc: 'Fresh seafood cooked Filipino-style. From kinilaw to sinuglaw, this spot is perfect for seafood lovers craving a taste of the Philippines.',
+    tags: ['Restaurant', 'Seafood', 'Filipino Style'],
+    search: '7 Seas Seafood Calgary Filipino'
+  },
+  'pacific-hut': {
+    emoji: '🍛', name: 'Pacific Hut', type: 'Filipino · Casual Dining',
+    address: '📍 Calgary, AB',
+    desc: 'A casual neighbourhood spot serving Filipino classics. Great lunch spot with generous portions and affordable prices.',
+    tags: ['Restaurant', 'Casual', 'Lunch'],
+    search: 'Pacific Hut Filipino Calgary'
+  },
+  'amihan-grill': {
+    emoji: '🍢', name: 'Amihan Grill + Bakeshop', type: 'Filipino · Grill & Street Food',
+    address: '📍 Calgary, AB',
+    desc: 'One of the most unique Filipino spots in Calgary — grilled plates, street food favourites, and freshly baked Filipino breads all under one roof.',
+    tags: ['Restaurant', 'Bakeshop', 'Street Food', 'Grill'],
+    search: 'Amihan Grill Bakeshop Calgary'
+  },
+  'pinoy-village': {
+    emoji: '🍽', name: 'Pinoy Village', type: 'Filipino · Traditional Cuisine',
+    address: '📍 Calgary, AB',
+    desc: 'Traditional Filipino cuisine with a wide menu of regional dishes. A great place to explore different provinces through food.',
+    tags: ['Restaurant', 'Traditional', 'Dine-In'],
+    search: 'Pinoy Village Calgary Filipino restaurant'
+  },
+  'seafood-city': {
+    emoji: '🏬', name: 'Seafood City', type: 'Full Filipino Supermarket + Food Court',
+    address: '📍 3220 Sunridge Way NE, Calgary, AB T1Y 7K5',
+    desc: 'The go-to Filipino supermarket chain in Calgary. Massive selection of Filipino and Asian products, fresh seafood, meats, a food court with Filipino meals, and remittance services.',
+    tags: ['Grocery', 'Supermarket', 'Food Court', 'NE Calgary'],
+    search: 'Seafood City Calgary NE'
+  },
+  'filipino-market': {
+    emoji: '🏪', name: 'Filipino Market', type: 'Grocery, Baked Goods & Remittance',
+    address: '📍 3803 26th Ave SW (Killarney), Calgary',
+    desc: 'A beloved neighbourhood Filipino store in SW Calgary with freshly baked Filipino treats daily, authentic grocery items, personal care products, and remittance services. Welcoming owners!',
+    tags: ['Grocery', 'Bakery', 'Remittance', 'SW Calgary'],
+    search: 'Filipino Market 26 Ave SW Calgary'
+  },
+  'shanas-store': {
+    emoji: '🛍', name: "Shana's Filipino Store", type: 'Filipino Products & Specialty Goods',
+    address: '📍 5403 Crowchild Trl NW, Calgary',
+    desc: 'Known for its authentic vibe and comprehensive selection of classic Filipino ingredients and specialty products. A trusted name in the NW Calgary Filipino community.',
+    tags: ['Grocery', 'Specialty', 'NW Calgary'],
+    search: "Shana's Filipino Store Calgary Crowchild"
+  },
+  'tatak-pinoy': {
+    emoji: '🥫', name: 'Tatak Pinoy', type: 'Filipino Grocery Store',
+    address: '📍 26 Midlake Blvd SE, Calgary',
+    desc: 'A well-known Filipino grocery store that has been serving the community for years. Great selection of Filipino pantry staples and imported goods.',
+    tags: ['Grocery', 'SE Calgary'],
+    search: 'Tatak Pinoy Calgary Midlake'
+  },
+  'manila-convenience': {
+    emoji: '🏪', name: 'Manila Convenience Store', type: 'Dry & Frozen Foods, Shipping',
+    address: '📍 10325 Bonaventure Dr SE #120, Calgary',
+    desc: 'Specialty store offering dry and frozen Filipino foods, beauty products, phone cards, and shipping services. Convenient one-stop shop for the SE Calgary community.',
+    tags: ['Grocery', 'Shipping', 'SE Calgary'],
+    search: 'Manila Convenience Store Calgary Bonaventure'
+  },
+  'messiahs-store': {
+    emoji: '🏠', name: "Messiah's Filipino Store", type: 'Grocery, Remittance & Balikbayan Box',
+    address: '📍 328 Centre St SE #162, Calgary (Downtown)',
+    desc: 'One-stop shop in Downtown Calgary with Filipino goods, remittance services, Balikbayan box services, and home delivery available for orders $50 and up.',
+    tags: ['Grocery', 'Remittance', 'Balikbayan Box', 'Downtown'],
+    search: "Messiah's Filipino Store Calgary Centre St"
+  },
+  'bhe-bhe': {
+    emoji: '🛒', name: "Bhe-Bhe's", type: 'Filipino Grocery',
+    address: '📍 Calgary, AB',
+    desc: 'A trusted Filipino grocery store in Calgary carrying a wide selection of Filipino pantry staples, snacks, and imported goods.',
+    tags: ['Grocery', 'Filipino Goods'],
+    search: "Bhe-Bhe's Filipino grocery Calgary"
+  },
+  'nimbly-market': {
+    emoji: '📦', name: 'Nimbly Market', type: 'Online Filipino Grocery · Delivery',
+    address: '📍 Online · Delivers across Calgary',
+    desc: "Canada's first licensed online Filipino grocery store. Shop from home and get authentic Filipino products delivered to your door. Also serves Grande Prairie.",
+    tags: ['Online', 'Delivery', 'Grocery'],
+    search: 'Nimbly Market Filipino grocery Calgary delivery'
+  }
+};
+
+function openBusiness(id) {
+  const b = BUSINESSES[id];
+  if (!b) return;
+
+  document.getElementById('biz-emoji').textContent = b.emoji;
+  document.getElementById('biz-name').textContent = b.name;
+  document.getElementById('biz-type').textContent = b.type;
+  document.getElementById('biz-address').innerHTML = b.address;
+  document.getElementById('biz-desc').textContent = b.desc;
+
+  const tagsEl = document.getElementById('biz-tags');
+  tagsEl.innerHTML = b.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(b.search + ' reviews')}`;
+  const mapsUrl   = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.name + ' Calgary')}`;
+  document.getElementById('biz-google-link').href = googleUrl;
+  document.getElementById('biz-maps-link').href   = mapsUrl;
+
+  openModal('businessModal');
+}
+
 // ── Auth & Profile ───────────────────────────────────────────────
 
 async function initAuth() {
