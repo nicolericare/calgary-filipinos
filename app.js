@@ -87,6 +87,30 @@ function showMatchResults(province) {
 
 // ── Dark Mode ────────────────────────────────────────────────────
 
+function openEditListing(s) {
+  const select = document.getElementById('dir-category-select');
+  const knownOptions = Array.from(select.options).map(o => o.value);
+
+  if (knownOptions.includes(s.category)) {
+    select.value = s.category;
+    document.getElementById('dir-other-category-wrap').style.display = 'none';
+  } else {
+    select.value = 'other';
+    document.getElementById('dir-other-category-wrap').style.display = '';
+    document.getElementById('dir-other-category-input').value = s.category || '';
+  }
+
+  document.getElementById('dir-edit-id').value = s.id;
+  document.getElementById('dir-name').value = s.name || '';
+  document.getElementById('dir-desc').value = s.description || '';
+  document.getElementById('dir-location').value = s.location || '';
+  document.getElementById('dir-website').value = s.website || '';
+  document.getElementById('dir-contact').value = s.contact || '';
+  document.getElementById('dir-modal-title').textContent = 'Edit Your Listing ✏️';
+  document.getElementById('dir-submit-btn').textContent = 'Save Changes';
+  openModal('addDirectoryModal');
+}
+
 async function handleDirectorySubmit() {
   const categorySelect = document.getElementById('dir-category-select');
   const category = categorySelect.value === 'other'
@@ -98,21 +122,35 @@ async function handleDirectorySubmit() {
   if (!name) { alert('Please enter a name or business name.'); return; }
 
   const { data: { session } } = await _supabase.auth.getSession();
+  const editId = document.getElementById('dir-edit-id').value;
 
-  const { error } = await _supabase.from('directory_submissions').insert({
+  const payload = {
     category,
     name,
     description: document.getElementById('dir-desc').value.trim(),
     location:    document.getElementById('dir-location').value.trim(),
     website:     document.getElementById('dir-website').value.trim(),
     contact:     document.getElementById('dir-contact').value.trim(),
-    submitted_by: session?.user?.id || null
-  });
+  };
 
-  if (error) { alert('Error submitting listing: ' + error.message); return; }
+  let error;
 
-  document.getElementById('dir-form-body').style.display = 'none';
-  document.getElementById('dir-success-msg').style.display = '';
+  if (editId) {
+    ({ error } = await _supabase.from('directory_submissions').update(payload).eq('id', editId).eq('submitted_by', session?.user?.id));
+    if (!error) {
+      closeModal('addDirectoryModal');
+      const userId = session?.user?.id;
+      if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
+    }
+  } else {
+    ({ error } = await _supabase.from('directory_submissions').insert({ ...payload, submitted_by: session?.user?.id || null }));
+    if (!error) {
+      document.getElementById('dir-form-body').style.display = 'none';
+      document.getElementById('dir-success-msg').style.display = '';
+    }
+  }
+
+  if (error) { alert('Error: ' + error.message); }
 }
 
 // Reset directory modal when closed
@@ -124,6 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id === 'addDirectoryModal') {
       document.getElementById('dir-form-body').style.display = '';
       document.getElementById('dir-success-msg').style.display = 'none';
+      document.getElementById('dir-edit-id').value = '';
+      document.getElementById('dir-modal-title').textContent = 'Add a Directory Listing 📋';
+      document.getElementById('dir-submit-btn').textContent = 'Submit Listing';
       document.getElementById('dir-category-select').value = '';
       document.getElementById('dir-other-category-wrap').style.display = 'none';
       document.getElementById('dir-other-category-input').value = '';
@@ -636,7 +677,10 @@ async function loadMySubmissions(userId) {
             <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${s.category || ''} · ${s.location || ''}</div>
             <div style="font-size:11px;margin-top:4px;color:${s.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${s.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
           </div>
-          <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyListing('${s.id}','${userId}')">Delete</button>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <button class="btn-sm" onclick='openEditListing(${JSON.stringify(s)})'>Edit</button>
+            <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="deleteMyListing('${s.id}','${userId}')">Delete</button>
+          </div>
         </div>`;
     });
   }

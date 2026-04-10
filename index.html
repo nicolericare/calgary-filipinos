@@ -712,7 +712,8 @@
 
 <div class="modal-overlay" id="addDirectoryModal">
   <div class="modal">
-    <div class="modal-header"><div class="modal-title">Add a Directory Listing 📋</div><button class="modal-close" onclick="closeModal('addDirectoryModal')">✕</button></div>
+    <div class="modal-header"><div class="modal-title" id="dir-modal-title">Add a Directory Listing 📋</div><button class="modal-close" onclick="closeModal('addDirectoryModal')">✕</button></div>
+    <input type="hidden" id="dir-edit-id">
     <div id="dir-form-body">
       <div class="form-group"><label>Category</label>
         <select class="form-control" id="dir-category-select" onchange="toggleOtherCategory(this)">
@@ -739,7 +740,7 @@
       <div class="form-group"><label>Location (City / Quadrant)</label><input type="text" class="form-control" id="dir-location" placeholder="e.g. NE Calgary, Calgary AB"></div>
       <div class="form-group"><label>Website or Social Link (optional)</label><input type="text" class="form-control" id="dir-website" placeholder="e.g. https://yoursite.com"></div>
       <div class="form-group"><label>Contact Info</label><input type="text" class="form-control" id="dir-contact" placeholder="Email, phone, or Facebook/Instagram"></div>
-      <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="handleDirectorySubmit()">Submit Listing</button>
+      <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" id="dir-submit-btn" onclick="handleDirectorySubmit()">Submit Listing</button>
     </div>
     <div id="dir-success-msg" style="display:none;text-align:center;padding:32px 16px">
       <div style="font-size:48px;margin-bottom:16px">🙏</div>
