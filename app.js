@@ -100,8 +100,7 @@ function showNavProfile(user) {
   document.getElementById('join-community-btn').style.display = 'none';
   document.getElementById('nav-profile-link').style.display = '';
 
-  const initial = (user.email || 'U')[0].toUpperCase();
-  document.getElementById('nav-profile-link').innerHTML = `<span class="nav-profile-avatar" id="nav-avatar-wrap">${initial}</span> My Profile`;
+  document.getElementById('nav-profile-link').textContent = 'My Profile';
 }
 
 function showNavJoin() {
