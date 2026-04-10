@@ -33,6 +33,14 @@ function switchSubTab(btn, tabId) {
 
 // ── Filter Chips ─────────────────────────────────────────────────
 
+function filterLoc(el, gridId, loc) {
+  el.closest('.filter-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#' + gridId + ' .place-card').forEach(card => {
+    card.style.display = (loc === 'all' || card.dataset.loc === loc) ? '' : 'none';
+  });
+}
+
 function filterChip(chip, gridId, category) {
   chip.closest('.filter-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
