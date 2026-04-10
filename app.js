@@ -738,7 +738,52 @@ async function handleSignOut() {
 document.addEventListener('DOMContentLoaded', () => {
   initAuth();
   loadEvents();
+  loadDirectorySubmissions();
 });
+
+const DIR_CAT_MAP = {
+  'Legal, Finance & Professional Services': { cat: 'Legal',      emoji: '⚖️',  bg: '#EBF0FB' },
+  'Healthcare & Medical':                   { cat: 'Healthcare', emoji: '🏥',  bg: '#ECFDF5' },
+  'Real Estate':                            { cat: 'Realty',     emoji: '🏠',  bg: '#FFF7ED' },
+  'Local Business, Retail & Services':      { cat: 'Business',   emoji: '🏢',  bg: '#F0F9FF' },
+  'Beauty & Wellness':                      { cat: 'Beauty',     emoji: '✂️',  bg: '#FDF4FF' },
+  'Education & Tutoring':                   { cat: 'Tutors',     emoji: '🎓',  bg: '#FFFBEB' },
+  'Community, Culture & Church':            { cat: 'Community',  emoji: '🤝',  bg: '#F0FDF4' },
+  'Sports & Recreation':                    { cat: 'Sports',     emoji: '⚽',  bg: '#EFF6FF' },
+  'Content Creator / Influencer':           { cat: 'Influencer', emoji: '⭐',  bg: '#FFFBEB' },
+  'Cash Jobs & Gigs':                       { cat: 'Jobs',       emoji: '💵',  bg: '#F0FDF4' },
+};
+
+async function loadDirectorySubmissions() {
+  const { data, error } = await _supabase
+    .from('directory_submissions')
+    .select('*')
+    .eq('approved', true)
+    .order('created_at', { ascending: false });
+
+  if (error || !data || data.length === 0) return;
+
+  const grid = document.getElementById('dir-grid');
+  if (!grid) return;
+
+  data.forEach(s => {
+    const map = DIR_CAT_MAP[s.category] || { cat: 'Other', emoji: '📋', bg: '#F9FAFB' };
+    const card = document.createElement('div');
+    card.className = 'dir-card';
+    card.dataset.cat = map.cat;
+    card.innerHTML = `
+      <div class="dir-avatar" style="background:${map.bg}">${map.emoji}</div>
+      <div style="flex:1">
+        <div class="dir-name">${s.name || ''}</div>
+        <div class="dir-role">${s.category || ''} · ${s.location || ''}</div>
+        ${s.description ? `<div class="dir-desc">${s.description}</div>` : ''}
+        ${s.contact ? `<div class="dir-tags"><span class="tag">${s.contact}</span></div>` : ''}
+      </div>
+      ${s.website ? `<a href="${s.website}" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
 
 // ── Sign Up / Log In ─────────────────────────────────────────────
 
