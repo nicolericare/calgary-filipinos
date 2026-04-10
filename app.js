@@ -76,3 +76,26 @@ function showMatchResults(province) {
   r.style.display = 'block';
   setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
 }
+
+// ── Sign Up ──────────────────────────────────────────────────────
+
+async function handleSignUp(event) {
+  event.preventDefault();
+  const name          = document.getElementById('signup-name').value.trim();
+  const email         = document.getElementById('signup-email').value.trim();
+  const password      = document.getElementById('signup-password').value;
+  const hometown      = document.getElementById('signup-hometown').value.trim();
+  const neighbourhood = document.getElementById('signup-neighbourhood').value.trim();
+
+  const { data, error } = await _supabase.auth.signUp({ email, password });
+  if (error) { alert(error.message); return; }
+
+  await _supabase.from('profiles').insert({
+    id: data.user.id,
+    full_name: name,
+    hometown: hometown + (neighbourhood ? ' · ' + neighbourhood : '')
+  });
+
+  alert('Welcome! Check your email to confirm your account 🎉');
+  closeModal('joinModal');
+}
