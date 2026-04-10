@@ -327,100 +327,179 @@
 
     <div class="filter-chips">
       <div class="chip active" onclick="filterChip(this,'dir-grid','all')">All</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Legal')">⚖️ Legal</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Healthcare')">🏥 Healthcare</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Realty')">🏠 Real Estate</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Sports')">🏀 Sports Groups</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Newcomers')">✈️ Newcomer Support</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Influencer')">⭐ Influencers</div>
-      <div class="chip" onclick="filterChip(this,'dir-grid','Finance')">💰 Finance</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Legal')">⚖️ Legal &amp; Immigration</div>
       <div class="chip" onclick="filterChip(this,'dir-grid','Community')">🤝 Community Orgs</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Cultural')">🎭 Cultural Groups</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Seniors')">👴 Seniors</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Students')">🎓 Students</div>
+      <div class="chip" onclick="filterChip(this,'dir-grid','Sports')">🏀 Sports</div>
     </div>
 
     <div id="dir-grid" class="list-grid">
 
       <div class="dir-card" data-cat="Legal">
         <div class="dir-avatar" style="background:#EBF0FB">⚖️</div>
-        <div style="flex:1"><div class="dir-name">Atty. Maria Santos</div><div class="dir-role">Immigration &amp; Family Lawyer</div><div class="dir-desc">Specializing in Canadian immigration, family sponsorship, and citizenship applications. Filipino-speaking office — consultations available in Tagalog.</div><div class="dir-tags"><span class="tag">Immigration</span><span class="tag">Family Law</span><span class="tag">Tagalog</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+        <div style="flex:1">
+          <div class="dir-name">Balawan Law Firm</div>
+          <div class="dir-role">Filipino-Owned Law Firm · SW Calgary (near Chinook Mall)</div>
+          <div class="dir-desc">Filipino-owned law firm serving the Calgary community. Handles Family Law, Real Estate, Criminal, and Immigration law. Tagalog-speaking staff available.</div>
+          <div class="dir-tags"><span class="tag">Family Law</span><span class="tag">Immigration</span><span class="tag">Real Estate</span><span class="tag">Tagalog</span></div>
+        </div>
+        <a href="https://www.balawanlawfirm.ca" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
       </div>
 
       <div class="dir-card" data-cat="Legal">
         <div class="dir-avatar" style="background:#EBF0FB">⚖️</div>
-        <div style="flex:1"><div class="dir-name">Atty. Roberto Cruz</div><div class="dir-role">Real Estate &amp; Corporate Lawyer</div><div class="dir-desc">Helping Filipinos navigate property purchases, business formation, and corporate legal matters in Alberta. Free 30-min initial consultation.</div><div class="dir-tags"><span class="tag">Real Estate Law</span><span class="tag">Corporate</span><span class="tag">Free Consult</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+        <div style="flex:1">
+          <div class="dir-name">Violeta Boquiren Law Office</div>
+          <div class="dir-role">Immigration · Family Law · Real Estate</div>
+          <div class="dir-desc">Experienced Filipino lawyer in Calgary providing services in immigration law, divorce, child custody, spousal support, and real estate law.</div>
+          <div class="dir-tags"><span class="tag">Immigration</span><span class="tag">Divorce</span><span class="tag">Real Estate</span></div>
+        </div>
+        <a href="https://boquirenlaw.com" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
       </div>
 
-      <div class="dir-card" data-cat="Healthcare">
-        <div class="dir-avatar" style="background:#F0FFF4">🏥</div>
-        <div style="flex:1"><div class="dir-name">Dr. Liza Reyes</div><div class="dir-role">Family Physician · Currently Accepting Patients</div><div class="dir-desc">Family doctor with a patient-centered approach. Fluent in Tagalog and Ilocano. Clinic in NW Calgary — evening &amp; weekend appointments available.</div><div class="dir-tags"><span class="tag">Family Medicine</span><span class="tag">Tagalog</span><span class="tag">Ilocano</span><span class="tag">NW Calgary</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Book</button>
+      <div class="dir-card" data-cat="Legal">
+        <div class="dir-avatar" style="background:#EBF0FB">⚖️</div>
+        <div style="flex:1">
+          <div class="dir-name">Irvin Bautista — Queck Lawyers</div>
+          <div class="dir-role">Partner · Criminal, Immigration &amp; Family Law</div>
+          <div class="dir-desc">Filipino lawyer and partner at Queck Lawyers & Associates. Fluent in Tagalog. Handles criminal law, immigration, family law, and real estate across Alberta.</div>
+          <div class="dir-tags"><span class="tag">Criminal Law</span><span class="tag">Immigration</span><span class="tag">Family Law</span><span class="tag">Tagalog</span></div>
+        </div>
+        <a href="https://www.quecklaw.ca/irvin_bautista/" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
       </div>
 
-      <div class="dir-card" data-cat="Healthcare">
-        <div class="dir-avatar" style="background:#F0FFF4">🦷</div>
-        <div style="flex:1"><div class="dir-name">Dr. Edwin Dela Cruz</div><div class="dir-role">Dentist · Family &amp; Cosmetic Dentistry</div><div class="dir-desc">Gentle, affordable dental care. Accepts most Alberta Blue Cross plans. Teeth whitening and Invisalign available. SW Calgary location.</div><div class="dir-tags"><span class="tag">Dentistry</span><span class="tag">Cosmetic</span><span class="tag">SW Calgary</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Book</button>
+      <div class="dir-card" data-cat="Legal">
+        <div class="dir-avatar" style="background:#EBF0FB">🛂</div>
+        <div style="flex:1">
+          <div class="dir-name">FILCAN International</div>
+          <div class="dir-role">Immigration &amp; Education Consultancy · Calgary</div>
+          <div class="dir-desc">Licensed Canadian immigration consultancy headquartered in Calgary. Has helped thousands of Filipinos study, work, and build new lives in Canada. In-house RCIC on staff.</div>
+          <div class="dir-tags"><span class="tag">Immigration</span><span class="tag">Study Permits</span><span class="tag">Work Permits</span><span class="tag">RCIC</span></div>
+        </div>
+        <a href="https://filcanada.com" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
       </div>
 
-      <div class="dir-card" data-cat="Realty">
-        <div class="dir-avatar" style="background:#FFFBEB">🏠</div>
-        <div style="flex:1"><div class="dir-name">Angelo Bautista</div><div class="dir-role">REALTOR® · RE/MAX Calgary</div><div class="dir-desc">Helping Filipino families buy their first home in Calgary. Expert in NE &amp; NW communities. First-time buyer specialist — speaks Tagalog &amp; Bisaya.</div><div class="dir-tags"><span class="tag">First-Time Buyers</span><span class="tag">NE Calgary</span><span class="tag">Tagalog</span><span class="tag">Bisaya</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      <div class="dir-card" data-cat="Legal">
+        <div class="dir-avatar" style="background:#EBF0FB">🛂</div>
+        <div style="flex:1">
+          <div class="dir-name">Maria De Luna Immigration Services</div>
+          <div class="dir-role">Immigration Consultant · Calgary</div>
+          <div class="dir-desc">Professional immigration experience since 2004. Former co-owner of an immigration company and immigration paralegal for Calgary law firms. Trusted by the Filipino community.</div>
+          <div class="dir-tags"><span class="tag">Immigration</span><span class="tag">PR Applications</span><span class="tag">Sponsorship</span></div>
+        </div>
+        <a href="https://mdlservices.ca" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
       </div>
 
-      <div class="dir-card" data-cat="Realty">
-        <div class="dir-avatar" style="background:#FFFBEB">🏢</div>
-        <div style="flex:1"><div class="dir-name">Janelle Aquino</div><div class="dir-role">REALTOR® · Century 21</div><div class="dir-desc">Residential and investment property specialist. Has helped 80+ Filipino families settle in Calgary. Pre-construction and resale condos a specialty.</div><div class="dir-tags"><span class="tag">Investment Properties</span><span class="tag">Pre-Construction</span><span class="tag">Century 21</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
+      <div class="dir-card" data-cat="Community">
+        <div class="dir-avatar" style="background:#EBF0FB">🇵🇭</div>
+        <div style="flex:1">
+          <div class="dir-name">Philippine Consulate General Calgary</div>
+          <div class="dir-role">Official Philippine Government Office · Calgary</div>
+          <div class="dir-desc">The official diplomatic representation of the Philippines in Calgary. Provides passport services, civil registration, notarial services, and community programs for Filipinos in Alberta.</div>
+          <div class="dir-tags"><span class="tag">Passport</span><span class="tag">Gov't Services</span><span class="tag">Civil Registration</span></div>
+        </div>
+        <a href="https://calgarypcg.ca" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
+      </div>
+
+      <div class="dir-card" data-cat="Community">
+        <div class="dir-avatar" style="background:#EBF0FB">🦁</div>
+        <div style="flex:1">
+          <div class="dir-name">Calgary Filipino Lions Club</div>
+          <div class="dir-role">Community Service Organization</div>
+          <div class="dir-desc">Part of Lions International, this club brings together Filipino Calgarians to serve the broader community through volunteer work, fundraising, and humanitarian projects.</div>
+          <div class="dir-tags"><span class="tag">Volunteer</span><span class="tag">Community Service</span><span class="tag">Lions International</span></div>
+        </div>
+        <a href="https://e-clubhouse.org/sites/calgaryfilipino/" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
+      </div>
+
+      <div class="dir-card" data-cat="Community">
+        <div class="dir-avatar" style="background:#EBF0FB">✝️</div>
+        <div style="flex:1">
+          <div class="dir-name">Filipino Christian Fellowship of Calgary</div>
+          <div class="dir-role">Faith-Based Community Organization</div>
+          <div class="dir-desc">A welcoming faith-based organization for Filipino Christians in Calgary. Regular worship gatherings, Bible study groups, and community outreach events.</div>
+          <div class="dir-tags"><span class="tag">Faith</span><span class="tag">Fellowship</span><span class="tag">Community</span></div>
+        </div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Cultural">
+        <div class="dir-avatar" style="background:#FEF9EC">🌺</div>
+        <div style="flex:1">
+          <div class="dir-name">Bisayan &amp; Friends Cultural Society of Calgary</div>
+          <div class="dir-role">Cultural Organization · Visayan Community</div>
+          <div class="dir-desc">Celebrating Visayan culture and heritage in Calgary. Organizes cultural events, regional gatherings, and promotes Bisayan traditions among the Calgary Filipino community.</div>
+          <div class="dir-tags"><span class="tag">Bisayan</span><span class="tag">Cultural</span><span class="tag">Heritage</span></div>
+        </div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Cultural">
+        <div class="dir-avatar" style="background:#FEF9EC">🌾</div>
+        <div style="flex:1">
+          <div class="dir-name">Pangasinan Society of Calgary (PASOC)</div>
+          <div class="dir-role">Provincial Association · Pangasinan Community</div>
+          <div class="dir-desc">Connecting Pangasinenses in Calgary since the late 1980s. Member of the Calgary Federated Filipino Associations. Organizes cultural events and provincial gatherings.</div>
+          <div class="dir-tags"><span class="tag">Pangasinan</span><span class="tag">Cultural</span><span class="tag">Provincial Org</span></div>
+        </div>
+        <a href="https://www.pasoc.ca" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
+      </div>
+
+      <div class="dir-card" data-cat="Cultural">
+        <div class="dir-avatar" style="background:#FEF9EC">🌺</div>
+        <div style="flex:1">
+          <div class="dir-name">Capampangan Association of Calgary</div>
+          <div class="dir-role">Provincial Association · Pampanga Community</div>
+          <div class="dir-desc">Uniting Kapampangans in Calgary. Celebrates Kapampangan culture, cuisine, and traditions through regular gatherings and cultural programs.</div>
+          <div class="dir-tags"><span class="tag">Kapampangan</span><span class="tag">Cultural</span><span class="tag">Provincial Org</span></div>
+        </div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Seniors">
+        <div class="dir-avatar" style="background:#F0FFF4">👴</div>
+        <div style="flex:1">
+          <div class="dir-name">Golden Generation Seniors Club</div>
+          <div class="dir-role">Filipino Seniors Social Organization · Calgary</div>
+          <div class="dir-desc">A warm and active social club for Filipino seniors in Calgary. Regular social gatherings, cultural activities, and mutual support for the elder members of the community.</div>
+          <div class="dir-tags"><span class="tag">Seniors</span><span class="tag">Social Club</span><span class="tag">Community</span></div>
+        </div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Seniors">
+        <div class="dir-avatar" style="background:#F0FFF4">👴</div>
+        <div style="flex:1">
+          <div class="dir-name">Tamaraw Seniors Club</div>
+          <div class="dir-role">Filipino Seniors Organization · Calgary</div>
+          <div class="dir-desc">Another beloved seniors group within the Calgary Filipino community. Named after the iconic Philippine animal, this club promotes fellowship and care among Filipino elders.</div>
+          <div class="dir-tags"><span class="tag">Seniors</span><span class="tag">Fellowship</span><span class="tag">Community</span></div>
+        </div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
+      </div>
+
+      <div class="dir-card" data-cat="Students">
+        <div class="dir-avatar" style="background:#EBF0FB">🎓</div>
+        <div style="flex:1">
+          <div class="dir-name">U of C Filipino Students' Association</div>
+          <div class="dir-role">Student Organization · University of Calgary</div>
+          <div class="dir-desc">The Filipino Students' Association at the University of Calgary. Connects Filipino students, promotes cultural awareness on campus, and hosts events throughout the school year.</div>
+          <div class="dir-tags"><span class="tag">Students</span><span class="tag">U of C</span><span class="tag">Campus Life</span></div>
+        </div>
+        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
       </div>
 
       <div class="dir-card" data-cat="Sports">
         <div class="dir-avatar" style="background:#FEF2F2">🏀</div>
-        <div style="flex:1"><div class="dir-name">Calgary Pinoy Ballers</div><div class="dir-role">Basketball Group · Open to All Skill Levels</div><div class="dir-desc">Weekly Sunday basketball runs at Southland and Canyon Meadows. All skill levels welcome — from casual to competitive. 200+ active members.</div><div class="dir-tags"><span class="tag">Basketball</span><span class="tag">Sunday Runs</span><span class="tag">200+ Members</span><span class="tag">All Levels</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Join</button>
-      </div>
-
-      <div class="dir-card" data-cat="Sports">
-        <div class="dir-avatar" style="background:#FEF2F2">🏐</div>
-        <div style="flex:1"><div class="dir-name">Pilipino Volleyball Calgary (PVC)</div><div class="dir-role">Volleyball · Co-ed League</div><div class="dir-desc">Co-ed volleyball every Friday evening at Calgary YMCA. Summer league with competitive and recreational divisions. Registration opens April 30.</div><div class="dir-tags"><span class="tag">Volleyball</span><span class="tag">Co-ed</span><span class="tag">Friday Nights</span><span class="tag">YMCA</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Join</button>
-      </div>
-
-      <div class="dir-card" data-cat="Newcomers">
-        <div class="dir-avatar" style="background:#EBF0FB">✈️</div>
-        <div style="flex:1"><div class="dir-name">Filipino Canadian Society of Calgary</div><div class="dir-role">Newcomer Settlement &amp; Support Organization</div><div class="dir-desc">Helping newly arrived Filipinos settle in Calgary. Assistance with housing, SIN numbers, driver's license, school enrollment, and more. Free service.</div><div class="dir-tags"><span class="tag">Settlement</span><span class="tag">Mentorship</span><span class="tag">Non-profit</span><span class="tag">Free</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
-      </div>
-
-      <div class="dir-card" data-cat="Newcomers">
-        <div class="dir-avatar" style="background:#EBF0FB">🎓</div>
-        <div style="flex:1"><div class="dir-name">Kabayan Settlement Program</div><div class="dir-role">Employment &amp; Language Support</div><div class="dir-desc">Free programs for Filipino newcomers: English language training, resume workshops, job placement assistance, and financial literacy bootcamp.</div><div class="dir-tags"><span class="tag">Employment</span><span class="tag">Language Training</span><span class="tag">Resume Help</span><span class="tag">Free</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Connect</button>
-      </div>
-
-      <div class="dir-card" data-cat="Influencer">
-        <div class="dir-avatar" style="background:#F5F3FF;font-size:26px">👩</div>
-        <div style="flex:1"><div class="dir-name">Nicole Reyes</div><div class="dir-role">Lifestyle &amp; Food Content Creator · 28K Followers</div><div class="dir-desc">Calgary-based Filipina content creator sharing life in Canada, Filipino food recipes, and immigration tips. Active on YouTube and TikTok.</div><div class="dir-tags"><span class="tag">Food</span><span class="tag">Lifestyle</span><span class="tag">TikTok</span><span class="tag">YouTube</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Follow</button>
-      </div>
-
-      <div class="dir-card" data-cat="Influencer">
-        <div class="dir-avatar" style="background:#F5F3FF;font-size:26px">👨</div>
-        <div style="flex:1"><div class="dir-name">Mark Villanueva</div><div class="dir-role">Filipino in Calgary · Immigration Advocate · 15K Followers</div><div class="dir-desc">Shares the real experience of immigrating to Calgary. Posts about the PR process, job market, and building community life in Alberta.</div><div class="dir-tags"><span class="tag">Immigration</span><span class="tag">Community</span><span class="tag">Instagram</span><span class="tag">Facebook</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Follow</button>
-      </div>
-
-      <div class="dir-card" data-cat="Finance">
-        <div class="dir-avatar" style="background:#FFFBEB">💰</div>
-        <div style="flex:1"><div class="dir-name">Carlo Mendoza, CFP</div><div class="dir-role">Certified Financial Planner · Sun Life Financial</div><div class="dir-desc">Helping Filipino families with investments, life insurance, RRSP, RESP, and retirement planning. Speaks Tagalog — consultations in-person or virtual.</div><div class="dir-tags"><span class="tag">Financial Planning</span><span class="tag">RRSP / RESP</span><span class="tag">Insurance</span><span class="tag">Tagalog</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Contact</button>
-      </div>
-
-      <div class="dir-card" data-cat="Community">
-        <div class="dir-avatar" style="background:#EBF0FB">🤝</div>
-        <div style="flex:1"><div class="dir-name">FILCAN Alberta Association</div><div class="dir-role">Filipino-Canadian Advocacy &amp; Community Organization</div><div class="dir-desc">Advocating for Filipino rights and representation in Alberta. Offers cultural programs, annual scholarships, and community events year-round.</div><div class="dir-tags"><span class="tag">Advocacy</span><span class="tag">Scholarships</span><span class="tag">Cultural Programs</span><span class="tag">Non-profit</span></div></div>
-        <button class="btn-sm" style="flex-shrink:0;align-self:center">Join</button>
+        <div style="flex:1">
+          <div class="dir-name">FCACA Sunday Hoops</div>
+          <div class="dir-role">Basketball Group · Cochrane &amp; Calgary Area</div>
+          <div class="dir-desc">Basketball group running since 2013, formerly known as Cochrane Ballers. Part of the Filipino-Canadian Association of Cochrane Alberta (FCACA). All skill levels welcome.</div>
+          <div class="dir-tags"><span class="tag">Basketball</span><span class="tag">Sunday Runs</span><span class="tag">All Levels</span><span class="tag">Cochrane</span></div>
+        </div>
+        <a href="https://fcaca.ca" target="_blank" class="btn-sm" style="flex-shrink:0;align-self:center;text-decoration:none">Visit Site</a>
       </div>
 
     </div>
