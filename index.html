@@ -41,13 +41,14 @@
       <button class="nav-link" onclick="showSection('directory'); setNavActive(this)">Directory</button>
       <button class="nav-link" onclick="showSection('marketplace'); setNavActive(this)">Marketplace <span class="notif-dot"></span></button>
       <button class="nav-link" onclick="showSection('hometown'); setNavActive(this)">Hometown Match</button>
+      <button class="nav-link" id="nav-profile-link" style="display:none" onclick="showSection('profile'); setNavActive(this)">My Profile</button>
     </div>
     <div class="nav-right">
       <div class="search-bar">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9AA5B4" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input type="text" placeholder="Search...">
       </div>
-      <button class="btn-primary" onclick="openModal('joinModal')">Join Community</button>
+      <button class="btn-primary" id="join-community-btn" onclick="openModal('joinModal')">Join Community</button>
     </div>
   </div>
 </nav>
@@ -590,6 +591,68 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══════════════ PROFILE ═══════════════ -->
+<div id="profile" class="section">
+  <div class="section-container">
+    <div class="profile-page">
+
+      <!-- Header Card -->
+      <div class="profile-header-card">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar-placeholder" id="profile-avatar-placeholder">👤</div>
+          <img id="profile-avatar-img" src="" alt="Profile Photo" class="profile-avatar-img">
+          <label class="profile-avatar-upload" for="avatar-input" title="Change photo">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </label>
+          <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+        </div>
+        <div class="profile-header-info">
+          <div id="profile-display-name" class="profile-name">Loading...</div>
+          <div id="profile-display-email" class="profile-email"></div>
+          <div id="profile-display-hometown" class="profile-location"></div>
+          <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn-primary" onclick="toggleProfileEdit()" id="edit-profile-btn">Edit Profile</button>
+            <button class="btn-outline" onclick="handleSignOut()">Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Form -->
+      <div id="profile-edit-form" style="display:none">
+        <div class="profile-card">
+          <div class="profile-card-title">Edit Your Info</div>
+          <form onsubmit="handleProfileSave(event)">
+            <div class="grid-2">
+              <div class="form-group"><label>Full Name</label><input id="edit-name" type="text" class="form-control"></div>
+              <div class="form-group"><label>Nickname (optional)</label><input id="edit-nickname" type="text" class="form-control" placeholder="e.g. Ate Joy"></div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Hometown in the Philippines</label><input id="edit-hometown" type="text" class="form-control" placeholder="e.g. Cebu City, Cebu"></div>
+              <div class="form-group"><label>Neighbourhood in Calgary</label><input id="edit-neighbourhood" type="text" class="form-control" placeholder="e.g. NE Calgary"></div>
+            </div>
+            <div class="form-group"><label>Bio</label><textarea id="edit-bio" class="form-control" rows="3" placeholder="Tell the community a bit about yourself..."></textarea></div>
+            <div class="form-group"><label>Occupation (optional)</label><input id="edit-occupation" type="text" class="form-control" placeholder="e.g. Nurse, Engineer, Small Business Owner"></div>
+            <div style="display:flex;gap:10px;margin-top:4px">
+              <button type="submit" class="btn-primary" style="padding:10px 28px">Save Changes</button>
+              <button type="button" onclick="toggleProfileEdit()" class="btn-outline">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- About Display -->
+      <div id="profile-info-display">
+        <div class="profile-card">
+          <div class="profile-card-title">About Me</div>
+          <div id="profile-display-bio" style="font-size:14px;color:var(--gray-600);line-height:1.7">No bio yet. Click Edit Profile to add one.</div>
+          <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px" id="profile-tags"></div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
