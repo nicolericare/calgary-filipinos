@@ -1032,7 +1032,7 @@
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Add a Directory Listing 📋</div><button class="modal-close" onclick="closeModal('addDirectoryModal')">✕</button></div>
     <div class="form-group"><label>Category</label>
-      <select class="form-control">
+      <select class="form-control" id="dir-category-select" onchange="toggleOtherCategory(this)">
         <option value="">— Select a category —</option>
         <option>Legal, Finance &amp; Professional Services</option>
         <option>Healthcare &amp; Medical</option>
@@ -1044,7 +1044,12 @@
         <option>Sports &amp; Recreation</option>
         <option>Content Creator / Influencer</option>
         <option>Cash Jobs &amp; Gigs</option>
+        <option value="other">Other</option>
       </select>
+    </div>
+    <div class="form-group" id="dir-other-category-wrap" style="display:none">
+      <label>Specify Category</label>
+      <input type="text" class="form-control" id="dir-other-category-input" placeholder="e.g. Photography, Transportation, Pet Services...">
     </div>
     <div class="form-group"><label>Name / Business Name</label><input type="text" class="form-control" placeholder="e.g. Maria's Law Office"></div>
     <div class="form-group"><label>Description</label><textarea class="form-control" rows="3" placeholder="Brief description of your service or organization"></textarea></div>

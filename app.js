@@ -87,6 +87,12 @@ function showMatchResults(province) {
 
 // ── Dark Mode ────────────────────────────────────────────────────
 
+function toggleOtherCategory(select) {
+  const wrap = document.getElementById('dir-other-category-wrap');
+  wrap.style.display = select.value === 'other' ? '' : 'none';
+  if (select.value !== 'other') document.getElementById('dir-other-category-input').value = '';
+}
+
 function toggleDarkMode() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const next = isDark ? 'light' : 'dark';
