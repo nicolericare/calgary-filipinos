@@ -85,6 +85,25 @@ function showMatchResults(province) {
   setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
 }
 
+// ── Dark Mode ────────────────────────────────────────────────────
+
+function toggleDarkMode() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('dark-mode-btn').textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+(function () {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('dark-mode-btn');
+    if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  });
+})();
+
 // ── Business Directory Data ──────────────────────────────────────
 
 const BUSINESSES = {

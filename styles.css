@@ -257,3 +257,91 @@ footer { background: var(--blue); color: white; padding: 52px 24px 32px; margin-
   .hero h1 { font-size: 28px; }
   .hero-stats { gap: 24px; }
 }
+
+/* ═══ DARK MODE ═══ */
+[data-theme="dark"] { color-scheme: dark; }
+[data-theme="dark"] body { background: #0F1117; color: #CBD5E0; }
+
+/* Nav */
+[data-theme="dark"] nav { background: #1A1D2E; border-color: #2D3150; }
+[data-theme="dark"] .nav-link { color: #A8B2D8; }
+[data-theme="dark"] .nav-link:hover { background: #252840; color: #E2E8F0; }
+[data-theme="dark"] .nav-link.active { background: #1B2645; color: #93C5FD; }
+[data-theme="dark"] .search-bar { background: #252840; border-color: #2D3150; }
+[data-theme="dark"] .search-bar input { color: #E2E8F0; }
+[data-theme="dark"] .logo-text { color: #93C5FD; }
+
+/* Cards */
+[data-theme="dark"] .event-card,
+[data-theme="dark"] .place-card,
+[data-theme="dark"] .dir-card,
+[data-theme="dark"] .market-card,
+[data-theme="dark"] .balik-card,
+[data-theme="dark"] .qa-card,
+[data-theme="dark"] .member-card,
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .profile-header-card,
+[data-theme="dark"] .home-featured,
+[data-theme="dark"] .match-result,
+[data-theme="dark"] .review-card { background: #1E2235; border-color: #2D3150; }
+
+[data-theme="dark"] .province-card { background: #1E2235; border-color: #2D3150; }
+[data-theme="dark"] .province-card:hover,
+[data-theme="dark"] .province-card.selected { background: #2A2010; border-color: var(--gold); }
+
+/* Text */
+[data-theme="dark"] .section-title { color: #93C5FD; }
+[data-theme="dark"] .event-title,
+[data-theme="dark"] .place-name,
+[data-theme="dark"] .dir-name,
+[data-theme="dark"] .market-title,
+[data-theme="dark"] .balik-name,
+[data-theme="dark"] .profile-name { color: #E2E8F0; }
+[data-theme="dark"] .event-meta-item,
+[data-theme="dark"] .place-type,
+[data-theme="dark"] .place-address,
+[data-theme="dark"] .dir-desc,
+[data-theme="dark"] .dir-role,
+[data-theme="dark"] .balik-details,
+[data-theme="dark"] .section-subtitle { color: #8892B0; }
+[data-theme="dark"] .qa-label { color: #93C5FD; }
+
+/* Tabs & chips */
+[data-theme="dark"] .tab-nav { border-color: #2D3150; }
+[data-theme="dark"] .tab-btn { color: #8892B0; }
+[data-theme="dark"] .tab-btn:hover,
+[data-theme="dark"] .tab-btn.active { color: #93C5FD; }
+[data-theme="dark"] .tab-btn.active { border-bottom-color: #93C5FD; }
+[data-theme="dark"] .chip { background: #1E2235; border-color: #2D3150; color: #A8B2D8; }
+[data-theme="dark"] .chip:hover,
+[data-theme="dark"] .chip.active { background: #1B3A6B; color: white; border-color: #1B3A6B; }
+
+/* Forms */
+[data-theme="dark"] .form-control { background: #252840; border-color: #2D3150; color: #E2E8F0; }
+[data-theme="dark"] .form-control:focus { border-color: #93C5FD; }
+[data-theme="dark"] .form-group label { color: #A8B2D8; }
+[data-theme="dark"] .info-banner { background: #1E2820; border-color: rgba(247,183,49,0.2); color: #A8B2D8; }
+
+/* Modal */
+[data-theme="dark"] .modal { background: #1A1D2E; }
+[data-theme="dark"] .modal-title { color: #93C5FD; }
+[data-theme="dark"] .modal-close { background: #252840; color: #A8B2D8; }
+[data-theme="dark"] .modal-close:hover { background: #2D3150; }
+
+/* Hometown */
+[data-theme="dark"] .hometown-hero { background: #1E1A10; border-color: rgba(247,183,49,0.15); }
+[data-theme="dark"] .hometown-hero h2 { color: #93C5FD; }
+
+/* Misc */
+[data-theme="dark"] .event-footer { border-color: #2D3150; }
+[data-theme="dark"] .market-footer { border-color: #2D3150; }
+[data-theme="dark"] .btn-sm { background: #252840; color: #93C5FD; }
+[data-theme="dark"] .btn-sm:hover { background: #1B3A6B; color: white; }
+[data-theme="dark"] .btn-outline { background: #252840; border-color: #2D3150; color: #A8B2D8; }
+[data-theme="dark"] .btn-outline:hover { border-color: #93C5FD; color: #93C5FD; }
+[data-theme="dark"] .tag { background: #1B2645; color: #93C5FD; }
+[data-theme="dark"] .tag-gold { background: #2A2010; color: #F7B731; }
+[data-theme="dark"] .profile-email,
+[data-theme="dark"] .profile-location { color: #8892B0; }
+[data-theme="dark"] .review-card-name { color: #E2E8F0; }
+[data-theme="dark"] .review-card-comment { color: #A8B2D8; }
