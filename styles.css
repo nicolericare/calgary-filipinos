@@ -231,6 +231,9 @@ footer { background: var(--blue); color: white; padding: 52px 24px 32px; margin-
 
 /* STAR PICKER */
 .star-picker { display: flex; gap: 4px; }
+.emoji-opt { font-size: 22px; cursor: pointer; padding: 4px 6px; border-radius: 6px; border: 2px solid transparent; transition: border-color 0.1s, background 0.1s; line-height: 1; }
+.emoji-opt:hover { background: var(--gray-100); }
+.emoji-opt.selected { border-color: var(--blue); background: #EBF0FB; }
 .star-picker span { font-size: 28px; color: var(--gray-200); cursor: pointer; transition: color 0.1s; line-height: 1; }
 .star-picker span.active { color: var(--gold); }
 .star-picker span:hover { color: var(--gold); }

@@ -103,6 +103,10 @@ function openEditListing(idOrObj) {
   }
 
   document.getElementById('dir-edit-id').value = s.id;
+  document.getElementById('dir-emoji').value = s.emoji || '';
+  document.querySelectorAll('#dir-emoji-picker .emoji-opt').forEach(e => {
+    e.classList.toggle('selected', e.textContent.trim() === s.emoji);
+  });
   document.getElementById('dir-name').value = s.name || '';
   document.getElementById('dir-desc').value = s.description || '';
   document.getElementById('dir-location').value = s.location || '';
@@ -133,6 +137,7 @@ async function handleDirectorySubmit() {
     location:    document.getElementById('dir-location').value.trim(),
     website:     document.getElementById('dir-website').value.trim(),
     contact:     document.getElementById('dir-contact').value.trim(),
+    emoji:       document.getElementById('dir-emoji').value || null,
   };
 
   let error;
@@ -171,9 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('dir-location').value = '';
       document.getElementById('dir-website').value = '';
       document.getElementById('dir-contact').value = '';
+      document.getElementById('dir-emoji').value = '';
+      document.querySelectorAll('#dir-emoji-picker .emoji-opt').forEach(e => e.classList.remove('selected'));
     }
   };
 });
+
+function pickDirEmoji(el, emoji) {
+  document.querySelectorAll('#dir-emoji-picker .emoji-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('dir-emoji').value = emoji;
+}
 
 function toggleOtherCategory(select) {
   const wrap = document.getElementById('dir-other-category-wrap');
@@ -899,7 +912,7 @@ async function loadDirectorySubmissions() {
     card.className = 'dir-card';
     card.dataset.cat = map.cat;
     card.innerHTML = `
-      <div class="dir-avatar" style="background:${map.bg}">${map.emoji}</div>
+      <div class="dir-avatar" style="background:${map.bg}">${s.emoji || map.emoji}</div>
       <div style="flex:1">
         <div class="dir-name">${s.name || ''}</div>
         <div class="dir-role">${s.category || ''} · ${s.location || ''}</div>
