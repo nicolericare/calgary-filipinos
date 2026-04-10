@@ -759,7 +759,7 @@ async function loadDirectorySubmissions() {
     .from('directory_submissions')
     .select('*')
     .eq('approved', true)
-    .order('created_at', { ascending: false });
+    .order('name', { ascending: true });
 
   if (error || !data || data.length === 0) return;
 
