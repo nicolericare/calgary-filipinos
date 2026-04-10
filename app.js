@@ -87,6 +87,55 @@ function showMatchResults(province) {
 
 // ── Dark Mode ────────────────────────────────────────────────────
 
+async function handleDirectorySubmit() {
+  const categorySelect = document.getElementById('dir-category-select');
+  const category = categorySelect.value === 'other'
+    ? document.getElementById('dir-other-category-input').value.trim()
+    : categorySelect.value;
+  const name = document.getElementById('dir-name').value.trim();
+
+  if (!category) { alert('Please select a category.'); return; }
+  if (!name) { alert('Please enter a name or business name.'); return; }
+
+  const { data: { session } } = await _supabase.auth.getSession();
+
+  const { error } = await _supabase.from('directory_submissions').insert({
+    category,
+    name,
+    description: document.getElementById('dir-desc').value.trim(),
+    location:    document.getElementById('dir-location').value.trim(),
+    website:     document.getElementById('dir-website').value.trim(),
+    contact:     document.getElementById('dir-contact').value.trim(),
+    submitted_by: session?.user?.id || null
+  });
+
+  if (error) { alert('Error submitting listing: ' + error.message); return; }
+
+  document.getElementById('dir-form-body').style.display = 'none';
+  document.getElementById('dir-success-msg').style.display = '';
+}
+
+// Reset directory modal when closed
+const _origCloseModal = window.closeModal;
+document.addEventListener('DOMContentLoaded', () => {
+  const origClose = window.closeModal;
+  window.closeModal = function(id) {
+    origClose(id);
+    if (id === 'addDirectoryModal') {
+      document.getElementById('dir-form-body').style.display = '';
+      document.getElementById('dir-success-msg').style.display = 'none';
+      document.getElementById('dir-category-select').value = '';
+      document.getElementById('dir-other-category-wrap').style.display = 'none';
+      document.getElementById('dir-other-category-input').value = '';
+      document.getElementById('dir-name').value = '';
+      document.getElementById('dir-desc').value = '';
+      document.getElementById('dir-location').value = '';
+      document.getElementById('dir-website').value = '';
+      document.getElementById('dir-contact').value = '';
+    }
+  };
+});
+
 function toggleOtherCategory(select) {
   const wrap = document.getElementById('dir-other-category-wrap');
   wrap.style.display = select.value === 'other' ? '' : 'none';

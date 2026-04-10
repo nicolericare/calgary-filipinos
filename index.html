@@ -1031,32 +1031,40 @@
 <div class="modal-overlay" id="addDirectoryModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Add a Directory Listing 📋</div><button class="modal-close" onclick="closeModal('addDirectoryModal')">✕</button></div>
-    <div class="form-group"><label>Category</label>
-      <select class="form-control" id="dir-category-select" onchange="toggleOtherCategory(this)">
-        <option value="">— Select a category —</option>
-        <option>Legal, Finance &amp; Professional Services</option>
-        <option>Healthcare &amp; Medical</option>
-        <option>Real Estate</option>
-        <option>Local Business, Retail &amp; Services</option>
-        <option>Beauty &amp; Wellness</option>
-        <option>Education &amp; Tutoring</option>
-        <option>Community, Culture &amp; Church</option>
-        <option>Sports &amp; Recreation</option>
-        <option>Content Creator / Influencer</option>
-        <option>Cash Jobs &amp; Gigs</option>
-        <option value="other">Other</option>
-      </select>
+    <div id="dir-form-body">
+      <div class="form-group"><label>Category</label>
+        <select class="form-control" id="dir-category-select" onchange="toggleOtherCategory(this)">
+          <option value="">— Select a category —</option>
+          <option>Legal, Finance &amp; Professional Services</option>
+          <option>Healthcare &amp; Medical</option>
+          <option>Real Estate</option>
+          <option>Local Business, Retail &amp; Services</option>
+          <option>Beauty &amp; Wellness</option>
+          <option>Education &amp; Tutoring</option>
+          <option>Community, Culture &amp; Church</option>
+          <option>Sports &amp; Recreation</option>
+          <option>Content Creator / Influencer</option>
+          <option>Cash Jobs &amp; Gigs</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group" id="dir-other-category-wrap" style="display:none">
+        <label>Specify Category</label>
+        <input type="text" class="form-control" id="dir-other-category-input" placeholder="e.g. Photography, Transportation, Pet Services...">
+      </div>
+      <div class="form-group"><label>Name / Business Name</label><input type="text" class="form-control" id="dir-name" placeholder="e.g. Maria's Law Office"></div>
+      <div class="form-group"><label>Description</label><textarea class="form-control" id="dir-desc" rows="3" placeholder="Brief description of your service or organization"></textarea></div>
+      <div class="form-group"><label>Location (City / Quadrant)</label><input type="text" class="form-control" id="dir-location" placeholder="e.g. NE Calgary, Calgary AB"></div>
+      <div class="form-group"><label>Website or Social Link (optional)</label><input type="text" class="form-control" id="dir-website" placeholder="e.g. https://yoursite.com"></div>
+      <div class="form-group"><label>Contact Info</label><input type="text" class="form-control" id="dir-contact" placeholder="Email, phone, or Facebook/Instagram"></div>
+      <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="handleDirectorySubmit()">Submit Listing</button>
     </div>
-    <div class="form-group" id="dir-other-category-wrap" style="display:none">
-      <label>Specify Category</label>
-      <input type="text" class="form-control" id="dir-other-category-input" placeholder="e.g. Photography, Transportation, Pet Services...">
+    <div id="dir-success-msg" style="display:none;text-align:center;padding:32px 16px">
+      <div style="font-size:48px;margin-bottom:16px">🙏</div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:10px">Salamat!</div>
+      <div style="font-size:15px;color:var(--gray-600);line-height:1.7;margin-bottom:24px">Your listing has been submitted and is now pending review. We'll get it up on the directory as soon as it's approved — usually within 1–2 days.</div>
+      <button class="btn-primary" onclick="closeModal('addDirectoryModal')">Done</button>
     </div>
-    <div class="form-group"><label>Name / Business Name</label><input type="text" class="form-control" placeholder="e.g. Maria's Law Office"></div>
-    <div class="form-group"><label>Description</label><textarea class="form-control" rows="3" placeholder="Brief description of your service or organization"></textarea></div>
-    <div class="form-group"><label>Location (City / Quadrant)</label><input type="text" class="form-control" placeholder="e.g. NE Calgary, Calgary AB"></div>
-    <div class="form-group"><label>Website or Social Link (optional)</label><input type="text" class="form-control" placeholder="e.g. https://yoursite.com"></div>
-    <div class="form-group"><label>Contact Info</label><input type="text" class="form-control" placeholder="Email, phone, or Facebook/Instagram"></div>
-    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('addDirectoryModal')">Submit Listing</button>
   </div>
 </div>
 
