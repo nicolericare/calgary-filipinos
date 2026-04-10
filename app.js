@@ -138,21 +138,17 @@ async function handleDirectorySubmit() {
   let error;
 
   if (editId) {
-    ({ error } = await _supabase.from('directory_submissions').update(payload).eq('id', editId).eq('submitted_by', session?.user?.id));
-    if (!error) {
-      closeModal('addDirectoryModal');
-      const userId = session?.user?.id;
-      if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
-    }
+    ({ error } = await _supabase.from('directory_submissions').update(payload).eq('id', editId));
+    if (error) { alert('Error saving: ' + error.message); return; }
+    const userId = session?.user?.id;
+    closeModal('addDirectoryModal');
+    if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
   } else {
     ({ error } = await _supabase.from('directory_submissions').insert({ ...payload, submitted_by: session?.user?.id || null }));
-    if (!error) {
-      document.getElementById('dir-form-body').style.display = 'none';
-      document.getElementById('dir-success-msg').style.display = '';
-    }
+    if (error) { alert('Error submitting: ' + error.message); return; }
+    document.getElementById('dir-form-body').style.display = 'none';
+    document.getElementById('dir-success-msg').style.display = '';
   }
-
-  if (error) { alert('Error: ' + error.message); }
 }
 
 // Reset directory modal when closed
