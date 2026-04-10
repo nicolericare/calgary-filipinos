@@ -151,6 +151,7 @@ async function handleDirectorySubmit() {
     if (error) { alert('Error saving: ' + error.message); return; }
     const userId = session?.user?.id;
     closeModal('addDirectoryModal');
+    showToast('✅ Listing updated!');
     if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
   } else {
     ({ error } = await _supabase.from('directory_submissions').insert({ ...payload, submitted_by: session?.user?.id || null }));
@@ -198,6 +199,20 @@ function toggleOtherCategory(select) {
   const wrap = document.getElementById('dir-other-category-wrap');
   wrap.style.display = select.value === 'other' ? '' : 'none';
   if (select.value !== 'other') document.getElementById('dir-other-category-input').value = '';
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('app-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;z-index:9999;opacity:0;transition:opacity 0.2s;pointer-events:none;white-space:nowrap';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
 }
 
 function toggleDarkMode() {
