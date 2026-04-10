@@ -93,40 +93,8 @@
       <div><div class="section-title">Upcoming Events</div><div class="section-subtitle">Don't miss what's happening in the community</div></div>
       <button class="btn-sm" onclick="showSection('events'); setNavActiveByName('Events')">See all events →</button>
     </div>
-    <div class="cards-grid" style="margin-bottom:52px">
-      <div class="event-card">
-        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B18,#F7B73118)">🎊
-          <span class="event-date-chip">Apr 19</span><span class="event-cat-chip">Cultural</span>
-        </div>
-        <div class="event-body">
-          <div class="event-title">Filipino Cultural Night 2026</div>
-          <div class="event-meta-item">📍 BMO Centre, Calgary</div>
-          <div class="event-meta-item">🕕 6:00 PM – 11:00 PM · $15/person</div>
-        </div>
-        <div class="event-footer"><span class="event-rsvp">👥 248 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-      <div class="event-card">
-        <div class="event-img" style="background:linear-gradient(135deg,#CE112618,#F7B73118)">🏀
-          <span class="event-date-chip">Apr 26</span><span class="event-cat-chip">Sports</span>
-        </div>
-        <div class="event-body">
-          <div class="event-title">Pinoy Basketball Invitational</div>
-          <div class="event-meta-item">📍 Southland Leisure Centre</div>
-          <div class="event-meta-item">🕗 7:00 AM – 6:00 PM · Free</div>
-        </div>
-        <div class="event-footer"><span class="event-rsvp">👥 120 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-      <div class="event-card">
-        <div class="event-img" style="background:linear-gradient(135deg,#2D5BA818,#F7B73118)">🍱
-          <span class="event-date-chip">May 3</span><span class="event-cat-chip">Food</span>
-        </div>
-        <div class="event-body">
-          <div class="event-title">Fiesta Filipino Food Festival</div>
-          <div class="event-meta-item">📍 Prince's Island Park</div>
-          <div class="event-meta-item">🕛 12:00 PM – 8:00 PM · Free entry</div>
-        </div>
-        <div class="event-footer"><span class="event-rsvp">👥 410 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
+    <div class="cards-grid" id="home-events-grid" style="margin-bottom:52px">
+      <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--gray-400);font-size:14px">Loading events...</div>
     </div>
 
     <!-- Featured Marketplace -->
@@ -181,61 +149,7 @@
       <div class="chip" onclick="filterChip(this,'events-grid','Religious')">✝️ Religious</div>
     </div>
     <div id="events-grid" class="cards-grid">
-
-      <div class="event-card" data-cat="Cultural">
-        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B14,#F7B73120)">🎊<span class="event-date-chip">Apr 19</span><span class="event-cat-chip">Cultural</span></div>
-        <div class="event-body"><div class="event-title">Filipino Cultural Night 2026</div><div class="event-meta-item">📍 BMO Centre, Calgary</div><div class="event-meta-item">🕕 6:00 PM – 11:00 PM</div><div class="event-meta-item">🎟 $15 / person</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 248 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Sports">
-        <div class="event-img" style="background:linear-gradient(135deg,#CE112614,#F7B73120)">🏀<span class="event-date-chip">Apr 26</span><span class="event-cat-chip">Sports</span></div>
-        <div class="event-body"><div class="event-title">Pinoy Basketball Invitational</div><div class="event-meta-item">📍 Southland Leisure Centre</div><div class="event-meta-item">🕗 7:00 AM – 6:00 PM</div><div class="event-meta-item">🎟 Free</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 120 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Cultural">
-        <div class="event-img" style="background:linear-gradient(135deg,#2D5BA814,#F7B73120)">🎪<span class="event-date-chip">Aug 29</span><span class="event-cat-chip">Cultural</span></div>
-        <div class="event-body"><div class="event-title">Fiesta Filipino Calgary</div><div class="event-meta-item">📍 Olympic Plaza, Downtown Calgary</div><div class="event-meta-item">🗓 Aug 29 – Sep 1 · Free entry</div><div class="event-meta-item">🎟 80,000+ attendees · 300+ performers</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 Calgary's biggest Filipino fest</span><button class="btn-sm">Learn More</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Community">
-        <div class="event-img" style="background:linear-gradient(135deg,#F7B73114,#1B3A6B14)">🤝<span class="event-date-chip">May 10</span><span class="event-cat-chip">Community</span></div>
-        <div class="event-body"><div class="event-title">Newcomers Welcome Night</div><div class="event-meta-item">📍 Filipino Canadian Society Hall</div><div class="event-meta-item">🕕 5:30 PM – 8:30 PM</div><div class="event-meta-item">🎟 Free</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 65 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Religious">
-        <div class="event-img" style="background:linear-gradient(135deg,#F7B73114,#FFFFFF)">✝️<span class="event-date-chip">May 15</span><span class="event-cat-chip">Religious</span></div>
-        <div class="event-body"><div class="event-title">Simbahan Community Mass &amp; Lunch</div><div class="event-meta-item">📍 St. Anthony Church, NW</div><div class="event-meta-item">🕙 10:00 AM – 1:00 PM</div><div class="event-meta-item">🎟 Free</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 155 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Professional">
-        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B14,#2D5BA814)">💼<span class="event-date-chip">May 22</span><span class="event-cat-chip">Professional</span></div>
-        <div class="event-body"><div class="event-title">Filipino Professionals Network Mixer</div><div class="event-meta-item">📍 WeWork Downtown Calgary</div><div class="event-meta-item">🕕 5:00 PM – 8:00 PM</div><div class="event-meta-item">🎟 $10</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 92 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Cultural">
-        <div class="event-img" style="background:linear-gradient(135deg,#CE112614,#F7B73120)">🇵🇭<span class="event-date-chip">Jun 12</span><span class="event-cat-chip">Cultural</span></div>
-        <div class="event-body"><div class="event-title">Philippine Independence Day Gala</div><div class="event-meta-item">📍 Marriott Calgary Downtown</div><div class="event-meta-item">🕕 6:00 PM – 12:00 AM</div><div class="event-meta-item">🎟 $65 / person</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 380 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Sports">
-        <div class="event-img" style="background:linear-gradient(135deg,#1B3A6B14,#CE112614)">🏐<span class="event-date-chip">Jun 7</span><span class="event-cat-chip">Sports</span></div>
-        <div class="event-body"><div class="event-title">Pinoy Volleyball Summer League</div><div class="event-meta-item">📍 Canyon Meadows Rec Centre</div><div class="event-meta-item">🕙 9:00 AM – 4:00 PM</div><div class="event-meta-item">🎟 $20 / team</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 88 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
-      <div class="event-card" data-cat="Community">
-        <div class="event-img" style="background:linear-gradient(135deg,#F7B73114,#1B3A6B14)">👨‍👩‍👧<span class="event-date-chip">Jun 21</span><span class="event-cat-chip">Community</span></div>
-        <div class="event-body"><div class="event-title">Filipino Family Fun Day</div><div class="event-meta-item">📍 Nose Hill Park</div><div class="event-meta-item">🕛 11:00 AM – 5:00 PM</div><div class="event-meta-item">🎟 Free</div></div>
-        <div class="event-footer"><span class="event-rsvp">👥 290 going</span><button class="btn-sm">RSVP</button></div>
-      </div>
-
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-400);font-size:14px">Loading events...</div>
     </div>
   </div>
 </div>
@@ -898,15 +812,26 @@
 <div class="modal-overlay" id="addEventModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Submit an Event 🎉</div><button class="modal-close" onclick="closeModal('addEventModal')">✕</button></div>
-    <div class="form-group"><label>Event Name</label><input type="text" class="form-control" placeholder="e.g. Fiesta Night 2026"></div>
-    <div class="grid-2">
-      <div class="form-group"><label>Date</label><input type="date" class="form-control"></div>
-      <div class="form-group"><label>Time</label><input type="time" class="form-control"></div>
-    </div>
-    <div class="form-group"><label>Location / Venue</label><input type="text" class="form-control" placeholder="Venue name &amp; address"></div>
-    <div class="form-group"><label>Category</label><select class="form-control"><option>Cultural</option><option>Sports</option><option>Food &amp; Dining</option><option>Community</option><option>Professional</option><option>Religious</option></select></div>
-    <div class="form-group"><label>Ticket Price</label><input type="text" class="form-control" placeholder="e.g. Free, $15, $65"></div>
-    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px" onclick="closeModal('addEventModal')">Submit Event</button>
+    <form onsubmit="handleSubmitEvent(event)">
+      <div class="form-group"><label>Event Name</label><input id="evt-title" type="text" class="form-control" placeholder="e.g. Fiesta Night 2026" required></div>
+      <div class="grid-2">
+        <div class="form-group"><label>Date</label><input id="evt-date" type="date" class="form-control" required></div>
+        <div class="form-group"><label>Category</label>
+          <select id="evt-category" class="form-control">
+            <option>Cultural</option><option>Sports</option><option>Food</option><option>Community</option><option>Professional</option><option>Religious</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>Start Time</label><input id="evt-time-start" type="time" class="form-control"></div>
+        <div class="form-group"><label>End Time</label><input id="evt-time-end" type="time" class="form-control"></div>
+      </div>
+      <div class="form-group"><label>Location / Venue</label><input id="evt-location" type="text" class="form-control" placeholder="Venue name &amp; address"></div>
+      <div class="form-group"><label>Ticket Price</label><input id="evt-price" type="text" class="form-control" placeholder="e.g. Free, $15, $65"></div>
+      <div class="form-group"><label>Description</label><textarea id="evt-desc" class="form-control" rows="3" placeholder="Tell people what this event is about..."></textarea></div>
+      <button type="submit" class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px">Submit Event 🎉</button>
+    </form>
+    <p style="font-size:12px;color:var(--gray-400);text-align:center;margin-top:12px">You must be logged in to submit an event.</p>
   </div>
 </div>
 

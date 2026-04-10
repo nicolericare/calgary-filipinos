@@ -387,6 +387,98 @@ async function submitReview(event) {
   loadBusinessReviews(_currentBizId);
 }
 
+// ── Events ───────────────────────────────────────────────────────
+
+const EVENT_GRADIENTS = {
+  Cultural:     'linear-gradient(135deg,#1B3A6B14,#F7B73120)',
+  Sports:       'linear-gradient(135deg,#CE112614,#F7B73120)',
+  Food:         'linear-gradient(135deg,#2D5BA814,#F7B73120)',
+  Community:    'linear-gradient(135deg,#F7B73114,#1B3A6B14)',
+  Professional: 'linear-gradient(135deg,#1B3A6B14,#2D5BA814)',
+  Religious:    'linear-gradient(135deg,#F7B73114,#FFF8F0)',
+};
+
+let _allEvents = [];
+
+function renderEventCard(e) {
+  const d = new Date(e.event_date + 'T00:00:00');
+  const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+  const bg = EVENT_GRADIENTS[e.category] || EVENT_GRADIENTS.Community;
+  const timeStr = e.time_start ? `🕐 ${e.time_start}${e.time_end ? ' – ' + e.time_end : ''}` : '';
+  const desc = e.description ? e.description.substring(0, 80) + (e.description.length > 80 ? '...' : '') : '';
+  return `
+    <div class="event-card" data-cat="${e.category}">
+      <div class="event-img" style="background:${bg}">${e.emoji || '🎉'}
+        <span class="event-date-chip">${dateStr}</span>
+        <span class="event-cat-chip">${e.category}</span>
+      </div>
+      <div class="event-body">
+        <div class="event-title">${e.title}</div>
+        ${e.location ? `<div class="event-meta-item">📍 ${e.location}</div>` : ''}
+        ${timeStr ? `<div class="event-meta-item">${timeStr}</div>` : ''}
+        <div class="event-meta-item">🎟 ${e.price || 'Free'}</div>
+      </div>
+      <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span><button class="btn-sm">RSVP</button></div>
+    </div>`;
+}
+
+async function loadEvents() {
+  const { data, error } = await _supabase
+    .from('events')
+    .select('*')
+    .order('event_date', { ascending: true });
+
+  const grid = document.getElementById('events-grid');
+  if (error || !data || data.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-400)">No events found.</div>';
+    return;
+  }
+  _allEvents = data;
+  grid.innerHTML = data.map(renderEventCard).join('');
+
+  // also update home page upcoming events (next 3)
+  const homeGrid = document.getElementById('home-events-grid');
+  if (homeGrid) {
+    const upcoming = data.slice(0, 3);
+    homeGrid.innerHTML = upcoming.map(renderEventCard).join('');
+  }
+}
+
+async function handleSubmitEvent(event) {
+  event.preventDefault();
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { alert('Please log in to submit an event.'); return; }
+
+  const timeStart = document.getElementById('evt-time-start').value;
+  const timeEnd   = document.getElementById('evt-time-end').value;
+
+  function fmtTime(t) {
+    if (!t) return null;
+    const [h, m] = t.split(':');
+    const hr = parseInt(h);
+    return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
+  }
+
+  const { error } = await _supabase.from('events').insert({
+    title:        document.getElementById('evt-title').value.trim(),
+    category:     document.getElementById('evt-category').value,
+    event_date:   document.getElementById('evt-date').value,
+    time_start:   fmtTime(timeStart),
+    time_end:     fmtTime(timeEnd),
+    location:     document.getElementById('evt-location').value.trim(),
+    price:        document.getElementById('evt-price').value.trim() || 'Free',
+    description:  document.getElementById('evt-desc').value.trim(),
+    emoji:        '🎉',
+    submitted_by: session.user.id
+  });
+
+  if (error) { alert('Error submitting event: ' + error.message); return; }
+
+  closeModal('addEventModal');
+  alert('Event submitted! 🎉');
+  loadEvents();
+}
+
 // ── Auth & Profile ───────────────────────────────────────────────
 
 async function initAuth() {
@@ -518,7 +610,10 @@ async function handleSignOut() {
   setNavActiveByName('Home');
 }
 
-document.addEventListener('DOMContentLoaded', initAuth);
+document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
+  loadEvents();
+});
 
 // ── Sign Up / Log In ─────────────────────────────────────────────
 
