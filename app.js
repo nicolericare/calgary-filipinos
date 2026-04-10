@@ -185,9 +185,9 @@ async function handleAvatarUpload(input) {
   if (!session) return;
 
   const ext = file.name.split('.').pop();
-  const path = `${session.user.id}/avatar.${ext}`;
+  const path = `${session.user.id}/avatar_${Date.now()}.${ext}`;
 
-  const { error: upErr } = await _supabase.storage.from('avatars').upload(path, file, { upsert: true });
+  const { error: upErr } = await _supabase.storage.from('avatars').upload(path, file);
   if (upErr) { alert('Upload error: ' + upErr.message); return; }
 
   const { data: { publicUrl } } = _supabase.storage.from('avatars').getPublicUrl(path);
