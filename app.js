@@ -179,6 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const origClose = window.closeModal;
   window.closeModal = function(id) {
     origClose(id);
+    if (id === 'addEventModal') {
+      document.getElementById('evt-form-body').style.display = '';
+      document.getElementById('evt-success-msg').style.display = 'none';
+    }
     if (id === 'addDirectoryModal') {
       document.getElementById('dir-form-body').style.display = '';
       document.getElementById('dir-success-msg').style.display = 'none';
@@ -664,8 +668,8 @@ async function handleSubmitEvent(event) {
 
   if (error) { alert('Error submitting event: ' + error.message); return; }
 
-  closeModal('addEventModal');
-  alert('Event submitted! 🎉');
+  document.getElementById('evt-form-body').style.display = 'none';
+  document.getElementById('evt-success-msg').style.display = '';
   loadEvents();
 }
 
