@@ -554,7 +554,7 @@ let _allEvents = [];
 const _myListings = {};
 const _myEvents = {};
 
-function renderEventCard(e) {
+function renderEventCard(e, poster) {
   const dateVal = e.date || e.event_date;
   const d = new Date(dateVal + 'T00:00:00');
   const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
@@ -563,6 +563,17 @@ function renderEventCard(e) {
   const rsvpBtn = e.external_url
     ? `<a href="${e.external_url}" target="_blank" class="btn-sm" style="text-decoration:none">RSVP</a>`
     : `<button class="btn-sm" id="rsvp-btn-${e.id}" onclick="handleRSVP('${e.id}')">RSVP</button>`;
+
+  let posterHtml = '';
+  if (poster) {
+    const name = poster.full_name || 'Community Member';
+    const avatar = poster.avatar_url ? `<img src="${poster.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px">` : `<span style="width:24px;height:24px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:6px">👤</span>`;
+    const connectBtn = poster.contact_link
+      ? `<a href="${poster.contact_link.startsWith('http') ? poster.contact_link : 'https://' + poster.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;padding:3px 10px;font-size:11px">Connect</a>`
+      : '';
+    posterHtml = `<div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-500)">${avatar}<span>${name}</span>${connectBtn}</div>`;
+  }
+
   return `
     <div class="event-card" data-cat="${e.category}">
       <div class="event-img" style="background:${bg}">🎉
@@ -575,6 +586,7 @@ function renderEventCard(e) {
         <div class="event-meta-item">🎟 Free</div>
       </div>
       <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span>${rsvpBtn}</div>
+      ${posterHtml}
     </div>`;
 }
 
@@ -625,13 +637,22 @@ async function loadEvents() {
     return;
   }
   _allEvents = data;
-  grid.innerHTML = data.map(renderEventCard).join('');
+
+  // Fetch poster profiles for events that have submitted_by
+  const posterIds = [...new Set(data.filter(e => e.submitted_by).map(e => e.submitted_by))];
+  const posterMap = {};
+  if (posterIds.length > 0) {
+    const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, contact_link').in('id', posterIds);
+    if (profiles) profiles.forEach(p => { posterMap[p.id] = p; });
+  }
+
+  grid.innerHTML = data.map(e => renderEventCard(e, posterMap[e.submitted_by])).join('');
 
   // also update home page upcoming events (next 3)
   const homeGrid = document.getElementById('home-events-grid');
   if (homeGrid) {
     const upcoming = data.slice(0, 3);
-    homeGrid.innerHTML = upcoming.map(renderEventCard).join('');
+    homeGrid.innerHTML = upcoming.map(e => renderEventCard(e, posterMap[e.submitted_by])).join('');
   }
 
   // Mark already RSVP'd events
@@ -762,6 +783,7 @@ async function loadProfile(user) {
   document.getElementById('edit-neighbourhood').value = p.neighbourhood || '';
   document.getElementById('edit-bio').value = p.bio || '';
   document.getElementById('edit-occupation').value = p.occupation || '';
+  document.getElementById('edit-contact-link').value = p.contact_link || '';
 
   loadMySubmissions(user.id);
 }
@@ -888,7 +910,8 @@ async function handleProfileSave(event) {
     hometown: document.getElementById('edit-hometown').value.trim(),
     neighbourhood: document.getElementById('edit-neighbourhood').value.trim(),
     bio: document.getElementById('edit-bio').value.trim(),
-    occupation: document.getElementById('edit-occupation').value.trim(),
+    occupation:    document.getElementById('edit-occupation').value.trim(),
+    contact_link:  document.getElementById('edit-contact-link').value.trim() || null,
     updated_at: new Date().toISOString()
   };
 
