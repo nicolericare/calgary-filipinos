@@ -129,8 +129,12 @@ async function handleDirectorySubmit() {
   if (!category) { alert('Please select a category.'); return; }
   if (!name) { alert('Please enter a name or business name.'); return; }
 
+  const btn = document.getElementById('dir-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
   const { data: { session } } = await _supabase.auth.getSession();
-  const editId = document.getElementById('dir-edit-id').value;
+  const editId = document.getElementById('dir-edit-id').value.trim();
 
   const payload = {
     category,
@@ -148,17 +152,19 @@ async function handleDirectorySubmit() {
 
   if (editId) {
     ({ error } = await _supabase.from('directory_submissions').update(payload).eq('id', editId));
-    if (error) { alert('Error saving: ' + error.message); return; }
+    if (error) { btn.disabled = false; btn.textContent = 'Save Changes'; alert('Error saving: ' + error.message); return; }
     const userId = session?.user?.id;
     closeModal('addDirectoryModal');
     showToast('✅ Listing updated!');
     if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
   } else {
     ({ error } = await _supabase.from('directory_submissions').insert({ ...payload, submitted_by: session?.user?.id || null }));
-    if (error) { alert('Error submitting: ' + error.message); return; }
+    if (error) { btn.disabled = false; btn.textContent = 'Submit Listing'; alert('Error submitting: ' + error.message); return; }
     document.getElementById('dir-form-body').style.display = 'none';
     document.getElementById('dir-success-msg').style.display = '';
   }
+  btn.disabled = false;
+  btn.textContent = editId ? 'Save Changes' : 'Submit Listing';
 }
 
 // Reset directory modal when closed
