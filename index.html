@@ -482,6 +482,7 @@
           <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
             <button class="btn-primary" onclick="toggleProfileEdit()" id="edit-profile-btn">Edit Profile</button>
             <button class="btn-outline" onclick="handleSignOut()">Sign Out</button>
+            <button class="btn-outline" style="color:#dc2626;border-color:#dc2626;font-size:13px" onclick="handleDeleteAccount()">Delete Account</button>
           </div>
         </div>
       </div>
@@ -517,6 +518,15 @@
           <div id="profile-display-bio" style="font-size:14px;color:var(--gray-600);line-height:1.7">No bio yet. Click Edit Profile to add one.</div>
           <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px" id="profile-tags"></div>
         </div>
+      </div>
+
+      <!-- Connection Requests -->
+      <div class="profile-card" id="pending-requests-card" style="display:none">
+        <div class="profile-card-title" style="display:flex;align-items:center;gap:8px">
+          Connection Requests
+          <span id="pending-requests-count" style="background:#ef4444;color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:1px 8px;line-height:1.6"></span>
+        </div>
+        <div id="pending-requests-list"></div>
       </div>
 
       <!-- My Submissions -->
@@ -664,6 +674,20 @@
     </div>
 
     <p style="font-size:12px;color:var(--gray-400);text-align:center;margin-top:12px">Free to join. Your info is only shared with your permission.</p>
+
+    <!-- Welcome message (shown after sign up) -->
+    <div id="signup-welcome-msg" style="display:none;text-align:center;padding:16px 0">
+      <div style="font-size:52px;margin-bottom:16px">🇵🇭</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px">Mabuhay, <span id="welcome-name"></span>!</div>
+      <div style="font-size:15px;color:var(--gray-600);line-height:1.75;margin-bottom:20px">
+        Welcome to <strong>Calgary Filipinos</strong> — your online home away from home.<br><br>
+        Discover Filipino events, find kababayan-owned businesses, connect with people from your hometown, and be part of our growing community. 💛
+      </div>
+      <div style="font-size:13px;color:var(--gray-400);margin-bottom:24px">📬 Check your email to confirm your account, then log in below.</div>
+      <button class="btn-primary" style="padding:12px 32px;border-radius:8px;font-size:15px;display:block;width:100%;margin-bottom:10px" onclick="dismissWelcome()">Log In Now →</button>
+      <button class="btn-outline" style="padding:10px 24px;border-radius:8px;font-size:14px;width:100%" onclick="closeModal('joinModal')">I'll log in later</button>
+    </div>
+  </div>
   </div>
 </div>
 

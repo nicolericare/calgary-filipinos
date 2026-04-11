@@ -179,6 +179,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const origClose = window.closeModal;
   window.closeModal = function(id) {
     origClose(id);
+    if (id === 'joinModal') {
+      document.getElementById('join-modal-title').style.display = '';
+      document.querySelector('#joinModal .tab-nav').style.display = '';
+      document.getElementById('auth-signup').style.display = '';
+      document.getElementById('signup-welcome-msg').style.display = 'none';
+    }
     if (id === 'addEventModal') {
       document.getElementById('evt-form-body').style.display = '';
       document.getElementById('evt-success-msg').style.display = 'none';
@@ -568,9 +574,7 @@ function renderEventCard(e, poster) {
   if (poster) {
     const name = poster.full_name || 'Community Member';
     const avatar = poster.avatar_url ? `<img src="${poster.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px">` : `<span style="width:24px;height:24px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:6px">👤</span>`;
-    const connectBtn = poster.contact_link
-      ? `<a href="${poster.contact_link.startsWith('http') ? poster.contact_link : 'https://' + poster.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;padding:3px 10px;font-size:11px">Connect</a>`
-      : '';
+    const connectBtn = `<button class="btn-sm connect-event-btn" id="connect-btn-${e.id}" data-poster-id="${poster.id}" data-contact="${poster.contact_link || ''}" onclick="sendConnectRequest('${poster.id}','connect-btn-${e.id}')" style="padding:3px 10px;font-size:11px;margin-left:auto">Connect</button>`;
     posterHtml = `<div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-500)">${avatar}<span>${name}</span>${connectBtn}</div>`;
   }
 
@@ -624,6 +628,114 @@ async function handleRSVP(eventId) {
   showToast("🎉 You're going!");
 }
 
+async function sendConnectRequest(toUserId, btnId) {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { openModal('joinModal'); return; }
+
+  const btn = document.getElementById(btnId);
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+  // Check existing request
+  const { data: existing } = await _supabase
+    .from('connection_requests')
+    .select('id, status')
+    .eq('from_user_id', session.user.id)
+    .eq('to_user_id', toUserId)
+    .maybeSingle();
+
+  if (existing) {
+    if (existing.status === 'pending') {
+      showToast('Request already sent — waiting for approval.');
+      if (btn) { btn.textContent = 'Requested'; btn.style.opacity = '0.6'; }
+      return;
+    }
+    if (existing.status === 'accepted') {
+      const contact = btn?.dataset.contact;
+      showToast('You are already connected!');
+      if (btn) {
+        btn.textContent = '✓ Connected';
+        btn.style.background = 'var(--green, #22c55e)';
+        btn.style.color = '#fff';
+        btn.disabled = false;
+        if (contact) btn.onclick = () => window.open(contact.startsWith('http') ? contact : 'https://' + contact, '_blank');
+      }
+      return;
+    }
+  }
+
+  const { error } = await _supabase.from('connection_requests').insert({
+    from_user_id: session.user.id,
+    to_user_id: toUserId
+  });
+
+  if (error) {
+    alert('Error sending request: ' + error.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'Connect'; }
+    return;
+  }
+
+  showToast('👋 Connection request sent!');
+  if (btn) { btn.textContent = 'Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
+}
+
+async function loadPendingRequests(userId) {
+  const card = document.getElementById('pending-requests-card');
+  const list = document.getElementById('pending-requests-list');
+  if (!card || !list) return;
+
+  const { data, error } = await _supabase
+    .from('connection_requests')
+    .select('id, from_user_id, created_at')
+    .eq('to_user_id', userId)
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = '';
+
+  // Fetch senders' profiles
+  const fromIds = data.map(r => r.from_user_id);
+  const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url').in('id', fromIds);
+  const profileMap = {};
+  if (profiles) profiles.forEach(p => { profileMap[p.id] = p; });
+
+  const countEl = document.getElementById('pending-requests-count');
+  if (countEl) countEl.textContent = data.length;
+
+  list.innerHTML = data.map(r => {
+    const p = profileMap[r.from_user_id] || {};
+    const name = p.full_name || 'Community Member';
+    const avatar = p.avatar_url
+      ? `<img src="${p.avatar_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`
+      : `<span style="width:32px;height:32px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:16px">👤</span>`;
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+        ${avatar}
+        <span style="flex:1;font-size:14px;font-weight:500">${name}</span>
+        <button class="btn-sm" style="background:#22c55e;color:#fff;border:none" onclick="acceptRequest('${r.id}','${userId}')">Accept</button>
+        <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="declineRequest('${r.id}','${userId}')">Decline</button>
+      </div>`;
+  }).join('');
+}
+
+async function acceptRequest(id, userId) {
+  const { error } = await _supabase.from('connection_requests').update({ status: 'accepted' }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('✅ Connection accepted!');
+  loadPendingRequests(userId);
+}
+
+async function declineRequest(id, userId) {
+  const { error } = await _supabase.from('connection_requests').update({ status: 'declined' }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Request declined.');
+  loadPendingRequests(userId);
+}
+
 async function loadEvents() {
   const { data, error } = await _supabase
     .from('events')
@@ -655,7 +767,7 @@ async function loadEvents() {
     homeGrid.innerHTML = upcoming.map(e => renderEventCard(e, posterMap[e.submitted_by])).join('');
   }
 
-  // Mark already RSVP'd events
+  // Mark already RSVP'd events + check connection statuses
   const { data: { session } } = await _supabase.auth.getSession();
   if (session) {
     const { data: rsvps } = await _supabase.from('rsvps').select('event_id').eq('user_id', session.user.id);
@@ -669,6 +781,38 @@ async function loadEvents() {
         }
       });
     }
+
+    // Update Connect button states based on existing requests
+    const allPosterIds = [...new Set(data.filter(e => e.submitted_by).map(e => e.submitted_by))];
+    if (allPosterIds.length > 0) {
+      const { data: connections } = await _supabase.from('connection_requests')
+        .select('to_user_id, status')
+        .eq('from_user_id', session.user.id)
+        .in('to_user_id', allPosterIds);
+      if (connections) {
+        connections.forEach(conn => {
+          document.querySelectorAll(`.connect-event-btn[data-poster-id="${conn.to_user_id}"]`).forEach(btn => {
+            if (conn.status === 'pending') {
+              btn.textContent = 'Requested';
+              btn.disabled = true;
+              btn.style.opacity = '0.6';
+            } else if (conn.status === 'accepted') {
+              const contact = btn.dataset.contact;
+              btn.textContent = '✓ Connected';
+              btn.style.background = 'var(--green, #22c55e)';
+              btn.style.color = '#fff';
+              btn.disabled = false;
+              if (contact) {
+                btn.onclick = () => window.open(contact.startsWith('http') ? contact : 'https://' + contact, '_blank');
+              }
+            }
+          });
+        });
+      }
+    }
+
+    // Hide own Connect buttons (don't show Connect on your own events)
+    document.querySelectorAll(`.connect-event-btn[data-poster-id="${session.user.id}"]`).forEach(btn => btn.remove());
   }
 }
 
@@ -768,13 +912,19 @@ async function loadProfile(user) {
   if (p.hometown) tagsEl.innerHTML += `<span class="tag tag-gold">From ${p.hometown}</span>`;
   if (p.neighbourhood) tagsEl.innerHTML += `<span class="tag">${p.neighbourhood}</span>`;
 
+  const img = document.getElementById('profile-avatar-img');
+  const placeholder = document.getElementById('profile-avatar-placeholder');
+  const navWrap = document.getElementById('nav-avatar-wrap');
   if (p.avatar_url) {
-    const img = document.getElementById('profile-avatar-img');
     img.src = p.avatar_url;
     img.classList.add('loaded');
-    document.getElementById('profile-avatar-placeholder').style.display = 'none';
-    const navWrap = document.getElementById('nav-avatar-wrap');
+    placeholder.style.display = 'none';
     if (navWrap) navWrap.innerHTML = `<img src="${p.avatar_url}" alt="">`;
+  } else {
+    img.src = '';
+    img.classList.remove('loaded');
+    placeholder.style.display = '';
+    if (navWrap) navWrap.innerHTML = '';
   }
 
   document.getElementById('edit-name').value = p.full_name || '';
@@ -786,6 +936,7 @@ async function loadProfile(user) {
   document.getElementById('edit-contact-link').value = p.contact_link || '';
 
   loadMySubmissions(user.id);
+  loadPendingRequests(user.id);
 }
 
 async function loadMySubmissions(userId) {
@@ -947,6 +1098,35 @@ async function handleAvatarUpload(input) {
   if (navWrap) navWrap.innerHTML = `<img src="${bust}" alt="">`;
 }
 
+async function handleDeleteAccount() {
+  if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
+  if (!confirm('Last chance — all your listings, events, and profile data will be permanently deleted.')) return;
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) return;
+
+  const userId = session.user.id;
+
+  // Delete user data first
+  await Promise.all([
+    _supabase.from('directory_submissions').delete().eq('submitted_by', userId),
+    _supabase.from('events').delete().eq('submitted_by', userId),
+    _supabase.from('reviews').delete().eq('user_id', userId),
+    _supabase.from('rsvps').delete().eq('user_id', userId),
+    _supabase.from('connection_requests').delete().or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`),
+    _supabase.from('profiles').delete().eq('id', userId),
+  ]);
+
+  // Delete auth user via database function
+  const { error } = await _supabase.rpc('delete_own_account');
+  if (error) { alert('Error deleting account: ' + error.message); return; }
+
+  await _supabase.auth.signOut();
+  showSection('home');
+  setNavActiveByName('Home');
+  showToast('Your account has been deleted.');
+}
+
 async function handleSignOut() {
   await _supabase.auth.signOut();
   showSection('home');
@@ -1065,6 +1245,13 @@ async function loadDirectorySubmissions() {
 
 // ── Sign Up / Log In ─────────────────────────────────────────────
 
+function dismissWelcome() {
+  document.getElementById('signup-welcome-msg').style.display = 'none';
+  document.getElementById('join-modal-title').style.display = '';
+  document.querySelector('#joinModal .tab-nav').style.display = '';
+  switchAuthTab('login');
+}
+
 function switchAuthTab(tab) {
   document.getElementById('auth-signup').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
@@ -1102,6 +1289,10 @@ async function handleSignUp(event) {
     hometown: hometown + (neighbourhood ? ' · ' + neighbourhood : '')
   });
 
-  alert('Welcome! Check your email to confirm your account 🎉');
-  closeModal('joinModal');
+  // Show welcome screen inside the modal
+  document.getElementById('join-modal-title').style.display = 'none';
+  document.querySelector('#joinModal .tab-nav').style.display = 'none';
+  document.getElementById('auth-signup').style.display = 'none';
+  document.getElementById('welcome-name').textContent = name || 'Friend';
+  document.getElementById('signup-welcome-msg').style.display = '';
 }
