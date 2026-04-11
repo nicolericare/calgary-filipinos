@@ -764,6 +764,7 @@ async function deleteMyListing(id, userId) {
   if (!confirm('Delete this listing?')) return;
   const { error } = await _supabase.from('directory_submissions').delete().eq('id', id).eq('submitted_by', userId);
   if (error) { alert('Error deleting: ' + error.message); return; }
+  showToast('🗑️ Listing deleted.');
   loadMySubmissions(userId);
   loadDirectorySubmissions();
 }
