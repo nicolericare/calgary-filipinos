@@ -665,6 +665,7 @@
 <div class="modal-overlay" id="addEventModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Submit an Event 🎉</div><button class="modal-close" onclick="closeModal('addEventModal')">✕</button></div>
+    <input type="hidden" id="evt-edit-id">
     <div id="evt-form-body">
       <form onsubmit="handleSubmitEvent(event)">
         <div class="form-group"><label>Event Name</label><input id="evt-title" type="text" class="form-control" placeholder="e.g. Fiesta Night 2026" required></div>

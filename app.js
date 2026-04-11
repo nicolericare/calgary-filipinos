@@ -182,6 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id === 'addEventModal') {
       document.getElementById('evt-form-body').style.display = '';
       document.getElementById('evt-success-msg').style.display = 'none';
+      document.getElementById('evt-edit-id').value = '';
+      document.querySelector('#addEventModal .modal-header .modal-title').textContent = 'Submit an Event 🎉';
+      document.querySelector('#evt-form-body button[type="submit"]').textContent = 'Submit Event 🎉';
     }
     if (id === 'addDirectoryModal') {
       document.getElementById('dir-form-body').style.display = '';
@@ -544,6 +547,7 @@ const EVENT_GRADIENTS = {
 
 let _allEvents = [];
 const _myListings = {};
+const _myEvents = {};
 
 function renderEventCard(e) {
   const dateVal = e.date || e.event_date;
@@ -642,35 +646,49 @@ async function loadEvents() {
   }
 }
 
+function openEditEvent(id) {
+  const e = _myEvents[id];
+  if (!e) return;
+  document.getElementById('evt-edit-id').value = e.id;
+  document.getElementById('evt-title').value = e.title || '';
+  document.getElementById('evt-date').value = e.date || '';
+  document.getElementById('evt-category').value = e.category || 'Cultural';
+  document.getElementById('evt-location').value = e.location || '';
+  document.getElementById('evt-desc').value = e.description || '';
+  document.querySelector('#addEventModal .modal-header .modal-title').textContent = 'Edit Event ✏️';
+  document.querySelector('#evt-form-body button[type="submit"]').textContent = 'Save Changes';
+  openModal('addEventModal');
+}
+
 async function handleSubmitEvent(event) {
   event.preventDefault();
   const { data: { session } } = await _supabase.auth.getSession();
   if (!session) { alert('Please log in to submit an event.'); return; }
 
-  const timeStart = document.getElementById('evt-time-start').value;
-  const timeEnd   = document.getElementById('evt-time-end').value;
+  const editId = document.getElementById('evt-edit-id').value.trim();
+  const payload = {
+    title:       document.getElementById('evt-title').value.trim(),
+    category:    document.getElementById('evt-category').value,
+    date:        document.getElementById('evt-date').value,
+    location:    document.getElementById('evt-location').value.trim(),
+    description: document.getElementById('evt-desc').value.trim(),
+  };
 
-  function fmtTime(t) {
-    if (!t) return null;
-    const [h, m] = t.split(':');
-    const hr = parseInt(h);
-    return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
+  let error;
+  if (editId) {
+    ({ error } = await _supabase.from('events').update(payload).eq('id', editId).eq('submitted_by', session.user.id));
+    if (error) { alert('Error saving: ' + error.message); return; }
+    closeModal('addEventModal');
+    showToast('✅ Event updated!');
+    loadEvents();
+    loadMySubmissions(session.user.id);
+  } else {
+    ({ error } = await _supabase.from('events').insert({ ...payload, submitted_by: session.user.id }));
+    if (error) { alert('Error submitting event: ' + error.message); return; }
+    document.getElementById('evt-form-body').style.display = 'none';
+    document.getElementById('evt-success-msg').style.display = '';
+    loadEvents();
   }
-
-  const { error } = await _supabase.from('events').insert({
-    title:        document.getElementById('evt-title').value.trim(),
-    category:     document.getElementById('evt-category').value,
-    date:         document.getElementById('evt-date').value,
-    location:     document.getElementById('evt-location').value.trim(),
-    description:  document.getElementById('evt-desc').value.trim(),
-    submitted_by: session.user.id
-  });
-
-  if (error) { alert('Error submitting event: ' + error.message); return; }
-
-  document.getElementById('evt-form-body').style.display = 'none';
-  document.getElementById('evt-success-msg').style.display = '';
-  loadEvents();
 }
 
 // ── Auth & Profile ───────────────────────────────────────────────
@@ -786,14 +804,18 @@ async function loadMySubmissions(userId) {
   if (events.length > 0) {
     html += '<div style="font-weight:600;font-size:13px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px">Events</div>';
     events.forEach(e => {
+      _myEvents[e.id] = e;
       html += `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
           <div>
-            <div style="font-weight:600;font-size:14px">${e.emoji || '🎉'} ${e.title}</div>
+            <div style="font-weight:600;font-size:14px">🎉 ${e.title}</div>
             <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${e.date || ''} · ${e.location || ''}</div>
             <div style="font-size:11px;margin-top:4px;color:${e.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${e.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
           </div>
-          <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyEvent('${e.id}','${userId}')">Delete</button>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <button class="btn-sm" onclick="openEditEvent('${e.id}')">Edit</button>
+            <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="deleteMyEvent('${e.id}','${userId}')">Delete</button>
+          </div>
         </div>`;
     });
   }
