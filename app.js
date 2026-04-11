@@ -873,6 +873,10 @@ const DIR_CAT_MAP = {
   'Church':     { cat: 'Church',     emoji: '⛪',  bg: '#FFFBEB' },
   'Finance':    { cat: 'Finance',    emoji: '💰',  bg: '#FFFBEB' },
   'Services':   { cat: 'Services',   emoji: '🚗',  bg: '#F0FFF4' },
+  'Travel Agents':      { cat: 'Travel',   emoji: '✈️', bg: '#EFF6FF' },
+  'Newcomer Services':  { cat: 'Newcomer', emoji: '🆕', bg: '#F0FDF4' },
+  'Travel':    { cat: 'Travel',   emoji: '✈️', bg: '#EFF6FF' },
+  'Newcomer':  { cat: 'Newcomer', emoji: '🆕', bg: '#F0FDF4' },
 };
 
 function buildContactButtons(s) {
