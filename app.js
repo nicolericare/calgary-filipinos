@@ -542,22 +542,21 @@ let _allEvents = [];
 const _myListings = {};
 
 function renderEventCard(e) {
-  const d = new Date(e.event_date + 'T00:00:00');
+  const dateVal = e.date || e.event_date;
+  const d = new Date(dateVal + 'T00:00:00');
   const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
   const bg = EVENT_GRADIENTS[e.category] || EVENT_GRADIENTS.Community;
-  const timeStr = e.time_start ? `🕐 ${e.time_start}${e.time_end ? ' – ' + e.time_end : ''}` : '';
   const desc = e.description ? e.description.substring(0, 80) + (e.description.length > 80 ? '...' : '') : '';
   return `
     <div class="event-card" data-cat="${e.category}">
-      <div class="event-img" style="background:${bg}">${e.emoji || '🎉'}
+      <div class="event-img" style="background:${bg}">🎉
         <span class="event-date-chip">${dateStr}</span>
         <span class="event-cat-chip">${e.category}</span>
       </div>
       <div class="event-body">
         <div class="event-title">${e.title}</div>
         ${e.location ? `<div class="event-meta-item">📍 ${e.location}</div>` : ''}
-        ${timeStr ? `<div class="event-meta-item">${timeStr}</div>` : ''}
-        <div class="event-meta-item">🎟 ${e.price || 'Free'}</div>
+        <div class="event-meta-item">🎟 Free</div>
       </div>
       <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span><button class="btn-sm">RSVP</button></div>
     </div>`;
@@ -568,7 +567,7 @@ async function loadEvents() {
     .from('events')
     .select('*')
     .eq('approved', true)
-    .order('event_date', { ascending: true });
+    .order('date', { ascending: true });
 
   const grid = document.getElementById('events-grid');
   if (error || !data || data.length === 0) {
@@ -604,13 +603,9 @@ async function handleSubmitEvent(event) {
   const { error } = await _supabase.from('events').insert({
     title:        document.getElementById('evt-title').value.trim(),
     category:     document.getElementById('evt-category').value,
-    event_date:   document.getElementById('evt-date').value,
-    time_start:   fmtTime(timeStart),
-    time_end:     fmtTime(timeEnd),
+    date:         document.getElementById('evt-date').value,
     location:     document.getElementById('evt-location').value.trim(),
-    price:        document.getElementById('evt-price').value.trim() || 'Free',
     description:  document.getElementById('evt-desc').value.trim(),
-    emoji:        '🎉',
     submitted_by: session.user.id
   });
 
@@ -738,7 +733,7 @@ async function loadMySubmissions(userId) {
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:8px;gap:12px">
           <div>
             <div style="font-weight:600;font-size:14px">${e.emoji || '🎉'} ${e.title}</div>
-            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${e.event_date || ''} · ${e.location || ''}</div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${e.date || ''} · ${e.location || ''}</div>
             <div style="font-size:11px;margin-top:4px;color:${e.approved ? 'var(--green,#22c55e)' : 'var(--gold)'}">${e.approved ? '✓ Approved' : '⏳ Pending approval'}</div>
           </div>
           <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none;flex-shrink:0" onclick="deleteMyEvent('${e.id}','${userId}')">Delete</button>
