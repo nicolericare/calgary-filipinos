@@ -130,41 +130,47 @@ async function handleDirectorySubmit() {
   if (!name) { alert('Please enter a name or business name.'); return; }
 
   const btn = document.getElementById('dir-submit-btn');
+  const isEdit = !!document.getElementById('dir-edit-id').value.trim();
   btn.disabled = true;
   btn.textContent = 'Submitting...';
 
-  const { data: { session } } = await _supabase.auth.getSession();
-  const editId = document.getElementById('dir-edit-id').value.trim();
+  try {
+    const { data: { session } } = await _supabase.auth.getSession();
+    const editId = document.getElementById('dir-edit-id').value.trim();
 
-  const payload = {
-    category,
-    name,
-    description: document.getElementById('dir-desc').value.trim(),
-    location:    document.getElementById('dir-location').value.trim(),
-    website:     document.getElementById('dir-website').value.trim() || null,
-    instagram:   document.getElementById('dir-instagram').value.trim() || null,
-    facebook:    document.getElementById('dir-facebook').value.trim() || null,
-    contact:     document.getElementById('dir-contact').value.trim() || null,
-    emoji:       document.getElementById('dir-emoji').value || null,
-  };
+    const payload = {
+      category,
+      name,
+      description: document.getElementById('dir-desc').value.trim(),
+      location:    document.getElementById('dir-location').value.trim(),
+      website:     document.getElementById('dir-website').value.trim() || null,
+      instagram:   document.getElementById('dir-instagram').value.trim() || null,
+      facebook:    document.getElementById('dir-facebook').value.trim() || null,
+      contact:     document.getElementById('dir-contact').value.trim() || null,
+      emoji:       document.getElementById('dir-emoji').value || null,
+    };
 
-  let error;
+    let error;
 
-  if (editId) {
-    ({ error } = await _supabase.from('directory_submissions').update(payload).eq('id', editId));
-    if (error) { btn.disabled = false; btn.textContent = 'Save Changes'; alert('Error saving: ' + error.message); return; }
-    const userId = session?.user?.id;
-    closeModal('addDirectoryModal');
-    showToast('✅ Listing updated!');
-    if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
-  } else {
-    ({ error } = await _supabase.from('directory_submissions').insert({ ...payload, submitted_by: session?.user?.id || null }));
-    if (error) { btn.disabled = false; btn.textContent = 'Submit Listing'; alert('Error submitting: ' + error.message); return; }
-    document.getElementById('dir-form-body').style.display = 'none';
-    document.getElementById('dir-success-msg').style.display = '';
+    if (editId) {
+      ({ error } = await _supabase.from('directory_submissions').update(payload).eq('id', editId));
+      if (error) { alert('Error saving: ' + error.message); return; }
+      const userId = session?.user?.id;
+      closeModal('addDirectoryModal');
+      showToast('✅ Listing updated!');
+      if (userId) { loadMySubmissions(userId); loadDirectorySubmissions(); }
+    } else {
+      ({ error } = await _supabase.from('directory_submissions').insert({ ...payload, submitted_by: session?.user?.id || null }));
+      if (error) { alert('Error submitting: ' + error.message); return; }
+      document.getElementById('dir-form-body').style.display = 'none';
+      document.getElementById('dir-success-msg').style.display = '';
+    }
+  } catch (e) {
+    alert('Something went wrong: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = isEdit ? 'Save Changes' : 'Submit Listing';
   }
-  btn.disabled = false;
-  btn.textContent = editId ? 'Save Changes' : 'Submit Listing';
 }
 
 // Reset directory modal when closed
