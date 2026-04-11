@@ -543,6 +543,11 @@ const EVENT_GRADIENTS = {
   Community:    'linear-gradient(135deg,#F7B73114,#1B3A6B14)',
   Professional: 'linear-gradient(135deg,#1B3A6B14,#2D5BA814)',
   Religious:    'linear-gradient(135deg,#F7B73114,#FFF8F0)',
+  Concerts:     'linear-gradient(135deg,#6D28D914,#EC489920)',
+  Rave:         'linear-gradient(135deg,#7C3AED14,#F43F5E20)',
+  Hiking:       'linear-gradient(135deg,#16A34A14,#84CC1620)',
+  Running:      'linear-gradient(135deg,#EA580C14,#F97316 20)',
+  Networking:   'linear-gradient(135deg,#0EA5E914,#6366F120)',
 };
 
 let _allEvents = [];
