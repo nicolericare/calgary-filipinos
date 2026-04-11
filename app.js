@@ -547,6 +547,9 @@ function renderEventCard(e) {
   const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
   const bg = EVENT_GRADIENTS[e.category] || EVENT_GRADIENTS.Community;
   const desc = e.description ? e.description.substring(0, 80) + (e.description.length > 80 ? '...' : '') : '';
+  const rsvpBtn = e.external_url
+    ? `<a href="${e.external_url}" target="_blank" class="btn-sm" style="text-decoration:none">RSVP</a>`
+    : `<button class="btn-sm" id="rsvp-btn-${e.id}" onclick="handleRSVP('${e.id}')">RSVP</button>`;
   return `
     <div class="event-card" data-cat="${e.category}">
       <div class="event-img" style="background:${bg}">🎉
@@ -558,8 +561,42 @@ function renderEventCard(e) {
         ${e.location ? `<div class="event-meta-item">📍 ${e.location}</div>` : ''}
         <div class="event-meta-item">🎟 Free</div>
       </div>
-      <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span><button class="btn-sm">RSVP</button></div>
+      <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span>${rsvpBtn}</div>
     </div>`;
+}
+
+async function handleRSVP(eventId) {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) {
+    openModal('joinModal');
+    return;
+  }
+
+  const btn = document.getElementById(`rsvp-btn-${eventId}`);
+  btn.disabled = true;
+
+  // Check if already RSVP'd
+  const { data: existing } = await _supabase.from('rsvps').select('id').eq('event_id', eventId).eq('user_id', session.user.id).single();
+
+  if (existing) {
+    // Un-RSVP
+    await _supabase.from('rsvps').delete().eq('event_id', eventId).eq('user_id', session.user.id);
+    btn.textContent = 'RSVP';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.disabled = false;
+    showToast('RSVP removed.');
+    return;
+  }
+
+  const { error } = await _supabase.from('rsvps').insert({ event_id: eventId, user_id: session.user.id });
+  if (error) { alert('Error: ' + error.message); btn.disabled = false; return; }
+
+  btn.textContent = "✓ Going!";
+  btn.style.background = 'var(--green, #22c55e)';
+  btn.style.color = '#fff';
+  btn.disabled = false;
+  showToast("🎉 You're going!");
 }
 
 async function loadEvents() {
@@ -582,6 +619,22 @@ async function loadEvents() {
   if (homeGrid) {
     const upcoming = data.slice(0, 3);
     homeGrid.innerHTML = upcoming.map(renderEventCard).join('');
+  }
+
+  // Mark already RSVP'd events
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (session) {
+    const { data: rsvps } = await _supabase.from('rsvps').select('event_id').eq('user_id', session.user.id);
+    if (rsvps) {
+      rsvps.forEach(r => {
+        const btn = document.getElementById(`rsvp-btn-${r.event_id}`);
+        if (btn) {
+          btn.textContent = '✓ Going!';
+          btn.style.background = 'var(--green, #22c55e)';
+          btn.style.color = '#fff';
+        }
+      });
+    }
   }
 }
 
