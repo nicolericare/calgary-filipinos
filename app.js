@@ -717,8 +717,13 @@ async function loadMyConnections(userId) {
     return;
   }
 
-  const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, contact_link, occupation').in('id', connectedIds);
-  if (!profiles || profiles.length === 0) return;
+  const { data: profiles, error: profErr } = await _supabase.from('profiles').select('id, full_name, avatar_url, contact_link, occupation').in('id', connectedIds);
+  console.log('connectedIds:', connectedIds, 'profiles:', profiles, 'error:', profErr);
+
+  if (!profiles || profiles.length === 0) {
+    list.innerHTML = `<div style="font-size:14px;color:var(--gray-400);text-align:center;padding:24px 0">Connected (${connectedIds.length}) but no profile found.</div>`;
+    return;
+  }
 
   list.innerHTML = profiles.map(p => {
     const name = p.full_name || 'Community Member';
