@@ -1210,8 +1210,8 @@ async function handleProfileSave(event) {
   if (error) { alert('Error saving: ' + error.message); return; }
 
   showToast('✅ Profile saved!');
-  await loadProfile(session.user);
   toggleProfileEdit();
+  await loadProfile(session.user);
 }
 
 async function handleAvatarUpload(input) {
