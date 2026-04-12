@@ -781,19 +781,17 @@ async function loadMyConnections(userId) {
   list.innerHTML = profiles.map(p => {
     const name = p.full_name || 'Community Member';
     const avatar = p.avatar_url
-      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border-radius:50%">`
+      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`
       : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
     const contactBtn = p.contact_link
-      ? `<a href="${p.contact_link.startsWith('http') ? p.contact_link : 'https://' + p.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;flex-shrink:0">View Contact</a>`
-      : `<span class="btn-sm" style="opacity:0.4;cursor:default;flex-shrink:0">No contact set</span>`;
+      ? `<a href="${p.contact_link.startsWith('http') ? p.contact_link : 'https://' + p.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;flex-shrink:0">Contact</a>`
+      : '';
+    const msgBtn = `<button class="btn-sm" style="flex-shrink:0" onclick="event.stopPropagation();closeModal('connectionsModal');openChat('${p.id}')">💬</button>`;
     return `
       <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100);cursor:pointer" onclick="openMemberProfile('${p.id}')">
         ${avatar}
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:600">${name}</div>
-          ${p.occupation ? `<div style="font-size:12px;color:var(--gray-400)">${p.occupation}</div>` : ''}
-        </div>
-        ${contactBtn}
+        <div style="font-size:14px;font-weight:600;flex:1">${name}</div>
+        ${contactBtn}${msgBtn}
       </div>`;
   }).join('');
 }
