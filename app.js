@@ -1027,7 +1027,6 @@ async function loadProfile(user) {
   const p = data || {};
 
   document.getElementById('profile-display-name').textContent = p.full_name || user.email;
-  document.getElementById('profile-display-email').textContent = user.email;
 
   const loc = [];
   if (p.hometown) loc.push('🇵🇭 ' + p.hometown);
