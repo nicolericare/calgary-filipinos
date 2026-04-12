@@ -1000,12 +1000,6 @@ async function handleSubmitEvent(event) {
 // ── Auth & Profile ───────────────────────────────────────────────
 
 async function initAuth() {
-  const { data: { session } } = await _supabase.auth.getSession();
-  if (session) {
-    await loadProfile(session.user);
-    showNavProfile(session.user);
-  }
-
   _supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
       await loadProfile(session.user);
@@ -1013,7 +1007,6 @@ async function initAuth() {
     } else if (event === 'SIGNED_OUT') {
       showNavJoin();
     }
-    // ignore TOKEN_REFRESHED and other transient events that fire null session
   });
 }
 
