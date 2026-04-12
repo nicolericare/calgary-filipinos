@@ -678,6 +678,52 @@ async function sendConnectRequest(toUserId, btnId) {
   if (btn) { btn.textContent = 'Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
 }
 
+async function loadMyConnections(userId) {
+  const card = document.getElementById('my-connections-card');
+  const list = document.getElementById('my-connections-list');
+  if (!card || !list) return;
+
+  // Fetch accepted connections in both directions
+  const [sentRes, receivedRes] = await Promise.all([
+    _supabase.from('connection_requests').select('to_user_id').eq('from_user_id', userId).eq('status', 'accepted'),
+    _supabase.from('connection_requests').select('from_user_id').eq('to_user_id', userId).eq('status', 'accepted')
+  ]);
+
+  const connectedIds = [
+    ...(sentRes.data || []).map(r => r.to_user_id),
+    ...(receivedRes.data || []).map(r => r.from_user_id)
+  ];
+
+  if (connectedIds.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = '';
+
+  const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, contact_link, occupation').in('id', connectedIds);
+  if (!profiles || profiles.length === 0) { card.style.display = 'none'; return; }
+
+  list.innerHTML = profiles.map(p => {
+    const name = p.full_name || 'Community Member';
+    const avatar = p.avatar_url
+      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`
+      : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
+    const contactBtn = p.contact_link
+      ? `<a href="${p.contact_link.startsWith('http') ? p.contact_link : 'https://' + p.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;flex-shrink:0">View Contact</a>`
+      : `<span class="btn-sm" style="opacity:0.4;cursor:default;flex-shrink:0">No contact set</span>`;
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+        ${avatar}
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">${name}</div>
+          ${p.occupation ? `<div style="font-size:12px;color:var(--gray-400)">${p.occupation}</div>` : ''}
+        </div>
+        ${contactBtn}
+      </div>`;
+  }).join('');
+}
+
 async function loadPendingRequests(userId) {
   const card = document.getElementById('pending-requests-card');
   const list = document.getElementById('pending-requests-list');
@@ -782,33 +828,48 @@ async function loadEvents() {
       });
     }
 
-    // Update Connect button states based on existing requests
+    // Update Connect button states — check both directions
     const allPosterIds = [...new Set(data.filter(e => e.submitted_by).map(e => e.submitted_by))];
     if (allPosterIds.length > 0) {
-      const { data: connections } = await _supabase.from('connection_requests')
-        .select('to_user_id, status')
-        .eq('from_user_id', session.user.id)
-        .in('to_user_id', allPosterIds);
-      if (connections) {
-        connections.forEach(conn => {
-          document.querySelectorAll(`.connect-event-btn[data-poster-id="${conn.to_user_id}"]`).forEach(btn => {
-            if (conn.status === 'pending') {
-              btn.textContent = 'Requested';
-              btn.disabled = true;
-              btn.style.opacity = '0.6';
-            } else if (conn.status === 'accepted') {
-              const contact = btn.dataset.contact;
-              btn.textContent = '✓ Connected';
-              btn.style.background = 'var(--green, #22c55e)';
-              btn.style.color = '#fff';
-              btn.disabled = false;
-              if (contact) {
-                btn.onclick = () => window.open(contact.startsWith('http') ? contact : 'https://' + contact, '_blank');
-              }
+      const [sentRes, receivedRes] = await Promise.all([
+        _supabase.from('connection_requests').select('to_user_id, status').eq('from_user_id', session.user.id).in('to_user_id', allPosterIds),
+        _supabase.from('connection_requests').select('from_user_id, status').eq('to_user_id', session.user.id).in('from_user_id', allPosterIds)
+      ]);
+
+      // Build a map: posterId -> { status, direction }
+      const connMap = {};
+      if (sentRes.data) sentRes.data.forEach(c => { connMap[c.to_user_id] = { status: c.status, direction: 'sent' }; });
+      if (receivedRes.data) receivedRes.data.forEach(c => {
+        // Only override if not already accepted from sent side
+        if (!connMap[c.from_user_id] || connMap[c.from_user_id].status !== 'accepted') {
+          connMap[c.from_user_id] = { status: c.status, direction: 'received' };
+        }
+      });
+
+      Object.entries(connMap).forEach(([posterId, conn]) => {
+        document.querySelectorAll(`.connect-event-btn[data-poster-id="${posterId}"]`).forEach(btn => {
+          if (conn.status === 'pending' && conn.direction === 'sent') {
+            btn.textContent = 'Requested';
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+          } else if (conn.status === 'pending' && conn.direction === 'received') {
+            btn.textContent = 'Respond';
+            btn.disabled = false;
+            btn.onclick = () => { showSection('profile'); setNavActiveByName('My Profile'); };
+          } else if (conn.status === 'accepted') {
+            const contact = btn.dataset.contact;
+            btn.textContent = '✓ Connected';
+            btn.style.background = 'var(--green, #22c55e)';
+            btn.style.color = '#fff';
+            btn.disabled = false;
+            if (contact) {
+              btn.onclick = () => window.open(contact.startsWith('http') ? contact : 'https://' + contact, '_blank');
+            } else {
+              btn.onclick = null;
             }
-          });
+          }
         });
-      }
+      });
     }
 
     // Hide own Connect buttons (don't show Connect on your own events)
@@ -937,6 +998,7 @@ async function loadProfile(user) {
 
   loadMySubmissions(user.id);
   loadPendingRequests(user.id);
+  loadMyConnections(user.id);
 }
 
 async function loadMySubmissions(userId) {
