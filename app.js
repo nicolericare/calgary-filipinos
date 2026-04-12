@@ -1332,6 +1332,10 @@ async function handleLogin(event) {
   closeModal('joinModal');
   showSection('profile');
   setNavActiveByName('My Profile');
+
+  const { data: profile } = await _supabase.from('profiles').select('full_name').eq('id', data.user.id).single();
+  const firstName = (profile?.full_name || '').split(' ')[0] || 'Kababayan';
+  showToast(`Mabuhay, ${firstName}! 🇵🇭`);
 }
 
 async function handleSignUp(event) {
