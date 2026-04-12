@@ -1580,7 +1580,9 @@ async function handleLogin(event) {
 
 async function handleSignUp(event) {
   event.preventDefault();
-  const name          = document.getElementById('signup-name').value.trim();
+  const firstName     = document.getElementById('signup-firstname').value.trim();
+  const lastName      = document.getElementById('signup-lastname').value.trim();
+  const name          = `${firstName} ${lastName}`.trim();
   const email         = document.getElementById('signup-email').value.trim();
   const password      = document.getElementById('signup-password').value;
   const hometown      = document.getElementById('signup-hometown').value.trim();
