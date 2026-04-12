@@ -1205,9 +1205,10 @@ async function handleProfileSave(event) {
     updated_at: new Date().toISOString()
   };
 
-  const { error } = await _supabase.from('profiles').upsert(updates);
+  const { error } = await _supabase.from('profiles').upsert(updates, { onConflict: 'id' });
   if (error) { alert('Error saving: ' + error.message); return; }
 
+  showToast('✅ Profile saved!');
   await loadProfile(session.user);
   toggleProfileEdit();
 }
