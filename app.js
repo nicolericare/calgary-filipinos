@@ -1006,13 +1006,14 @@ async function initAuth() {
     showNavProfile(session.user);
   }
 
-  _supabase.auth.onAuthStateChange(async (_event, session) => {
+  _supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
       await loadProfile(session.user);
       showNavProfile(session.user);
-    } else {
+    } else if (event === 'SIGNED_OUT') {
       showNavJoin();
     }
+    // ignore TOKEN_REFRESHED and other transient events that fire null session
   });
 }
 
