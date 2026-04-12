@@ -678,6 +678,15 @@ async function sendConnectRequest(toUserId, btnId) {
   if (btn) { btn.textContent = 'Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
 }
 
+async function openConnectionsModal(tab = 'connections') {
+  openModal('connectionsModal');
+  switchConnectionsTab(tab);
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) return;
+  loadMyConnections(session.user.id);
+  loadPendingRequests(session.user.id);
+}
+
 function switchConnectionsTab(tab) {
   document.getElementById('conn-tab-connections').style.display = tab === 'connections' ? '' : 'none';
   document.getElementById('conn-tab-requests').style.display = tab === 'requests' ? '' : 'none';
