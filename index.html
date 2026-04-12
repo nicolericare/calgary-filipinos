@@ -42,7 +42,6 @@
       <button class="nav-link" onclick="showSection('marketplace'); setNavActive(this)">Marketplace <span class="notif-dot"></span></button>
       <button class="nav-link" onclick="showSection('hometown'); setNavActive(this)">Hometown Match</button>
       <button class="nav-link" id="nav-profile-link" style="display:none" onclick="showSection('profile'); setNavActive(this)">My Profile</button>
-      <button class="nav-link" id="nav-messages-link" style="display:none" onclick="openMessagesModal()">Messages <span id="nav-unread-badge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:2px"></span></button>
     </div>
     <div class="nav-right">
       <div class="search-bar">
@@ -521,7 +520,7 @@
         </div>
       </div>
 
-      <!-- Connections Row -->
+      <!-- Connections + Messages Row -->
       <div style="display:flex;gap:12px">
         <div class="profile-card" style="flex:1;cursor:pointer" onclick="openConnectionsModal('connections')">
           <div style="display:flex;align-items:center;justify-content:space-between">
@@ -536,6 +535,13 @@
             <span id="pending-requests-count" style="background:#ef4444;color:#fff;border-radius:99px;font-size:12px;font-weight:700;padding:2px 10px">0</span>
           </div>
           <div style="font-size:12px;color:var(--gray-400);margin-top:4px">Manage incoming requests</div>
+        </div>
+        <div class="profile-card" style="flex:1;cursor:pointer" onclick="openMessagesModal()">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-weight:700;font-size:15px">Messages</div>
+            <span id="nav-unread-badge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;font-size:12px;font-weight:700;padding:2px 10px"></span>
+          </div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:4px">Chat with your connections</div>
         </div>
       </div>
 

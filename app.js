@@ -1016,7 +1016,6 @@ async function initAuth() {
 function showNavProfile(user) {
   document.getElementById('join-community-btn').style.display = 'none';
   document.getElementById('nav-profile-link').style.display = '';
-  document.getElementById('nav-messages-link').style.display = '';
   document.getElementById('nav-profile-link').textContent = 'My Profile';
   updateUnreadBadge(user.id);
 }
@@ -1024,7 +1023,6 @@ function showNavProfile(user) {
 function showNavJoin() {
   document.getElementById('join-community-btn').style.display = '';
   document.getElementById('nav-profile-link').style.display = 'none';
-  document.getElementById('nav-messages-link').style.display = 'none';
 }
 
 async function loadProfile(user) {
