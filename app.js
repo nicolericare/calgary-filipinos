@@ -575,7 +575,7 @@ function renderEventCard(e, poster) {
     const name = poster.full_name || 'Community Member';
     const avatar = poster.avatar_url ? `<img src="${poster.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px">` : `<span style="width:24px;height:24px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:6px">👤</span>`;
     const connectBtn = `<button class="btn-sm connect-event-btn" id="connect-btn-${e.id}" data-poster-id="${poster.id}" data-contact="${poster.contact_link || ''}" onclick="sendConnectRequest('${poster.id}','connect-btn-${e.id}')" style="padding:3px 10px;font-size:11px;margin-left:auto">Connect</button>`;
-    posterHtml = `<div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-500)">${avatar}<span>${name}</span>${connectBtn}</div>`;
+    posterHtml = `<div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-500)">${avatar}<span style="cursor:pointer;font-weight:500" onclick="openMemberProfile('${poster.id}')">${name}</span>${connectBtn}</div>`;
   }
 
   return `
@@ -678,6 +678,53 @@ async function sendConnectRequest(toUserId, btnId) {
   if (btn) { btn.textContent = 'Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
 }
 
+async function openMemberProfile(userId) {
+  const { data: { session } } = await _supabase.auth.getSession();
+  const currentUserId = session?.user?.id;
+
+  const { data: p } = await _supabase.from('profiles').select('*').eq('id', userId).single();
+  if (!p) return;
+
+  // Avatar
+  const avatarEl = document.getElementById('member-profile-avatar');
+  avatarEl.innerHTML = p.avatar_url
+    ? `<img src="${p.avatar_url}" style="width:72px;height:72px;object-fit:cover;border-radius:50%">`
+    : '👤';
+
+  document.getElementById('member-profile-name').textContent = p.full_name || 'Community Member';
+  document.getElementById('member-profile-occupation').textContent = p.occupation || '';
+  document.getElementById('member-profile-hometown').textContent = p.hometown ? '🇵🇭 ' + p.hometown : '';
+  document.getElementById('member-profile-bio').textContent = p.bio || '';
+
+  // Action button — Connect, Requested, Connected, or nothing if own profile
+  const actionEl = document.getElementById('member-profile-action');
+  actionEl.innerHTML = '';
+
+  if (!currentUserId || currentUserId === userId) {
+    openModal('memberProfileModal');
+    return;
+  }
+
+  const { data: conn } = await _supabase
+    .from('connection_requests')
+    .select('id, status, from_user_id')
+    .or(`and(from_user_id.eq.${currentUserId},to_user_id.eq.${userId}),and(from_user_id.eq.${userId},to_user_id.eq.${currentUserId})`)
+    .maybeSingle();
+
+  if (conn?.status === 'accepted') {
+    const contactHtml = p.contact_link
+      ? `<a href="${p.contact_link.startsWith('http') ? p.contact_link : 'https://' + p.contact_link}" target="_blank" class="btn-primary" style="text-decoration:none;display:inline-block;padding:10px 24px;border-radius:8px">View Contact</a>`
+      : `<span style="font-size:13px;color:var(--gray-400)">✓ Connected — no contact set yet</span>`;
+    actionEl.innerHTML = contactHtml;
+  } else if (conn?.status === 'pending') {
+    actionEl.innerHTML = `<button class="btn-outline" disabled style="opacity:0.6;width:100%;padding:10px">Request Sent</button>`;
+  } else {
+    actionEl.innerHTML = `<button class="btn-primary" style="width:100%;padding:10px;border-radius:8px" onclick="sendConnectRequest('${userId}', null); closeModal('memberProfileModal')">Connect</button>`;
+  }
+
+  openModal('memberProfileModal');
+}
+
 async function openConnectionsModal(tab = 'connections') {
   openModal('connectionsModal');
   switchConnectionsTab(tab);
@@ -728,13 +775,13 @@ async function loadMyConnections(userId) {
   list.innerHTML = profiles.map(p => {
     const name = p.full_name || 'Community Member';
     const avatar = p.avatar_url
-      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`
+      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border-radius:50%">`
       : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
     const contactBtn = p.contact_link
       ? `<a href="${p.contact_link.startsWith('http') ? p.contact_link : 'https://' + p.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;flex-shrink:0">View Contact</a>`
       : `<span class="btn-sm" style="opacity:0.4;cursor:default;flex-shrink:0">No contact set</span>`;
     return `
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100)">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100);cursor:pointer" onclick="openMemberProfile('${p.id}')">
         ${avatar}
         <div style="flex:1">
           <div style="font-size:14px;font-weight:600">${name}</div>
