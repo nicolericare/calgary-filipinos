@@ -1481,12 +1481,10 @@ async function openChat(otherUserId) {
   _currentChatSub = _supabase.channel('chat-' + otherUserId)
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
       const m = payload.new;
-      if ((m.from_user_id === session.user.id && m.to_user_id === otherUserId) ||
-          (m.from_user_id === otherUserId && m.to_user_id === session.user.id)) {
+      // Only append incoming messages — outgoing are shown immediately on send
+      if (m.from_user_id === otherUserId && m.to_user_id === session.user.id) {
         appendChatMessage(m, session.user.id);
-        if (m.to_user_id === session.user.id) {
-          await _supabase.from('messages').update({ read: true }).eq('id', m.id);
-        }
+        await _supabase.from('messages').update({ read: true }).eq('id', m.id);
       }
     })
     .subscribe();
@@ -1533,6 +1531,15 @@ async function sendMessage() {
   if (!session) return;
 
   input.value = '';
+
+  // Show immediately without waiting for realtime
+  appendChatMessage({
+    from_user_id: session.user.id,
+    to_user_id: _currentChatUserId,
+    content,
+    created_at: new Date().toISOString()
+  }, session.user.id);
+
   const { error } = await _supabase.from('messages').insert({
     from_user_id: session.user.id,
     to_user_id: _currentChatUserId,
