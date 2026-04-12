@@ -694,15 +694,16 @@ async function loadMyConnections(userId) {
     ...(receivedRes.data || []).map(r => r.from_user_id)
   ];
 
+  const countEl = document.getElementById('my-connections-count');
+  if (countEl) countEl.textContent = connectedIds.length;
+
   if (connectedIds.length === 0) {
-    card.style.display = 'none';
+    list.innerHTML = '<div style="font-size:14px;color:var(--gray-400)">No connections yet. Connect with event posters to get started.</div>';
     return;
   }
 
-  card.style.display = '';
-
   const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, contact_link, occupation').in('id', connectedIds);
-  if (!profiles || profiles.length === 0) { card.style.display = 'none'; return; }
+  if (!profiles || profiles.length === 0) return;
 
   list.innerHTML = profiles.map(p => {
     const name = p.full_name || 'Community Member';
@@ -736,21 +737,22 @@ async function loadPendingRequests(userId) {
     .eq('status', 'pending')
     .order('created_at', { ascending: false });
 
+  const countEl = document.getElementById('pending-requests-count');
+
   if (error || !data || data.length === 0) {
     card.style.display = 'none';
+    if (countEl) countEl.textContent = '0';
     return;
   }
 
   card.style.display = '';
+  if (countEl) countEl.textContent = data.length;
 
   // Fetch senders' profiles
   const fromIds = data.map(r => r.from_user_id);
   const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url').in('id', fromIds);
   const profileMap = {};
   if (profiles) profiles.forEach(p => { profileMap[p.id] = p; });
-
-  const countEl = document.getElementById('pending-requests-count');
-  if (countEl) countEl.textContent = data.length;
 
   list.innerHTML = data.map(r => {
     const p = profileMap[r.from_user_id] || {};

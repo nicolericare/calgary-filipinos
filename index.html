@@ -521,16 +521,19 @@
       </div>
 
       <!-- My Connections -->
-      <div class="profile-card" id="my-connections-card" style="display:none">
-        <div class="profile-card-title">My Connections</div>
-        <div id="my-connections-list"></div>
+      <div class="profile-card" id="my-connections-card">
+        <div class="profile-card-title" style="display:flex;align-items:center;gap:8px">
+          My Connections
+          <span id="my-connections-count" style="background:var(--blue);color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:1px 8px;line-height:1.6">0</span>
+        </div>
+        <div id="my-connections-list"><div style="font-size:14px;color:var(--gray-400)">No connections yet. Connect with event posters to get started.</div></div>
       </div>
 
       <!-- Connection Requests -->
       <div class="profile-card" id="pending-requests-card" style="display:none">
         <div class="profile-card-title" style="display:flex;align-items:center;gap:8px">
           Connection Requests
-          <span id="pending-requests-count" style="background:#ef4444;color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:1px 8px;line-height:1.6"></span>
+          <span id="pending-requests-count" style="background:#ef4444;color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:1px 8px;line-height:1.6">0</span>
         </div>
         <div id="pending-requests-list"></div>
       </div>
