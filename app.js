@@ -1393,6 +1393,7 @@ function dismissWelcome() {
 
 let _currentChatUserId = null;
 let _currentChatSub = null;
+let _chatSessionUserId = null;
 
 async function openMessagesModal() {
   const { data: { session } } = await _supabase.auth.getSession();
@@ -1460,6 +1461,7 @@ async function openChat(otherUserId) {
 
   closeModal('messagesModal');
   _currentChatUserId = otherUserId;
+  _chatSessionUserId = session.user.id;
 
   const { data: p } = await _supabase.from('profiles').select('full_name, avatar_url').eq('id', otherUserId).single();
   const name = p?.full_name || 'Community Member';
@@ -1526,22 +1528,20 @@ async function sendMessage() {
   const input = document.getElementById('chat-input');
   const content = input.value.trim();
   if (!content || !_currentChatUserId) return;
-
-  const { data: { session } } = await _supabase.auth.getSession();
-  if (!session) return;
+  if (!_chatSessionUserId) return;
 
   input.value = '';
 
-  // Show immediately without waiting for realtime
+  // Show immediately
   appendChatMessage({
-    from_user_id: session.user.id,
+    from_user_id: _chatSessionUserId,
     to_user_id: _currentChatUserId,
     content,
     created_at: new Date().toISOString()
-  }, session.user.id);
+  }, _chatSessionUserId);
 
   const { error } = await _supabase.from('messages').insert({
-    from_user_id: session.user.id,
+    from_user_id: _chatSessionUserId,
     to_user_id: _currentChatUserId,
     content
   });
