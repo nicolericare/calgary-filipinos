@@ -1063,7 +1063,9 @@ async function loadProfile(user) {
     if (navWrap) navWrap.innerHTML = '';
   }
 
-  document.getElementById('edit-name').value = p.full_name || '';
+  const nameParts = (p.full_name || '').split(' ');
+  document.getElementById('edit-firstname').value = nameParts[0] || '';
+  document.getElementById('edit-lastname').value = nameParts.slice(1).join(' ') || '';
   document.getElementById('edit-nickname').value = p.nickname || '';
   document.getElementById('edit-hometown').value = p.hometown || '';
   document.getElementById('edit-neighbourhood').value = p.neighbourhood || '';
@@ -1193,7 +1195,7 @@ async function handleProfileSave(event) {
 
   const updates = {
     id: session.user.id,
-    full_name: document.getElementById('edit-name').value.trim(),
+    full_name: `${document.getElementById('edit-firstname').value.trim()} ${document.getElementById('edit-lastname').value.trim()}`.trim(),
     nickname: document.getElementById('edit-nickname').value.trim(),
     hometown: document.getElementById('edit-hometown').value.trim(),
     neighbourhood: document.getElementById('edit-neighbourhood').value.trim(),
