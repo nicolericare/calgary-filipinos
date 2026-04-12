@@ -691,13 +691,10 @@ async function openMemberProfile(userId) {
   // Avatar
   const avatarEl = document.getElementById('member-profile-avatar');
   avatarEl.innerHTML = p.avatar_url
-    ? `<img src="${p.avatar_url}" style="width:72px;height:72px;object-fit:cover;border-radius:50%">`
+    ? `<img src="${p.avatar_url}" style="width:100px;height:100px;object-fit:cover;border-radius:50%">`
     : '👤';
 
   document.getElementById('member-profile-name').textContent = p.full_name || 'Community Member';
-  document.getElementById('member-profile-occupation').textContent = p.occupation || '';
-  document.getElementById('member-profile-hometown').textContent = p.hometown ? '🇵🇭 ' + p.hometown : '';
-  document.getElementById('member-profile-bio').textContent = p.bio || '';
 
   // Action button — Connect, Requested, Connected, or nothing if own profile
   const actionEl = document.getElementById('member-profile-action');
