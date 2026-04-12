@@ -476,13 +476,11 @@
           <input type="file" id="avatar-input" accept=".jpg,.jpeg,.png,.gif,.webp" style="display:none" onchange="handleAvatarUpload(this)">
         </div>
         <div class="profile-header-info">
-          <div id="profile-display-name" class="profile-name">Loading...</div>
-          <div id="profile-display-email" class="profile-email"></div>
+          <div id="profile-display-name" class="profile-name" style="font-size:26px">Loading...</div>
           <div id="profile-display-hometown" class="profile-location"></div>
           <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
             <button class="btn-primary" onclick="toggleProfileEdit()" id="edit-profile-btn">Edit Profile</button>
             <button class="btn-outline" onclick="handleSignOut()">Sign Out</button>
-            <button class="btn-outline" style="color:#dc2626;border-color:#dc2626;font-size:13px" onclick="handleDeleteAccount()">Delete Account</button>
           </div>
         </div>
       </div>
@@ -503,9 +501,10 @@
             <div class="form-group"><label>Bio</label><textarea id="edit-bio" class="form-control" rows="3" placeholder="Tell the community a bit about yourself..."></textarea></div>
             <div class="form-group"><label>Occupation (optional)</label><input id="edit-occupation" type="text" class="form-control" placeholder="e.g. Nurse, Engineer, Small Business Owner"></div>
             <div class="form-group"><label>Contact Link (shown publicly on your events)</label><input id="edit-contact-link" type="text" class="form-control" placeholder="e.g. instagram.com/you, facebook.com/you, or email"></div>
-            <div style="display:flex;gap:10px;margin-top:4px">
+            <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;align-items:center">
               <button type="submit" class="btn-primary" style="padding:10px 28px">Save Changes</button>
               <button type="button" onclick="toggleProfileEdit()" class="btn-outline">Cancel</button>
+              <button type="button" class="btn-outline" style="color:#dc2626;border-color:#dc2626;font-size:13px;margin-left:auto" onclick="handleDeleteAccount()">Delete Account</button>
             </div>
           </form>
         </div>
