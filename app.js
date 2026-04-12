@@ -832,8 +832,10 @@ async function loadPendingRequests(userId) {
       : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
     return `
       <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100)">
-        ${avatar}
-        <span style="flex:1;font-size:14px;font-weight:500">${name}</span>
+        <div style="cursor:pointer;display:flex;align-items:center;gap:10px;flex:1" onclick="openMemberProfile('${r.from_user_id}')">
+          ${avatar}
+          <span style="font-size:14px;font-weight:500">${name}</span>
+        </div>
         <button class="btn-sm" style="background:#22c55e;color:#fff;border:none" onclick="acceptRequest('${r.id}','${userId}')">Accept</button>
         <button class="btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="declineRequest('${r.id}','${userId}')">Decline</button>
       </div>`;
@@ -1438,9 +1440,9 @@ async function openMessagesModal() {
     const preview = convo?.latest ? `<div style="font-size:12px;color:var(--gray-400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px">${convo.latest.from_user_id === userId ? 'You: ' : ''}${convo.latest.content}</div>` : `<div style="font-size:12px;color:var(--gray-400);margin-top:2px">No messages yet</div>`;
     const unreadBadge = convo?.unread > 0 ? `<span style="background:#ef4444;color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:2px 8px;flex-shrink:0">${convo.unread}</span>` : '';
     return `
-      <div onclick="openChat('${p.id}')" style="display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--gray-100);cursor:pointer">
-        ${avatar}
-        <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--gray-100)">
+        <div style="cursor:pointer;flex-shrink:0" onclick="openMemberProfile('${p.id}')">${avatar}</div>
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="openChat('${p.id}')">
           <div style="font-size:14px;font-weight:600">${name}</div>
           ${preview}
         </div>
