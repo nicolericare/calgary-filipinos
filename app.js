@@ -720,6 +720,11 @@ async function openMemberProfile(userId) {
     actionEl.innerHTML = `<button class="btn-outline" disabled style="opacity:0.6;width:100%;padding:10px">Request Sent</button>`;
   } else {
     actionEl.innerHTML = `<button class="btn-primary" style="width:100%;padding:10px;border-radius:8px" onclick="sendConnectRequest('${userId}', null); closeModal('memberProfileModal')">Connect</button>`;
+    return;
+  }
+
+  if (conn?.status === 'accepted') {
+    actionEl.innerHTML += `<button class="btn-outline" style="width:100%;padding:10px;border-radius:8px;margin-top:8px" onclick="closeModal('memberProfileModal');openChat('${userId}')">💬 Send Message</button>`;
   }
 
   openModal('memberProfileModal');
@@ -1011,13 +1016,15 @@ async function initAuth() {
 function showNavProfile(user) {
   document.getElementById('join-community-btn').style.display = 'none';
   document.getElementById('nav-profile-link').style.display = '';
-
+  document.getElementById('nav-messages-link').style.display = '';
   document.getElementById('nav-profile-link').textContent = 'My Profile';
+  updateUnreadBadge(user.id);
 }
 
 function showNavJoin() {
   document.getElementById('join-community-btn').style.display = '';
   document.getElementById('nav-profile-link').style.display = 'none';
+  document.getElementById('nav-messages-link').style.display = 'none';
 }
 
 async function loadProfile(user) {
@@ -1379,6 +1386,165 @@ function dismissWelcome() {
   document.getElementById('join-modal-title').style.display = '';
   document.querySelector('#joinModal .tab-nav').style.display = '';
   switchAuthTab('login');
+}
+
+// ── Messaging ────────────────────────────────────────────────────
+
+let _currentChatUserId = null;
+let _currentChatSub = null;
+
+async function openMessagesModal() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { openModal('joinModal'); return; }
+
+  openModal('messagesModal');
+  const list = document.getElementById('conversations-list');
+  list.innerHTML = '<div style="font-size:14px;color:var(--gray-400);text-align:center;padding:32px 0">Loading...</div>';
+
+  // Get all accepted connections (both directions)
+  const userId = session.user.id;
+  const [sentRes, receivedRes] = await Promise.all([
+    _supabase.from('connection_requests').select('to_user_id').eq('from_user_id', userId).eq('status', 'accepted'),
+    _supabase.from('connection_requests').select('from_user_id').eq('to_user_id', userId).eq('status', 'accepted')
+  ]);
+
+  const connectedIds = [
+    ...(sentRes.data || []).map(r => r.to_user_id),
+    ...(receivedRes.data || []).map(r => r.from_user_id)
+  ];
+
+  if (connectedIds.length === 0) {
+    list.innerHTML = '<div style="font-size:14px;color:var(--gray-400);text-align:center;padding:32px 0">No connections yet — connect with someone to message them.</div>';
+    return;
+  }
+
+  const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, occupation').in('id', connectedIds);
+
+  // Get latest message + unread count per conversation
+  const { data: allMsgs } = await _supabase.from('messages')
+    .select('*')
+    .or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`)
+    .order('created_at', { ascending: false });
+
+  const convoMap = {};
+  (allMsgs || []).forEach(m => {
+    const otherId = m.from_user_id === userId ? m.to_user_id : m.from_user_id;
+    if (!convoMap[otherId]) convoMap[otherId] = { latest: m, unread: 0 };
+    if (!m.read && m.to_user_id === userId) convoMap[otherId].unread++;
+  });
+
+  list.innerHTML = (profiles || []).map(p => {
+    const convo = convoMap[p.id];
+    const name = p.full_name || 'Community Member';
+    const avatar = p.avatar_url
+      ? `<img src="${p.avatar_url}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+      : `<span style="width:44px;height:44px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">👤</span>`;
+    const preview = convo?.latest ? `<div style="font-size:12px;color:var(--gray-400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px">${convo.latest.from_user_id === userId ? 'You: ' : ''}${convo.latest.content}</div>` : `<div style="font-size:12px;color:var(--gray-400);margin-top:2px">No messages yet</div>`;
+    const unreadBadge = convo?.unread > 0 ? `<span style="background:#ef4444;color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:2px 8px;flex-shrink:0">${convo.unread}</span>` : '';
+    return `
+      <div onclick="openChat('${p.id}')" style="display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--gray-100);cursor:pointer">
+        ${avatar}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:600">${name}</div>
+          ${preview}
+        </div>
+        ${unreadBadge}
+      </div>`;
+  }).join('');
+}
+
+async function openChat(otherUserId) {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) return;
+
+  closeModal('messagesModal');
+  _currentChatUserId = otherUserId;
+
+  const { data: p } = await _supabase.from('profiles').select('full_name, avatar_url').eq('id', otherUserId).single();
+  const name = p?.full_name || 'Community Member';
+
+  const headerAvatar = document.getElementById('chat-header-avatar');
+  headerAvatar.innerHTML = p?.avatar_url ? `<img src="${p.avatar_url}" style="width:36px;height:36px;object-fit:cover;border-radius:50%">` : '👤';
+  document.getElementById('chat-header-name').textContent = name;
+  document.getElementById('chat-input').value = '';
+
+  openModal('chatModal');
+  await loadChatMessages(session.user.id, otherUserId);
+
+  // Mark messages as read
+  await _supabase.from('messages').update({ read: true })
+    .eq('from_user_id', otherUserId).eq('to_user_id', session.user.id).eq('read', false);
+
+  // Subscribe to realtime new messages
+  if (_currentChatSub) _supabase.removeChannel(_currentChatSub);
+  _currentChatSub = _supabase.channel('chat-' + otherUserId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
+      const m = payload.new;
+      if ((m.from_user_id === session.user.id && m.to_user_id === otherUserId) ||
+          (m.from_user_id === otherUserId && m.to_user_id === session.user.id)) {
+        appendChatMessage(m, session.user.id);
+        if (m.to_user_id === session.user.id) {
+          await _supabase.from('messages').update({ read: true }).eq('id', m.id);
+        }
+      }
+    })
+    .subscribe();
+
+  updateUnreadBadge(session.user.id);
+}
+
+async function loadChatMessages(userId, otherUserId) {
+  const { data: msgs } = await _supabase.from('messages')
+    .select('*')
+    .or(`and(from_user_id.eq.${userId},to_user_id.eq.${otherUserId}),and(from_user_id.eq.${otherUserId},to_user_id.eq.${userId})`)
+    .order('created_at', { ascending: true });
+
+  const container = document.getElementById('chat-messages');
+  if (!msgs || msgs.length === 0) {
+    container.innerHTML = '<div style="font-size:13px;color:var(--gray-400);text-align:center;margin:auto">No messages yet. Say hi! 👋</div>';
+    return;
+  }
+  container.innerHTML = '';
+  msgs.forEach(m => appendChatMessage(m, userId));
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendChatMessage(m, userId) {
+  const container = document.getElementById('chat-messages');
+  if (!container) return;
+  const isMine = m.from_user_id === userId;
+  const time = new Date(m.created_at).toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit' });
+  const bubble = document.createElement('div');
+  bubble.style.cssText = `display:flex;flex-direction:column;align-items:${isMine ? 'flex-end' : 'flex-start'}`;
+  bubble.innerHTML = `
+    <div style="max-width:75%;padding:10px 14px;border-radius:${isMine ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};background:${isMine ? 'var(--blue)' : 'var(--gray-100)'};color:${isMine ? '#fff' : 'inherit'};font-size:14px;line-height:1.5">${m.content}</div>
+    <div style="font-size:11px;color:var(--gray-400);margin-top:3px;padding:0 4px">${time}</div>`;
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const content = input.value.trim();
+  if (!content || !_currentChatUserId) return;
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) return;
+
+  input.value = '';
+  const { error } = await _supabase.from('messages').insert({
+    from_user_id: session.user.id,
+    to_user_id: _currentChatUserId,
+    content
+  });
+  if (error) { alert('Error sending: ' + error.message); }
+}
+
+async function updateUnreadBadge(userId) {
+  const { data } = await _supabase.from('messages').select('id').eq('to_user_id', userId).eq('read', false);
+  const count = data?.length || 0;
+  const badge = document.getElementById('nav-unread-badge');
+  if (badge) { badge.textContent = count; badge.style.display = count > 0 ? '' : 'none'; }
 }
 
 function switchAuthTab(tab) {
