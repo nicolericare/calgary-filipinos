@@ -678,12 +678,17 @@ async function sendConnectRequest(toUserId, btnId) {
   if (btn) { btn.textContent = 'Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
 }
 
-async function loadMyConnections(userId) {
-  const card = document.getElementById('my-connections-card');
-  const list = document.getElementById('my-connections-list');
-  if (!card || !list) return;
+function switchConnectionsTab(tab) {
+  document.getElementById('conn-tab-connections').style.display = tab === 'connections' ? '' : 'none';
+  document.getElementById('conn-tab-requests').style.display = tab === 'requests' ? '' : 'none';
+  document.getElementById('conn-tab-btn-connections').classList.toggle('active', tab === 'connections');
+  document.getElementById('conn-tab-btn-requests').classList.toggle('active', tab === 'requests');
+}
 
-  // Fetch accepted connections in both directions
+async function loadMyConnections(userId) {
+  const countEl = document.getElementById('my-connections-count');
+  const list = document.getElementById('conn-connections-list');
+
   const [sentRes, receivedRes] = await Promise.all([
     _supabase.from('connection_requests').select('to_user_id').eq('from_user_id', userId).eq('status', 'accepted'),
     _supabase.from('connection_requests').select('from_user_id').eq('to_user_id', userId).eq('status', 'accepted')
@@ -694,11 +699,12 @@ async function loadMyConnections(userId) {
     ...(receivedRes.data || []).map(r => r.from_user_id)
   ];
 
-  const countEl = document.getElementById('my-connections-count');
   if (countEl) countEl.textContent = connectedIds.length;
 
+  if (!list) return;
+
   if (connectedIds.length === 0) {
-    list.innerHTML = '<div style="font-size:14px;color:var(--gray-400)">No connections yet. Connect with event posters to get started.</div>';
+    list.innerHTML = '<div style="font-size:14px;color:var(--gray-400);text-align:center;padding:24px 0">No connections yet. Connect with event posters to get started.</div>';
     return;
   }
 
@@ -714,7 +720,7 @@ async function loadMyConnections(userId) {
       ? `<a href="${p.contact_link.startsWith('http') ? p.contact_link : 'https://' + p.contact_link}" target="_blank" class="btn-sm" style="text-decoration:none;flex-shrink:0">View Contact</a>`
       : `<span class="btn-sm" style="opacity:0.4;cursor:default;flex-shrink:0">No contact set</span>`;
     return `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100)">
         ${avatar}
         <div style="flex:1">
           <div style="font-size:14px;font-weight:600">${name}</div>
@@ -726,9 +732,9 @@ async function loadMyConnections(userId) {
 }
 
 async function loadPendingRequests(userId) {
-  const card = document.getElementById('pending-requests-card');
-  const list = document.getElementById('pending-requests-list');
-  if (!card || !list) return;
+  const countEl = document.getElementById('pending-requests-count');
+  const badge = document.getElementById('conn-requests-badge');
+  const list = document.getElementById('conn-requests-list');
 
   const { data, error } = await _supabase
     .from('connection_requests')
@@ -737,18 +743,17 @@ async function loadPendingRequests(userId) {
     .eq('status', 'pending')
     .order('created_at', { ascending: false });
 
-  const countEl = document.getElementById('pending-requests-count');
+  const count = (!error && data) ? data.length : 0;
+  if (countEl) countEl.textContent = count;
+  if (badge) { badge.textContent = count; badge.style.display = count > 0 ? '' : 'none'; }
 
-  if (error || !data || data.length === 0) {
-    card.style.display = 'none';
-    if (countEl) countEl.textContent = '0';
+  if (!list) return;
+
+  if (count === 0) {
+    list.innerHTML = '<div style="font-size:14px;color:var(--gray-400);text-align:center;padding:24px 0">No pending requests.</div>';
     return;
   }
 
-  card.style.display = '';
-  if (countEl) countEl.textContent = data.length;
-
-  // Fetch senders' profiles
   const fromIds = data.map(r => r.from_user_id);
   const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url').in('id', fromIds);
   const profileMap = {};
@@ -758,10 +763,10 @@ async function loadPendingRequests(userId) {
     const p = profileMap[r.from_user_id] || {};
     const name = p.full_name || 'Community Member';
     const avatar = p.avatar_url
-      ? `<img src="${p.avatar_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`
-      : `<span style="width:32px;height:32px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:16px">👤</span>`;
+      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`
+      : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
     return `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100)">
         ${avatar}
         <span style="flex:1;font-size:14px;font-weight:500">${name}</span>
         <button class="btn-sm" style="background:#22c55e;color:#fff;border:none" onclick="acceptRequest('${r.id}','${userId}')">Accept</button>
@@ -775,6 +780,7 @@ async function acceptRequest(id, userId) {
   if (error) { alert('Error: ' + error.message); return; }
   showToast('✅ Connection accepted!');
   loadPendingRequests(userId);
+  loadMyConnections(userId);
 }
 
 async function declineRequest(id, userId) {
