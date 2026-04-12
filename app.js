@@ -502,10 +502,13 @@ async function loadBusinessReviews(bizId) {
   list.innerHTML = data.map(r => {
     const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
     const date  = new Date(r.created_at).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+    const nameHtml = r.user_id
+      ? `<span class="review-card-name" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--gray-300)" onclick="openMemberProfile('${r.user_id}')">${r.reviewer_name || 'Community Member'}</span>`
+      : `<span class="review-card-name">${r.reviewer_name || 'Community Member'}</span>`;
     return `
       <div class="review-card">
         <div class="review-card-header">
-          <span class="review-card-name">${r.reviewer_name || 'Community Member'}</span>
+          ${nameHtml}
           <span class="review-card-stars">${stars}</span>
         </div>
         <div class="review-card-date">${date}</div>
