@@ -1330,12 +1330,11 @@ async function handleLogin(event) {
   if (error) { alert(error.message); return; }
 
   closeModal('joinModal');
-  showSection('profile');
-  setNavActiveByName('My Profile');
 
   const { data: profile } = await _supabase.from('profiles').select('full_name').eq('id', data.user.id).single();
   const firstName = (profile?.full_name || '').split(' ')[0] || 'Kababayan';
-  showToast(`Mabuhay, ${firstName}! 🇵🇭`);
+  document.getElementById('welcome-back-name').textContent = firstName;
+  openModal('welcomeBackModal');
 }
 
 async function handleSignUp(event) {

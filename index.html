@@ -697,6 +697,42 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="welcomeBackModal">
+  <div class="modal" style="text-align:center;padding:36px 28px">
+    <button class="modal-close" onclick="closeModal('welcomeBackModal')" style="position:absolute;top:16px;right:16px">✕</button>
+    <div style="font-size:48px;margin-bottom:12px">🇵🇭</div>
+    <div style="font-size:24px;font-weight:800;margin-bottom:6px">Mabuhay!</div>
+    <div style="font-size:16px;color:var(--gray-600);margin-bottom:24px">We missed you, <strong id="welcome-back-name"></strong>. Here's what's happening in the community.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;text-align:left">
+      <div onclick="closeModal('welcomeBackModal');showSection('events');setNavActiveByName('Events')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--gray-50);border-radius:var(--radius-sm);cursor:pointer">
+        <span style="font-size:24px">🎉</span>
+        <div>
+          <div style="font-weight:600;font-size:14px">Upcoming Events</div>
+          <div style="font-size:12px;color:var(--gray-400)">See what's happening around Calgary</div>
+        </div>
+        <span style="margin-left:auto;color:var(--gray-400)">→</span>
+      </div>
+      <div onclick="closeModal('welcomeBackModal');showSection('directory');setNavActiveByName('Directory')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--gray-50);border-radius:var(--radius-sm);cursor:pointer">
+        <span style="font-size:24px">📋</span>
+        <div>
+          <div style="font-weight:600;font-size:14px">Community Directory</div>
+          <div style="font-size:12px;color:var(--gray-400)">Find Filipino professionals & services</div>
+        </div>
+        <span style="margin-left:auto;color:var(--gray-400)">→</span>
+      </div>
+      <div onclick="closeModal('welcomeBackModal');showSection('profile');setNavActiveByName('My Profile')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--gray-50);border-radius:var(--radius-sm);cursor:pointer">
+        <span style="font-size:24px">👤</span>
+        <div>
+          <div style="font-weight:600;font-size:14px">My Profile</div>
+          <div style="font-size:12px;color:var(--gray-400)">Check your connections & submissions</div>
+        </div>
+        <span style="margin-left:auto;color:var(--gray-400)">→</span>
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px" onclick="closeModal('welcomeBackModal');showSection('home');setNavActiveByName('Home')">Take me home 🏡</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="addEventModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Submit an Event 🎉</div><button class="modal-close" onclick="closeModal('addEventModal')">✕</button></div>
