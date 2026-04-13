@@ -1166,6 +1166,8 @@ async function initAuth() {
 function showNavProfile(user) {
   const btn = document.getElementById('join-community-btn');
   btn.style.display = '';
+  btn.style.fontSize = '14px';
+  btn.style.padding = '8px 16px';
   btn.textContent = 'Sign Out';
   btn.onclick = handleSignOut;
   document.getElementById('nav-profile-link').style.display = '';
