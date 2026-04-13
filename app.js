@@ -1119,10 +1119,12 @@ async function handleSubmitEvent(event) {
     const ext = imageFile.name.split('.').pop();
     const path = `${session.user.id}/${Date.now()}.${ext}`;
     const { error: uploadError } = await _supabase.storage.from('event-images').upload(path, imageFile, { upsert: true });
-    if (!uploadError) {
-      const { data: urlData } = _supabase.storage.from('event-images').getPublicUrl(path);
-      payload.image_url = urlData.publicUrl;
+    if (uploadError) {
+      alert('Image upload failed: ' + uploadError.message);
+      return;
     }
+    const { data: urlData } = _supabase.storage.from('event-images').getPublicUrl(path);
+    payload.image_url = urlData.publicUrl;
   } else {
     const existingImage = document.getElementById('evt-existing-image').value;
     if (existingImage) payload.image_url = existingImage;
