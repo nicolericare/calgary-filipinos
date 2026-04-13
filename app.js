@@ -604,30 +604,26 @@ async function handleRSVP(eventId) {
     return;
   }
 
-  const btn = document.getElementById(`rsvp-btn-${eventId}`);
-  btn.disabled = true;
+  // Update all RSVP buttons for this event (home + events grid may both show it)
+  const btns = document.querySelectorAll(`[id="rsvp-btn-${eventId}"]`);
+  btns.forEach(b => b.disabled = true);
+  const btn = btns[0];
+  if (!btn) return;
 
   // Check if already RSVP'd
   const { data: existing } = await _supabase.from('rsvps').select('id').eq('event_id', eventId).eq('user_id', session.user.id).single();
 
   if (existing) {
-    // Un-RSVP
     await _supabase.from('rsvps').delete().eq('event_id', eventId).eq('user_id', session.user.id);
-    btn.textContent = 'RSVP';
-    btn.style.background = '';
-    btn.style.color = '';
-    btn.disabled = false;
+    btns.forEach(b => { b.textContent = 'RSVP'; b.style.background = ''; b.style.color = ''; b.disabled = false; });
     showToast('RSVP removed.');
     return;
   }
 
   const { error } = await _supabase.from('rsvps').insert({ event_id: eventId, user_id: session.user.id });
-  if (error) { alert('Error: ' + error.message); btn.disabled = false; return; }
+  if (error) { alert('Error: ' + error.message); btns.forEach(b => b.disabled = false); return; }
 
-  btn.textContent = "✓ Going!";
-  btn.style.background = 'var(--green, #22c55e)';
-  btn.style.color = '#fff';
-  btn.disabled = false;
+  btns.forEach(b => { b.textContent = '✓ Going!'; b.style.background = 'var(--green, #22c55e)'; b.style.color = '#fff'; b.disabled = false; });
   showToast("🎉 You're going!");
 }
 
