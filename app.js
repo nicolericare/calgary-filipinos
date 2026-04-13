@@ -593,8 +593,54 @@ function renderEventCard(e, poster) {
         <div class="event-meta-item">🎟 Free</div>
       </div>
       <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span>${rsvpBtn}</div>
+      <div style="padding:6px 16px;font-size:12px;color:var(--gray-400);cursor:pointer;border-top:1px solid var(--gray-100)" id="rsvp-count-${e.id}" onclick="openRSVPList(${e.id},'${e.title}')">👥 Loading...</div>
       ${posterHtml}
     </div>`;
+}
+
+async function loadRSVPCounts(eventIds) {
+  if (!eventIds.length) return;
+  const { data } = await _supabase.from('rsvps').select('event_id').in('event_id', eventIds);
+  if (!data) return;
+  const counts = {};
+  data.forEach(r => { counts[r.event_id] = (counts[r.event_id] || 0) + 1; });
+  eventIds.forEach(id => {
+    document.querySelectorAll(`[id="rsvp-count-${id}"]`).forEach(el => {
+      const n = counts[id] || 0;
+      el.textContent = n === 0 ? '👥 Be the first to RSVP!' : `👥 ${n} going — see who`;
+    });
+  });
+}
+
+async function openRSVPList(eventId, title) {
+  document.getElementById('rsvp-list-title').textContent = `Going to: ${title}`;
+  document.getElementById('rsvp-list-body').innerHTML = '<div style="text-align:center;padding:24px;color:var(--gray-400)">Loading...</div>';
+  openModal('rsvpListModal');
+
+  const { data: rsvps } = await _supabase.from('rsvps').select('user_id').eq('event_id', eventId);
+  if (!rsvps || rsvps.length === 0) {
+    document.getElementById('rsvp-list-body').innerHTML = '<div style="text-align:center;padding:24px;color:var(--gray-400)">No RSVPs yet.</div>';
+    return;
+  }
+
+  const userIds = rsvps.map(r => r.user_id);
+  const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, occupation').in('id', userIds);
+
+  document.getElementById('rsvp-list-body').innerHTML = (profiles || []).map(p => {
+    const name = p.full_name || 'Community Member';
+    const avatar = p.avatar_url
+      ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`
+      : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--gray-100);cursor:pointer" onclick="openMemberProfile('${p.id}')">
+        ${avatar}
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">${name}</div>
+          ${p.occupation ? `<div style="font-size:12px;color:var(--gray-400)">${p.occupation}</div>` : ''}
+        </div>
+        <span style="font-size:12px;color:var(--gray-400)">→</span>
+      </div>`;
+  }).join('');
 }
 
 async function handleRSVP(eventId) {
@@ -880,6 +926,8 @@ async function loadEvents() {
     const upcoming = data.slice(0, 3);
     homeGrid.innerHTML = upcoming.map(e => renderEventCard(e, posterMap[e.submitted_by])).join('');
   }
+
+  loadRSVPCounts(data.map(e => e.id));
 
   // Mark already RSVP'd events + check connection statuses
   const { data: { session } } = await _supabase.auth.getSession();
