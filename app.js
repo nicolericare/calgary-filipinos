@@ -795,7 +795,7 @@ async function sendConnectRequest(toUserId, btnId) {
 }
 
 function buildSocialIcons(p) {
-  const iconStyle = 'width:44px;height:44px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0';
+  const iconStyle = 'width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0';
   const icons = [];
   if (p.instagram_url) {
     const url = p.instagram_url.startsWith('http') ? p.instagram_url : 'https://' + p.instagram_url;
@@ -859,7 +859,8 @@ async function openMemberProfile(userId) {
     const socialHtml = icons.length
       ? `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">${icons.join('')}</div>`
       : `<p style="font-size:13px;color:var(--gray-400);margin-bottom:12px">Connected — no socials added yet</p>`;
-    actionEl.innerHTML = socialHtml + `<button class="btn-outline" style="width:100%;padding:10px;border-radius:8px" onclick="closeModal('memberProfileModal');openChat('${userId}')">💬 Send Message</button>`;
+    const msgIcon = `<button onclick="closeModal('memberProfileModal');openChat('${userId}')" style="width:36px;height:36px;border-radius:8px;border:none;background:var(--gray-100);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>`;
+    actionEl.innerHTML = `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${(icons.length ? icons.join('') : '') + msgIcon}</div>`;
   } else if (conn?.status === 'pending') {
     actionEl.innerHTML = `<button class="btn-outline" disabled style="opacity:0.6;width:100%;padding:10px">Request Sent</button>`;
   } else {
@@ -920,7 +921,7 @@ async function loadMyConnections(userId) {
       ? `<img src="${p.avatar_url}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`
       : `<span style="width:40px;height:40px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:20px">👤</span>`;
     const icons = buildSocialIcons(p);
-    const msgBtn = `<button class="btn-sm" style="flex-shrink:0" onclick="event.stopPropagation();closeModal('connectionsModal');openChat('${p.id}')">💬</button>`;
+    const msgBtn = `<button onclick="event.stopPropagation();closeModal('connectionsModal');openChat('${p.id}')" style="width:36px;height:36px;border-radius:8px;border:none;background:var(--gray-100);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>`;
     return `
       <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100);cursor:pointer" onclick="openMemberProfile('${p.id}')">
         ${avatar}
