@@ -868,10 +868,10 @@ async function loadMyConnections(userId) {
     _supabase.from('connection_requests').select('from_user_id').eq('to_user_id', userId).eq('status', 'accepted')
   ]);
 
-  const connectedIds = [
+  const connectedIds = [...new Set([
     ...(sentRes.data || []).map(r => r.to_user_id),
     ...(receivedRes.data || []).map(r => r.from_user_id)
-  ];
+  ])].filter(id => id !== userId);
 
   if (countEl) countEl.textContent = connectedIds.length;
 
