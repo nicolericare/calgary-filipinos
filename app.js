@@ -593,7 +593,6 @@ function renderEventCard(e, poster) {
       ${imgSection}
       <div class="event-body">
         <div class="event-title">${e.title}</div>
-        ${e.location ? `<div class="event-meta-item">📍 ${e.location}</div>` : ''}
       </div>
       <div class="event-footer" onclick="event.stopPropagation()">${rsvpBtn}</div>
       <div style="padding:6px 16px;font-size:12px;color:var(--gray-400);cursor:pointer;border-top:1px solid var(--gray-100)" id="rsvp-count-${e.id}" onclick="event.stopPropagation();openRSVPList(${e.id},'${e.title}')">👥 Loading...</div>
