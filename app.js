@@ -1161,14 +1161,19 @@ async function initAuth() {
 }
 
 function showNavProfile(user) {
-  document.getElementById('join-community-btn').style.display = 'none';
+  const btn = document.getElementById('join-community-btn');
+  btn.textContent = 'Sign Out';
+  btn.onclick = handleSignOut;
   document.getElementById('nav-profile-link').style.display = '';
   document.getElementById('nav-profile-link').textContent = 'My Profile';
   updateUnreadBadge(user.id);
 }
 
 function showNavJoin() {
-  document.getElementById('join-community-btn').style.display = '';
+  const btn = document.getElementById('join-community-btn');
+  btn.style.display = '';
+  btn.textContent = 'Log In';
+  btn.onclick = () => { openModal('joinModal'); switchAuthTab('login'); };
   document.getElementById('nav-profile-link').style.display = 'none';
 }
 
