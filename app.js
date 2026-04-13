@@ -564,6 +564,7 @@ const EVENT_GRADIENTS = {
 
 let _allEvents = [];
 let _posterMap = {};
+let _currentUserId = null;
 const _myListings = {};
 const _myEvents = {};
 
@@ -577,7 +578,7 @@ function renderEventCard(e, poster) {
     : `<button class="btn-sm" id="rsvp-btn-${e.id}" onclick="handleRSVP('${e.id}')">RSVP</button>`;
 
   let posterHtml = '';
-  if (poster) {
+  if (poster && poster.id !== _currentUserId) {
     const name = poster.full_name || 'Community Member';
     const avatar = poster.avatar_url ? `<img src="${poster.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px">` : `<span style="width:24px;height:24px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:6px">👤</span>`;
     const connectBtn = `<button class="btn-sm connect-event-btn" id="connect-btn-${e.id}" data-poster-id="${poster.id}" data-contact="${poster.contact_link || ''}" onclick="event.stopPropagation();sendConnectRequest('${poster.id}','connect-btn-${e.id}')" style="padding:3px 10px;font-size:11px;margin-left:auto">Connect</button>`;
@@ -664,7 +665,7 @@ async function openEventModal(eventId) {
     : `<button class="btn-primary" id="event-modal-rsvp-btn" style="padding:11px 28px" onclick="handleRSVP('${e.id}')">RSVP</button>`;
 
   let posterHtml = '';
-  if (poster) {
+  if (poster && poster.id !== _currentUserId) {
     const name = poster.full_name || 'Community Member';
     const avatar = poster.avatar_url
       ? `<img src="${poster.avatar_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`
@@ -1152,9 +1153,11 @@ async function handleSubmitEvent(event) {
 async function initAuth() {
   _supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
+      _currentUserId = session.user.id;
       await loadProfile(session.user);
       showNavProfile(session.user);
     } else if (event === 'SIGNED_OUT') {
+      _currentUserId = null;
       showNavJoin();
     }
   });
