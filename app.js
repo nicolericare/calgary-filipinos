@@ -798,8 +798,19 @@ async function openMemberProfile(userId) {
   const { data: { session } } = await _supabase.auth.getSession();
   const currentUserId = session?.user?.id;
 
-  const { data: p } = await _supabase.from('profiles').select('*').eq('id', userId).single();
+  const [profileRes, sentRes, receivedRes] = await Promise.all([
+    _supabase.from('profiles').select('*').eq('id', userId).single(),
+    _supabase.from('connection_requests').select('id').eq('from_user_id', userId).eq('status', 'accepted'),
+    _supabase.from('connection_requests').select('id').eq('to_user_id', userId).eq('status', 'accepted')
+  ]);
+
+  const p = profileRes.data;
   if (!p) return;
+
+  const connCount = new Set([
+    ...(sentRes.data || []).map(r => r.id),
+    ...(receivedRes.data || []).map(r => r.id)
+  ]).size;
 
   // Avatar
   const avatarEl = document.getElementById('member-profile-avatar');
@@ -808,6 +819,7 @@ async function openMemberProfile(userId) {
     : '👤';
 
   document.getElementById('member-profile-name').textContent = p.full_name || 'Community Member';
+  document.getElementById('member-profile-conn-count').textContent = `${connCount} connection${connCount !== 1 ? 's' : ''}`;
 
   // Action button — Connect, Requested, Connected, or nothing if own profile
   const actionEl = document.getElementById('member-profile-action');
