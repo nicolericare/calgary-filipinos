@@ -49,8 +49,7 @@
         <input type="text" placeholder="Search...">
       </div>
       <button id="dark-mode-btn" onclick="toggleDarkMode()" title="Toggle dark mode" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px 6px;border-radius:8px;line-height:1">🌙</button>
-      <button class="btn-outline" id="login-nav-btn" onclick="openModal('joinModal');switchAuthTab('login')" style="padding:8px 16px;font-size:14px">Log In</button>
-      <button class="btn-primary" id="join-community-btn" onclick="openModal('joinModal')">Sign Up</button>
+      <button class="btn-primary" id="join-community-btn" onclick="openModal('joinModal');switchAuthTab('login')" style="padding:8px 16px;font-size:14px">Log In</button>
     </div>
   </div>
 </nav>
@@ -668,7 +667,7 @@
 <div class="modal-overlay" id="joinModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title" id="join-modal-title">Join Calgary Filipinos 🇵🇭</div><button class="modal-close" onclick="closeModal('joinModal')">✕</button></div>
-    <div class="tab-nav" style="margin-bottom:20px">
+    <div class="tab-nav" style="margin-bottom:20px;display:none">
       <button class="tab-btn active" id="tab-btn-signup" onclick="switchAuthTab('signup')">Sign Up</button>
       <button class="tab-btn" id="tab-btn-login" onclick="switchAuthTab('login')">Log In</button>
     </div>
@@ -693,6 +692,7 @@
         <div class="form-group"><label>Password</label><input id="login-password" type="password" class="form-control" placeholder="Your password" required></div>
         <button type="submit" class="btn-primary" style="width:100%;padding:13px;border-radius:8px;font-size:15px;margin-top:4px">Log In</button>
       </form>
+      <p style="text-align:center;font-size:13px;color:var(--gray-400);margin-top:14px">No account? <a style="color:var(--blue);font-weight:600;cursor:pointer" onclick="switchAuthTab('signup')">Sign up</a></p>
     </div>
 
     <p style="font-size:12px;color:var(--gray-400);text-align:center;margin-top:12px">Free to join. Your info is only shared with your permission.</p>
