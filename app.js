@@ -860,7 +860,8 @@ async function openMemberProfile(userId) {
       ? `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">${icons.join('')}</div>`
       : `<p style="font-size:13px;color:var(--gray-400);margin-bottom:12px">Connected — no socials added yet</p>`;
     const msgIcon = `<button onclick="closeModal('memberProfileModal');openChat('${userId}')" style="width:36px;height:36px;border-radius:8px;border:none;background:var(--gray-100);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>`;
-    actionEl.innerHTML = `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${(icons.length ? icons.join('') : '') + msgIcon}</div>`;
+    actionEl.innerHTML = `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${(icons.length ? icons.join('') : '') + msgIcon}</div>
+      <button onclick="removeConnection('${conn.id}','${userId}')" style="margin-top:14px;background:none;border:none;font-size:12px;color:var(--gray-400);cursor:pointer;text-decoration:underline">Remove connection</button>`;
   } else if (conn?.status === 'pending') {
     actionEl.innerHTML = `<button class="btn-outline" disabled style="opacity:0.6;width:100%;padding:10px">Request Sent</button>`;
   } else {
@@ -868,6 +869,16 @@ async function openMemberProfile(userId) {
   }
 
   openModal('memberProfileModal');
+}
+
+async function removeConnection(connId, userId) {
+  if (!confirm('Remove this connection?')) return;
+  const { error } = await _supabase.from('connection_requests').delete().eq('id', connId);
+  if (error) { alert('Error: ' + error.message); return; }
+  closeModal('memberProfileModal');
+  showToast('Connection removed.');
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (session) loadMyConnections(session.user.id);
 }
 
 async function openConnectionsModal(tab = 'connections') {
