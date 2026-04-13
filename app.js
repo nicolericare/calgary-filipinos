@@ -189,6 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('evt-form-body').style.display = '';
       document.getElementById('evt-success-msg').style.display = 'none';
       document.getElementById('evt-edit-id').value = '';
+      document.getElementById('evt-image').value = '';
+      document.getElementById('evt-existing-image').value = '';
+      document.getElementById('evt-image-preview').style.display = 'none';
       document.querySelector('#addEventModal .modal-header .modal-title').textContent = 'Submit an Event 🎉';
       document.querySelector('#evt-form-body button[type="submit"]').textContent = 'Submit Event 🎉';
     }
@@ -560,6 +563,7 @@ const EVENT_GRADIENTS = {
 };
 
 let _allEvents = [];
+let _posterMap = {};
 const _myListings = {};
 const _myEvents = {};
 
@@ -568,7 +572,6 @@ function renderEventCard(e, poster) {
   const d = new Date(dateVal + 'T00:00:00');
   const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
   const bg = EVENT_GRADIENTS[e.category] || EVENT_GRADIENTS.Community;
-  const desc = e.description ? e.description.substring(0, 80) + (e.description.length > 80 ? '...' : '') : '';
   const rsvpBtn = e.external_url
     ? `<a href="${e.external_url}" target="_blank" class="btn-sm" style="text-decoration:none">RSVP</a>`
     : `<button class="btn-sm" id="rsvp-btn-${e.id}" onclick="handleRSVP('${e.id}')">RSVP</button>`;
@@ -577,23 +580,23 @@ function renderEventCard(e, poster) {
   if (poster) {
     const name = poster.full_name || 'Community Member';
     const avatar = poster.avatar_url ? `<img src="${poster.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px">` : `<span style="width:24px;height:24px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:6px">👤</span>`;
-    const connectBtn = `<button class="btn-sm connect-event-btn" id="connect-btn-${e.id}" data-poster-id="${poster.id}" data-contact="${poster.contact_link || ''}" onclick="sendConnectRequest('${poster.id}','connect-btn-${e.id}')" style="padding:3px 10px;font-size:11px;margin-left:auto">Connect</button>`;
-    posterHtml = `<div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-500)">${avatar}<span style="cursor:pointer;font-weight:500" onclick="openMemberProfile('${poster.id}')">${name}</span>${connectBtn}</div>`;
+    const connectBtn = `<button class="btn-sm connect-event-btn" id="connect-btn-${e.id}" data-poster-id="${poster.id}" data-contact="${poster.contact_link || ''}" onclick="event.stopPropagation();sendConnectRequest('${poster.id}','connect-btn-${e.id}')" style="padding:3px 10px;font-size:11px;margin-left:auto">Connect</button>`;
+    posterHtml = `<div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-500)">${avatar}<span style="cursor:pointer;font-weight:500" onclick="event.stopPropagation();openMemberProfile('${poster.id}')">${name}</span>${connectBtn}</div>`;
   }
 
+  const imgSection = e.image_url
+    ? `<div class="event-img" style="padding:0;overflow:hidden"><img src="${e.image_url}" style="width:100%;height:100%;object-fit:cover;display:block"><span class="event-date-chip">${dateStr}</span><span class="event-cat-chip">${e.category}</span></div>`
+    : `<div class="event-img" style="background:${bg}">🎉<span class="event-date-chip">${dateStr}</span><span class="event-cat-chip">${e.category}</span></div>`;
+
   return `
-    <div class="event-card" data-cat="${e.category}">
-      <div class="event-img" style="background:${bg}">🎉
-        <span class="event-date-chip">${dateStr}</span>
-        <span class="event-cat-chip">${e.category}</span>
-      </div>
+    <div class="event-card" data-cat="${e.category}" style="cursor:pointer" onclick="openEventModal('${e.id}')">
+      ${imgSection}
       <div class="event-body">
         <div class="event-title">${e.title}</div>
         ${e.location ? `<div class="event-meta-item">📍 ${e.location}</div>` : ''}
-        <div class="event-meta-item">🎟 Free</div>
       </div>
-      <div class="event-footer"><span class="event-rsvp" style="font-size:12px;color:var(--gray-400)">${desc}</span>${rsvpBtn}</div>
-      <div style="padding:6px 16px;font-size:12px;color:var(--gray-400);cursor:pointer;border-top:1px solid var(--gray-100)" id="rsvp-count-${e.id}" onclick="openRSVPList(${e.id},'${e.title}')">👥 Loading...</div>
+      <div class="event-footer" onclick="event.stopPropagation()">${rsvpBtn}</div>
+      <div style="padding:6px 16px;font-size:12px;color:var(--gray-400);cursor:pointer;border-top:1px solid var(--gray-100)" id="rsvp-count-${e.id}" onclick="event.stopPropagation();openRSVPList(${e.id},'${e.title}')">👥 Loading...</div>
       ${posterHtml}
     </div>`;
 }
@@ -641,6 +644,74 @@ async function openRSVPList(eventId, title) {
         <span style="font-size:12px;color:var(--gray-400)">→</span>
       </div>`;
   }).join('');
+}
+
+async function openEventModal(eventId) {
+  const e = _allEvents.find(ev => String(ev.id) === String(eventId));
+  if (!e) return;
+  const poster = e.submitted_by ? _posterMap[e.submitted_by] : null;
+
+  const dateVal = e.date || e.event_date;
+  const d = new Date(dateVal + 'T00:00:00');
+  const dateStr = d.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const bg = EVENT_GRADIENTS[e.category] || EVENT_GRADIENTS.Community;
+
+  const imgHtml = e.image_url
+    ? `<img src="${e.image_url}" style="width:100%;max-height:240px;object-fit:cover;border-radius:10px;margin-bottom:18px;display:block">`
+    : `<div style="width:100%;height:140px;border-radius:10px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:18px">🎉</div>`;
+
+  const rsvpBtn = e.external_url
+    ? `<a href="${e.external_url}" target="_blank" class="btn-primary" style="text-decoration:none;display:inline-block;padding:11px 28px">RSVP</a>`
+    : `<button class="btn-primary" id="event-modal-rsvp-btn" style="padding:11px 28px" onclick="handleRSVP('${e.id}')">RSVP</button>`;
+
+  let posterHtml = '';
+  if (poster) {
+    const name = poster.full_name || 'Community Member';
+    const avatar = poster.avatar_url
+      ? `<img src="${poster.avatar_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`
+      : `<span style="width:32px;height:32px;border-radius:50%;background:var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:16px">👤</span>`;
+    posterHtml = `
+      <div style="display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--gray-100)">
+        ${avatar}
+        <span style="font-size:13px;color:var(--gray-500)">Posted by <span style="cursor:pointer;font-weight:600;color:var(--gray-700)" onclick="closeModal('eventDetailModal');openMemberProfile('${poster.id}')">${name}</span></span>
+      </div>`;
+  }
+
+  document.getElementById('event-detail-body').innerHTML = `
+    ${imgHtml}
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <span style="background:var(--gray-100);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">${e.category}</span>
+    </div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:12px;line-height:1.3">${e.title}</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;font-size:14px;color:var(--gray-600)">
+      <div>📅 ${dateStr}</div>
+      ${e.location ? `<div>📍 ${e.location}</div>` : ''}
+      ${e.price ? `<div>🎟 ${e.price}</div>` : '<div>🎟 Free</div>'}
+    </div>
+    ${e.description ? `<div style="font-size:14px;color:var(--gray-700);line-height:1.7;margin-bottom:18px;white-space:pre-wrap">${e.description}</div>` : ''}
+    <div style="display:flex;align-items:center;gap:12px">
+      ${rsvpBtn}
+      <span id="event-modal-rsvp-count" style="font-size:13px;color:var(--gray-400);cursor:pointer" onclick="openRSVPList('${e.id}','${e.title.replace(/'/g, "\\'")}')">👥 Loading...</span>
+    </div>
+    ${posterHtml}
+  `;
+  openModal('eventDetailModal');
+
+  // Load RSVP count
+  const { data: rsvps } = await _supabase.from('rsvps').select('event_id').eq('event_id', e.id);
+  const n = rsvps ? rsvps.length : 0;
+  const countEl = document.getElementById('event-modal-rsvp-count');
+  if (countEl) countEl.textContent = n === 0 ? '👥 Be the first to RSVP!' : `👥 ${n} going — see who`;
+
+  // Mark RSVP state if logged in
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (session) {
+    const { data: myRsvp } = await _supabase.from('rsvps').select('id').eq('event_id', e.id).eq('user_id', session.user.id).single();
+    if (myRsvp) {
+      const btn = document.getElementById('event-modal-rsvp-btn');
+      if (btn) { btn.textContent = '✓ Going!'; btn.style.background = 'var(--green, #22c55e)'; }
+    }
+  }
 }
 
 async function handleRSVP(eventId) {
@@ -912,11 +983,12 @@ async function loadEvents() {
 
   // Fetch poster profiles for events that have submitted_by
   const posterIds = [...new Set(data.filter(e => e.submitted_by).map(e => e.submitted_by))];
-  const posterMap = {};
+  _posterMap = {};
   if (posterIds.length > 0) {
     const { data: profiles } = await _supabase.from('profiles').select('id, full_name, avatar_url, contact_link').in('id', posterIds);
-    if (profiles) profiles.forEach(p => { posterMap[p.id] = p; });
+    if (profiles) profiles.forEach(p => { _posterMap[p.id] = p; });
   }
+  const posterMap = _posterMap;
 
   grid.innerHTML = data.map(e => renderEventCard(e, posterMap[e.submitted_by])).join('');
 
@@ -1002,9 +1074,30 @@ function openEditEvent(id) {
   document.getElementById('evt-category').value = e.category || 'Cultural';
   document.getElementById('evt-location').value = e.location || '';
   document.getElementById('evt-desc').value = e.description || '';
+  document.getElementById('evt-existing-image').value = e.image_url || '';
+  document.getElementById('evt-image').value = '';
+  const preview = document.getElementById('evt-image-preview');
+  const previewImg = document.getElementById('evt-image-preview-img');
+  if (e.image_url) {
+    previewImg.src = e.image_url;
+    preview.style.display = '';
+  } else {
+    preview.style.display = 'none';
+  }
   document.querySelector('#addEventModal .modal-header .modal-title').textContent = 'Edit Event ✏️';
   document.querySelector('#evt-form-body button[type="submit"]').textContent = 'Save Changes';
   openModal('addEventModal');
+}
+
+function previewEventImage(input) {
+  const preview = document.getElementById('evt-image-preview');
+  const img = document.getElementById('evt-image-preview-img');
+  if (input.files && input.files[0]) {
+    img.src = URL.createObjectURL(input.files[0]);
+    preview.style.display = '';
+  } else {
+    preview.style.display = 'none';
+  }
 }
 
 async function handleSubmitEvent(event) {
@@ -1020,6 +1113,21 @@ async function handleSubmitEvent(event) {
     location:    document.getElementById('evt-location').value.trim(),
     description: document.getElementById('evt-desc').value.trim(),
   };
+
+  // Handle image upload
+  const imageFile = document.getElementById('evt-image').files[0];
+  if (imageFile) {
+    const ext = imageFile.name.split('.').pop();
+    const path = `${session.user.id}/${Date.now()}.${ext}`;
+    const { error: uploadError } = await _supabase.storage.from('event-images').upload(path, imageFile, { upsert: true });
+    if (!uploadError) {
+      const { data: urlData } = _supabase.storage.from('event-images').getPublicUrl(path);
+      payload.image_url = urlData.publicUrl;
+    }
+  } else {
+    const existingImage = document.getElementById('evt-existing-image').value;
+    if (existingImage) payload.image_url = existingImage;
+  }
 
   let error;
   if (editId) {
