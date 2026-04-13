@@ -821,10 +821,10 @@
 </div>
 
 <div class="modal-overlay" id="addEventModal">
-  <div class="modal">
-    <div class="modal-header"><div class="modal-title">Submit an Event 🎉</div><button class="modal-close" onclick="closeModal('addEventModal')">✕</button></div>
+  <div class="modal" style="max-height:90vh;display:flex;flex-direction:column">
+    <div class="modal-header" style="flex-shrink:0"><div class="modal-title">Submit an Event 🎉</div><button class="modal-close" onclick="closeModal('addEventModal')">✕</button></div>
     <input type="hidden" id="evt-edit-id">
-    <div id="evt-form-body">
+    <div id="evt-form-body" style="overflow-y:auto;flex:1;padding:0 24px 24px">
       <form onsubmit="handleSubmitEvent(event)">
         <div class="form-group"><label>Event Name</label><input id="evt-title" type="text" class="form-control" placeholder="e.g. Fiesta Night 2026" required></div>
         <div class="grid-2">
